@@ -2698,6 +2698,53 @@
         display: none !important; /* Hide verbose textbook notes on mobile to maximize workspace */
       }
 
+      /* Mode 2 (Draw a Net) mobile sidebar compactness */
+      #sidebar-draw {
+        padding: 6px 8px !important;
+        gap: 6px !important;
+      }
+      #sidebar-draw > div:first-child h3 {
+        font-size: 0.86rem !important;
+        margin-bottom: 2px !important;
+      }
+      #sidebar-draw > div:first-child p {
+        display: none !important;
+      }
+      #sidebar-draw .draw-status-box {
+        padding: 4px 8px !important;
+        font-size: 0.72rem !important;
+        margin-top: 2px !important;
+      }
+      .draw-actions-row {
+        flex-direction: row !important;
+        gap: 6px !important;
+      }
+      #btn-test-fold {
+        flex: 2 !important;
+        min-height: 32px !important;
+        padding: 4px 8px !important;
+        font-size: 0.72rem !important;
+      }
+      #btn-clear-grid {
+        flex: 1 !important;
+        min-height: 32px !important;
+        padding: 4px 8px !important;
+        font-size: 0.72rem !important;
+      }
+
+      /* Mode 3 (Shape Matcher) mobile sidebar compactness */
+      #sidebar-challenge {
+        padding: 6px 8px !important;
+        gap: 6px !important;
+      }
+      #sidebar-challenge > div:first-child h3 {
+        font-size: 0.86rem !important;
+        margin-bottom: 2px !important;
+      }
+      #sidebar-challenge > div:first-child p {
+        display: none !important;
+      }
+
       /* ---- CANVAS CONTAINER: Large, spacious workspace on mobile ---- */
       #canvas-container {
         width: 100% !important;
@@ -2733,7 +2780,6 @@
         border: 1.5px solid var(--accent) !important;
         color: #fff !important;
         box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6) !important;
-        display: flex !important;
         align-items: center !important;
         gap: 5px !important;
       }
@@ -3104,7 +3150,7 @@
           </div>
         </div>
 
-        <div style="display:flex; flex-direction:column; gap:8px;">
+        <div class="draw-actions-row" style="display:flex; flex-direction:column; gap:8px;">
           <button class="btn btn-accent" id="btn-test-fold" disabled>🎬 Test Fold into 3D Cube</button>
           <button class="btn" id="btn-clear-grid">🧹 Clear Grid</button>
         </div>
@@ -5297,31 +5343,47 @@
       const challengeWb = document.getElementById('challenge-workbench');
       const backBtn = document.getElementById('btn-back-to-2d');
       const threeCanvas = document.getElementById('three-canvas');
+      const hudBadge = document.querySelector('.canvas-hud');
+      const controlsHint = document.querySelector('.canvas-controls-hint');
 
       if (currentViewMode === 'explore') {
-        if (drawWb) drawWb.classList.remove('active');
+        if (drawWb) { drawWb.classList.remove('active'); drawWb.style.display = 'none'; }
         if (challengeWb) challengeWb.style.display = 'none';
         if (backBtn) backBtn.style.display = 'none';
         if (threeCanvas) threeCanvas.style.display = 'block';
+        if (hudBadge) hudBadge.style.display = 'flex';
+        if (controlsHint) controlsHint.style.display = 'block';
       } else if (currentViewMode === 'draw') {
         if (challengeWb) challengeWb.style.display = 'none';
         if (drawViewSubmode === '2d') {
-          if (drawWb) drawWb.classList.add('active');
+          if (drawWb) { drawWb.classList.add('active'); drawWb.style.display = 'flex'; }
+          if (threeCanvas) threeCanvas.style.display = 'none';
+          if (hudBadge) hudBadge.style.display = 'none';
+          if (controlsHint) controlsHint.style.display = 'none';
           if (backBtn) backBtn.style.display = 'none';
         } else {
-          if (drawWb) drawWb.classList.remove('active');
+          if (drawWb) { drawWb.classList.remove('active'); drawWb.style.display = 'none'; }
+          if (threeCanvas) threeCanvas.style.display = 'block';
+          if (hudBadge) hudBadge.style.display = 'flex';
+          if (controlsHint) controlsHint.style.display = 'block';
           if (backBtn) {
             backBtn.style.display = 'flex';
             backBtn.textContent = window.innerWidth < 640 ? '✏️ 2D Board' : '✏️ Back to 2D Grid Board';
           }
         }
       } else if (currentViewMode === 'challenge') {
-        if (drawWb) drawWb.classList.remove('active');
+        if (drawWb) { drawWb.classList.remove('active'); drawWb.style.display = 'none'; }
         if (challengeViewSubmode === '2d') {
           if (challengeWb) challengeWb.style.display = 'flex';
+          if (threeCanvas) threeCanvas.style.display = 'none';
+          if (hudBadge) hudBadge.style.display = 'none';
+          if (controlsHint) controlsHint.style.display = 'none';
           if (backBtn) backBtn.style.display = 'none';
         } else {
           if (challengeWb) challengeWb.style.display = 'none';
+          if (threeCanvas) threeCanvas.style.display = 'block';
+          if (hudBadge) hudBadge.style.display = 'flex';
+          if (controlsHint) controlsHint.style.display = 'block';
           if (backBtn) {
             backBtn.style.display = 'flex';
             backBtn.textContent = window.innerWidth < 640 ? '🧩 2D Net' : '🧩 Back to 2D Net Workbench';
@@ -5342,6 +5404,18 @@
       if (p2dChal && p3dChal) {
         p2dChal.classList.toggle('active', challengeViewSubmode === '2d');
         p3dChal.classList.toggle('active', challengeViewSubmode === '3d');
+      }
+
+      // Toggle fold progress slider in sidebar-draw (show only when in 3D fold view)
+      const drawSliderBlock = document.querySelector('#sidebar-draw .sidebar-block');
+      if (drawSliderBlock) {
+        drawSliderBlock.style.display = (drawViewSubmode === '3d') ? 'flex' : 'none';
+      }
+
+      // Toggle fold progress slider in sidebar-challenge (show only when in 3D fold view)
+      const chalSliderBlock = document.querySelector('#sidebar-challenge .sidebar-block');
+      if (chalSliderBlock) {
+        chalSliderBlock.style.display = (challengeViewSubmode === '3d') ? 'flex' : 'none';
       }
 
       // Resize Three.js renderer when switching into 3D view
@@ -5462,6 +5536,7 @@
       if (sideChallenge) sideChallenge.style.display = (mode === 'challenge') ? 'flex' : 'none';
 
       updateCenterWorkspaces();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     document.getElementById('tab-explore-mode').addEventListener('click', () => switchViewMode('explore'));

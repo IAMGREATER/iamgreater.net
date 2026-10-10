@@ -4488,7 +4488,7 @@
       // 2. Prepare the 2 circular lids
       const cosA = Math.cos(rectShape.angle);
       const sinA = Math.sin(rectShape.angle);
-      const wHalf = (UNIT_EDGE * 1.5) / 2; // 72px
+      const wHalf = Math.round(UNIT_EDGE * Math.PI) / 2; // matches full unrolled circumference
 
       const lids = circleShapes.map((cShape) => {
         const dx = cShape.center.x - rectShape.center.x;
@@ -4594,11 +4594,14 @@
 
           let bestMatch = null;
           let minMidDist = Infinity;
+          const maxMidDist = Math.min(UNIT_EDGE * 0.28, 16);
 
           e1s.forEach(e1 => {
             e2s.forEach(e2 => {
               const dMid = Math.hypot(e1.mid.x - e2.mid.x, e1.mid.y - e2.mid.y);
-              if (dMid < 30 && dMid < minMidDist) {
+              const dotN = e1.normal.x * e2.normal.x + e1.normal.y * e2.normal.y;
+              // True shared edge must have close midpoints and opposite outward normals (facing each other)
+              if (dMid < maxMidDist && dotN < -0.7 && dMid < minMidDist) {
                 minMidDist = dMid;
                 bestMatch = { e1, e2 };
               }
@@ -5980,7 +5983,7 @@
     // UNIT_EDGE is declared dynamically at top of script via getUnitEdge() (52px mobile, 96px desktop)
 
     // Helper: Returns standard local polygon vertices for a given shape type (all oriented clockwise)
-    function getStandardLocalVertices(shapeType) {
+    function getStandardLocalVertices(shapeType, isCylinderOverride) {
       if (shapeType === 'square') {
         const s = UNIT_EDGE;
         return [
@@ -5990,8 +5993,14 @@
           { x: -s/2, y: s/2 }   // bottom-left (3)
         ];
       } else if (shapeType === 'rectangle') {
-        const w = UNIT_EDGE * 1.5; // 144px
-        const h = UNIT_EDGE;       // 96px
+        const isCyl = (typeof isCylinderOverride === 'boolean') ? isCylinderOverride : (
+          (typeof currentChallengeIdx !== 'undefined' &&
+           typeof CHALLENGE_SHAPES !== 'undefined' &&
+           CHALLENGE_SHAPES[currentChallengeIdx] &&
+           CHALLENGE_SHAPES[currentChallengeIdx].id === 'cylinder')
+        );
+        const w = isCyl ? Math.round(UNIT_EDGE * Math.PI) : Math.round(UNIT_EDGE * 1.5);
+        const h = isCyl ? Math.round(UNIT_EDGE * 1.25) : UNIT_EDGE;
         return [
           { x: -w/2, y: -h/2 },
           { x: w/2, y: -h/2 },
@@ -6830,8 +6839,9 @@
 
       const s = UNIT_EDGE;
       const triH = (s * Math.sqrt(3)) / 2;
-      const w = UNIT_EDGE * 1.5;
-      const h = UNIT_EDGE;
+      const isCyl = (c.id === 'cylinder');
+      const w = isCyl ? Math.round(UNIT_EDGE * Math.PI) : (UNIT_EDGE * 1.5);
+      const h = isCyl ? Math.round(UNIT_EDGE * 1.25) : UNIT_EDGE;
       const r = UNIT_EDGE / 2;
 
       let rawShapes = [];
@@ -7276,14 +7286,12 @@
               return { x: s2.center.x + (p.x * cosA - p.y * sinA), y: s2.center.y + (p.x * sinA + p.y * cosA) };
             }), s2.id);
 
+            const maxMidDist = Math.min(UNIT_EDGE * 0.28, 16);
             e1s.forEach(e1 => {
               e2s.forEach(e2 => {
                 const dMid = Math.hypot(e1.mid.x - e2.mid.x, e1.mid.y - e2.mid.y);
-                const endpointDistance = Math.min(
-                  Math.hypot(e1.p1.x - e2.p2.x, e1.p1.y - e2.p2.y),
-                  Math.hypot(e1.p2.x - e2.p1.x, e1.p2.y - e2.p1.y)
-                );
-                if (dMid < 30 && (Math.abs(e1.len - e2.len) < 30 || endpointDistance < 24)) {
+                const dotN = e1.normal.x * e2.normal.x + e1.normal.y * e2.normal.y;
+                if (dMid < maxMidDist && dotN < -0.7) {
                   touching = true;
                 }
               });

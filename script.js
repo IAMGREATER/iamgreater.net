@@ -106,6 +106,27 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
+      case 'tools':
+      case 'webtools':
+        outputHtml = `
+          <div style="color:var(--accent-emerald); font-weight:600;">[IAMGREATER WEB TOOLS & LABS]</div>
+          <div>1. 3D Maths Net Folding Engine: <a href="netfolding/" style="color:#34d399; text-decoration:underline;">iamgreater.net/netfolding/</a></div>
+          <div>2. All Web Tools Hub: <a href="tools/" style="color:#38bdf8; text-decoration:underline;">iamgreater.net/tools/</a></div>
+          <div>Client-side, zero install, works on all phones, tablets, and computers.</div>
+        `;
+        break;
+
+      case 'netfolding':
+      case 'maths':
+      case 'nets':
+        outputHtml = `
+          <div style="color:var(--accent-emerald); font-weight:600;">[3D MATHS NET FOLDING ENGINE]</div>
+          <div>Interactive 3D geometry engine for Functional Skills & GCSE Mathematics.</div>
+          <div>11 Cube Nets, Pyramids, Prisms, Cylinders, Cones & Tetrahedrons.</div>
+          <div style="margin-top:6px;"><a href="netfolding/" style="color:#34d399; text-decoration:underline;">Launch 3D Folding Tool ➔</a></div>
+        `;
+        break;
+
       case 'origin':
       case 'turbo':
       case 'pascal':

@@ -5023,8 +5023,14 @@
       checkCollisions();
     }
 
-    function animate() {
+    let lastAnimTimestamp = null;
+    let foldHoldTimer = 0;
+
+    function animate(timestamp) {
       requestAnimationFrame(animate);
+
+      const dt = (lastAnimTimestamp && timestamp) ? Math.min((timestamp - lastAnimTimestamp) / 1000, 0.1) : 0.016;
+      lastAnimTimestamp = timestamp;
 
       if (document.getElementById('chk-rotate').checked && !isAnimating) {
         if (netRootGroup) netRootGroup.rotation.y += 0.005;
@@ -5035,10 +5041,21 @@
         if (currentViewMode === 'draw') curSlider = document.getElementById('fold-slider-draw') || curSlider;
         if (currentViewMode === 'challenge') curSlider = document.getElementById('fold-slider-challenge') || curSlider;
         let p = curSlider ? parseFloat(curSlider.value) : 0;
-        p += 0.65;
-        if (p > 100) {
-          p = 0;
+
+        if (p >= 100) {
+          // Pause briefly at 100% so learner can clearly inspect the completed 3D solid
+          foldHoldTimer += dt;
+          if (foldHoldTimer >= 1.2) {
+            p = 0;
+            foldHoldTimer = 0;
+          }
+        } else {
+          foldHoldTimer = 0;
+          // Smooth, slower folding speed: ~16% per second (takes ~6.2 seconds from flat to folded)
+          p += 16.0 * dt;
+          if (p > 100) p = 100;
         }
+
         setAllSlidersValue(p);
         updateAllSliderLabels(p);
         applyFold(p / 100);
@@ -5054,6 +5071,8 @@
     function pauseAnimation() {
       if (isAnimating) {
         isAnimating = false;
+        foldHoldTimer = 0;
+        lastAnimTimestamp = null;
         updateAllPlayButtons(false);
       }
     }
@@ -5162,6 +5181,8 @@
           updateAllSliderLabels(0);
           applyFold(0);
         }
+        foldHoldTimer = 0;
+        lastAnimTimestamp = null;
         isAnimating = true;
         updateAllPlayButtons(true);
       }
@@ -5488,6 +5509,8 @@
         applyFold(0);
 
         setTimeout(() => {
+          foldHoldTimer = 0;
+          lastAnimTimestamp = null;
           isAnimating = true;
           updateAllPlayButtons(true);
         }, 300);
@@ -7447,6 +7470,8 @@
         }
 
         if (startPlaying) {
+          foldHoldTimer = 0;
+          lastAnimTimestamp = null;
           isAnimating = true;
           updateAllPlayButtons(true);
         } else {

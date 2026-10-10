@@ -2398,75 +2398,6 @@
       }
     }
 
-    @media (max-width: 760px) {
-      body {
-        overflow: auto;
-      }
-
-      header {
-        padding: 10px 12px;
-      }
-
-      .brand-title p {
-        display: none;
-      }
-
-      .header-nav {
-        justify-content: flex-start;
-        overflow-x: auto;
-        max-width: 100%;
-      }
-
-      .tab-btn {
-        flex: 0 0 auto;
-        padding: 7px 10px;
-      }
-
-      .header-actions {
-        width: 100%;
-        margin-left: 0;
-        overflow-x: auto;
-      }
-
-      .header-actions .btn {
-        flex: 1 0 auto;
-        justify-content: center;
-      }
-
-      main {
-        display: block;
-        height: auto;
-        min-height: calc(100vh - 150px);
-      }
-
-      #sidebar {
-        width: 100%;
-        max-height: none;
-        overflow: visible;
-        border-right: 0;
-        border-bottom: 1px solid var(--border-color);
-      }
-
-      #canvas-container {
-        height: 62vh;
-        min-height: 420px;
-      }
-
-      .draw-sidebar {
-        width: 100%;
-      }
-
-      .grid-board {
-        transform: scale(0.82);
-        transform-origin: center center;
-        margin: -40px 0;
-      }
-
-      .challenge-freeform-canvas {
-        min-height: 580px;
-      }
-    }
-
     /* ============================================================
        MOBILE OPTIMISATION — Comprehensive Refactor
        Target: Phones & Tablets (<= 820px or .mobile-mode)
@@ -8834,13 +8765,38 @@
     })();
   </script>
 
-  <!-- Service Worker Registration for PWA Standalone Offline Mode -->
+  <!-- Service Worker Registration for PWA Standalone Offline Mode with Instant Updates -->
   <script>
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js')
-          .then((reg) => console.log('NetFold 3D PWA Service Worker registered:', reg.scope))
+          .then((reg) => {
+            console.log('NetFold 3D PWA Service Worker registered:', reg.scope);
+            reg.update(); // Proactively query network for latest sw.js
+          })
           .catch((err) => console.warn('NetFold 3D PWA Service Worker failed:', err));
+      });
+
+      let refreshing = false;
+      navigator.serviceWorker.addEventListener('controllerchange', () => {
+        if (!refreshing) {
+          refreshing = true;
+          window.location.reload();
+        }
+      });
+    }
+
+    // Immediately purge legacy stale caches (v1/v2) from prior visits
+    if ('caches' in window) {
+      caches.keys().then((keys) => {
+        keys.forEach((key) => {
+          if (key === 'netfold3d-v1' || key === 'netfold3d-v2') {
+            caches.delete(key).then(() => {
+              console.log('Cleared legacy cache:', key);
+              window.location.reload();
+            });
+          }
+        });
       });
     }
   </script>

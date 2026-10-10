@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuickDraw Launcher | Lightning Edge Gesture Launcher for Android</title>
+  <meta name="description" content="Official showcase, live gesture simulator, and how-to guide for QuickDraw Launcher by IAMGREATER. 100% offline, zero-tracking edge gesture launcher for Android.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/quickdraw-icon.png">
+  <style>
+    /* Specific QuickDraw Showcase Styles */
+    .qd-hero {
+      padding: 130px 0 70px;
+      position: relative;
+    }
+    .qd-hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .qd-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .qd-badge {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-cyan);
+    }
+    .qd-badge.green {
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.1);
+      color: #34d399;
+    }
+    .qd-badge.purple {
+      border-color: rgba(168, 85, 247, 0.3);
+      background: rgba(168, 85, 247, 0.1);
+      color: #c084fc;
+    }
+    .qd-title {
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    .qd-sub {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+    .qd-phone-mockup {
+      position: relative;
+      border-radius: 38px;
+      padding: 12px;
+      background: #0f131f;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 50px rgba(56, 189, 248, 0.2);
+      max-width: 320px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .qd-phone-screen {
+      border-radius: 28px;
+      overflow: hidden;
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000;
+    }
+    .mockup-indicator {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .live-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #22c55e;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    /* Interactive Simulator Section */
+    .sim-section {
+      padding: 90px 0;
+      border-top: 1px solid var(--border-color);
+      background: radial-gradient(circle at 50% 20%, rgba(56, 189, 248, 0.08), transparent 75%);
+    }
+    .sim-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      align-items: center;
+      margin-top: 40px;
+    }
+    .sim-device {
+      position: relative;
+      width: 310px;
+      height: 620px;
+      background: #090c15;
+      border-radius: 40px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.8), 0 0 40px rgba(56, 189, 248, 0.18);
+      margin: 0 auto;
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+    }
+    .sim-notch {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 16px;
+      height: 16px;
+      background: #000;
+      border-radius: 50%;
+      z-index: 30;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .sim-wallpaper {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 40px 20px 25px;
+      box-sizing: border-box;
+    }
+    .sim-clock {
+      text-align: center;
+      margin-top: 30px;
+    }
+    .sim-time {
+      font-size: 2.8rem;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      color: #fff;
+      letter-spacing: -1px;
+    }
+    .sim-date {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+    .sim-edge-zone {
+      position: absolute;
+      right: 0;
+      top: 35%;
+      width: 24px;
+      height: 160px;
+      background: linear-gradient(to left, rgba(56, 189, 248, 0.4), transparent);
+      border-left: 2px solid #38bdf8;
+      border-radius: 12px 0 0 12px;
+      cursor: ew-resize;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20;
+      animation: edgePulse 2s infinite ease-in-out;
+    }
+    @keyframes edgePulse {
+      0%, 100% { opacity: 0.7; transform: scaleX(1); }
+      50% { opacity: 1; transform: scaleX(1.3); filter: drop-shadow(0 0 10px #38bdf8); }
+    }
+    .sim-edge-label {
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #38bdf8;
+      font-weight: 700;
+      letter-spacing: 1px;
+      pointer-events: none;
+    }
+    .sim-fan-menu {
+      position: absolute;
+      right: -20px;
+      top: 35%;
+      transform: translateY(-50%) scale(0.6);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 25;
+    }
+    .sim-fan-menu.active {
+      opacity: 1;
+      transform: translateY(-50%) scale(1);
+      pointer-events: auto;
+    }
+    .sim-arc-bg {
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 80%);
+      border: 2px solid rgba(56, 189, 248, 0.4);
+      box-shadow: 0 0 35px rgba(56, 189, 248, 0.25);
+      position: relative;
+    }
+    .sim-icon-node {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .sim-icon-node:hover, .sim-icon-node.highlighted {
+      transform: scale(1.3);
+      border-color: #38bdf8;
+      background: #38bdf8;
+      box-shadow: 0 0 20px #38bdf8;
+    }
+    .sim-toast {
+      position: absolute;
+      top: 75px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid #38bdf8;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s ease;
+      z-index: 40;
+      white-space: nowrap;
+    }
+    .sim-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .sim-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      padding: 90px 0;
+      border-top: 1px solid var(--border-color);
+    }
+    .gallery-tabs {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 32px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+    .gallery-tab-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      padding: 10px 20px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all var(--transition-normal);
+    }
+    .gallery-tab-btn:hover, .gallery-tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: #38bdf8;
+      color: #38bdf8;
+    }
+    .gallery-display {
+      max-width: 440px;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .gallery-render-img {
+      width: 100%;
+      height: auto;
+      border-radius: 30px;
+      transition: opacity 0.3s ease;
+    }
+    .gallery-caption {
+      margin-top: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* Steps Section */
+    .steps-section {
+      padding: 90px 0;
+      border-top: 1px solid var(--border-color);
+      background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.05), transparent 70%);
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+    .step-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 32px 24px;
+      position: relative;
+      transition: all var(--transition-normal);
+    }
+    .step-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+    }
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--accent-cyan);
+      opacity: 0.6;
+      margin-bottom: 12px;
+    }
+    .step-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      margin-bottom: 12px;
+      color: var(--text-primary);
+    }
+    .step-desc {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-secondary);
+    }
+
+    /* Specs Section */
+    .specs-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border-color);
+    }
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .spec-box {
+      background: #0d101a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .spec-box h4 {
+      font-size: 1.1rem;
+      color: #38bdf8;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .spec-box p {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    @media (max-width: 900px) {
+      .qd-hero-grid, .sim-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .qd-badge-row {
+        justify-content: center;
+      }
+      .qd-title {
+        font-size: 2.4rem;
+      }
+      .sim-device {
+        margin: 0 auto;
+      }
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Background Animated Mesh -->
+  <div class="mesh-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="index.html" class="brand">
+        <span class="brand-glyph">⚡</span>
+        <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="#simulator">Live Simulator</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="#gallery">Visual Renders</a>
+        <a href="#specs">Specs & Privacy</a>
+        <a href="privacy.html">Privacy</a>
+      </nav>
+
+      <div class="nav-right">
+        <span class="status-pill">
+          <span class="pulse-beacon"></span>
+          <span class="status-text">Target SDK 35 (Android 15)</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- QuickDraw Hero Section -->
+  <section class="qd-hero">
+    <div class="container qd-hero-grid">
+      <div class="qd-hero-text">
+        <div class="qd-badge-row">
+          <span class="qd-badge">Android Utility</span>
+          <span class="qd-badge green">100% Offline & Private</span>
+          <span class="qd-badge purple">Zero Battery Drain</span>
+        </div>
+
+        <h1 class="qd-title">
+          Launch Any App With a Single <span class="gradient-text">Thumb-Glide</span>.
+        </h1>
+
+        <p class="qd-sub">
+          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. No need to exit to your home screen or swipe through app drawers—just glide your thumb inward from any border, hover, and release.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#simulator" class="btn btn-cyber">⚡ Try Live Simulator</a>
+          <a href="#how-it-works" class="btn btn-glass">How It Works ↓</a>
+        </div>
+
+        <div style="margin-top: 24px; font-family: var(--font-mono); font-size: 0.85rem; color: #94a3b8;">
+          📦 Package: <span style="color:#38bdf8;">apps.ipsofacto.swiftopen.modern</span> • Google Play Submission Staged
+        </div>
+      </div>
+
+      <div class="qd-hero-visual">
+        <div class="qd-phone-mockup">
+          <video autoplay loop muted playsinline poster="assets/renders/mockup_overlay.png" class="qd-phone-screen">
+            <source src="assets/renders/quickdraw_demo.webm" type="video/webm">
+            <source src="assets/renders/quickdraw_demo.mp4" type="video/mp4">
+            <img src="assets/renders/mockup_overlay.png" alt="QuickDraw Launcher Demo" class="qd-phone-screen">
+          </video>
+          <div class="mockup-indicator">
+            <span class="live-dot"></span> 60 FPS Edge Trigger Loop
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Gesture Simulator Section -->
+  <section class="sim-section" id="simulator">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">INTERACTIVE DEMO</span>
+        <h2 class="section-heading">Test The Gesture Simulator</h2>
+        <p class="section-desc">Experience QuickDraw right in your browser. Glide inward from the glowing right edge or click the auto-demo trigger.</p>
+      </div>
+
+      <div class="sim-container">
+        <!-- Phone Simulator Mockup -->
+        <div class="sim-device" id="simDevice">
+          <div class="sim-notch"></div>
+          
+          <div class="sim-toast" id="simToast">🚀 Launched Camera!</div>
+
+          <div class="sim-wallpaper">
+            <div class="sim-clock">
+              <div class="sim-time" id="simClockTime">12:30</div>
+              <div class="sim-date">FRIDAY, OCTOBER 10</div>
+            </div>
+            
+            <div style="text-align: center; color: rgba(255,255,255,0.4); font-size: 0.8rem; font-family: var(--font-mono);">
+              Swipe left from blue edge ➔
+            </div>
+
+            <!-- Edge Trigger Hotzone -->
+            <div class="sim-edge-zone" id="simEdgeZone">
+              <span class="sim-edge-label">GLIDE</span>
+            </div>
+
+            <!-- Radial Fan-Out Menu -->
+            <div class="sim-fan-menu" id="simFanMenu">
+              <div class="sim-arc-bg">
+                <div class="sim-icon-node" style="top: 15px; left: 80px;" data-app="Camera" title="Camera">📷</div>
+                <div class="sim-icon-node" style="top: 60px; left: 30px;" data-app="Messages" title="Messages">💬</div>
+                <div class="sim-icon-node" style="top: 130px; left: 20px;" data-app="Browser" title="Browser">🌐</div>
+                <div class="sim-icon-node" style="top: 195px; left: 55px;" data-app="Settings" title="Settings">⚙️</div>
+                <div class="sim-icon-node" style="top: 220px; left: 130px;" data-app="Calculator" title="Calculator">🔢</div>
+              </div>
+            </div>
+
+            <div style="height: 10px;"></div>
+          </div>
+        </div>
+
+        <!-- Simulator Instructions & Controls -->
+        <div class="sim-controls">
+          <div class="spec-box">
+            <h4 style="color:#38bdf8;">🎯 How to Interact:</h4>
+            <p style="margin-bottom: 12px;">
+              <strong>1. Mouse or Touch:</strong> Click & drag the glowing cyan strip on the right border inward towards the center.
+            </p>
+            <p style="margin-bottom: 12px;">
+              <strong>2. Radial Expansion:</strong> As your pointer sweeps inward, the radial quick-access wheel blossoms into view.
+            </p>
+            <p>
+              <strong>3. Hover & Release:</strong> Glide over your target icon and let go. The app launches instantly in sub-16ms.
+            </p>
+          </div>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn btn-cyber" id="btnAutoDemo">▶ Play Auto Thumb-Glide Demo</button>
+            <button class="btn btn-glass" id="btnResetDemo">↺ Reset</button>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 0.85rem; color: #94a3b8; background: rgba(0,0,0,0.3); padding: 14px; border-radius: 8px; border-left: 3px solid #38bdf8;">
+            💡 <em>On your physical Android phone, QuickDraw runs as a lightweight screen overlay from any screen—even over games, YouTube, or full-screen documents!</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4-Step How It Works Guide -->
+  <section class="steps-section" id="how-it-works">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">INTERACTION MODEL</span>
+        <h2 class="section-heading">How QuickDraw Works</h2>
+        <p class="section-desc">Designed with muscle-memory ergonomics. Learn it in 30 seconds, use it effortlessly forever.</p>
+      </div>
+
+      <div class="steps-grid">
+        <!-- Step 1 -->
+        <article class="step-card">
+          <div class="step-num">01</div>
+          <h3 class="step-title">One-Time Overlay Toggle</h3>
+          <p class="step-desc">
+            Enable the standard Android "Display over other apps" permission. QuickDraw operates purely as an on-demand screen overlay—no invasive Accessibility Services or background accessibility daemons required.
+          </p>
+        </article>
+
+        <!-- Step 2 -->
+        <article class="step-card">
+          <div class="step-num">02</div>
+          <h3 class="step-title">Tune Your Trigger Zone</h3>
+          <p class="step-desc">
+            Position the edge trigger exactly where your thumb naturally rests. Choose the right edge, left edge, or bottom border. Fine-tune touch width, height, and vertical offset.
+          </p>
+        </article>
+
+        <!-- Step 3 -->
+        <article class="step-card">
+          <div class="step-num">03</div>
+          <h3 class="step-title">Pin Your Favorite Apps</h3>
+          <p class="step-desc">
+            Choose your daily arsenal—WhatsApp, Camera, Calculator, Browser, or System Settings. Arrange them around your thumb sweep for effortless muscle-memory access.
+          </p>
+        </article>
+
+        <!-- Step 4 -->
+        <article class="step-card">
+          <div class="step-num">04</div>
+          <h3 class="step-title">Glide Inward & Release</h3>
+          <p class="step-desc">
+            From inside ANY app, game, or video, swipe your thumb inward. The QuickDraw fan pops up in 60fps; hover over your icon and release. Seamless context switching in sub-16 milliseconds.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Device Renders & Gallery Section -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">INTERFACE SHOWCASE</span>
+        <h2 class="section-heading">High-Resolution Device Renders</h2>
+        <p class="section-desc">Clean, minimalist design optimized for Android 15 edge-to-edge displays.</p>
+      </div>
+
+      <div class="gallery-tabs">
+        <button class="gallery-tab-btn active" data-img="assets/renders/mockup_overlay.png" data-cap="Radial fan-out launcher triggered smoothly from the right screen border.">⚡ Radial Edge Launcher</button>
+        <button class="gallery-tab-btn" data-img="assets/renders/mockup_main.png" data-cap="Main gesture hub & shortcut management dashboard.">📱 App Arsenal Hub</button>
+        <button class="gallery-tab-btn" data-img="assets/renders/mockup_settings.png" data-cap="Custom hotzone positioning, trigger height, width, and feedback controls.">⚙️ Trigger Customizer</button>
+      </div>
+
+      <div class="gallery-display">
+        <img id="galleryMainImg" src="assets/renders/mockup_overlay.png" alt="QuickDraw Render" class="gallery-render-img">
+        <div id="galleryCaption" class="gallery-caption">Radial fan-out launcher triggered smoothly from the right screen border.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Technical Specs & Sovereign Principles -->
+  <section class="specs-section" id="specs">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">ENGINEERING & PRIVACY</span>
+        <h2 class="section-heading">Architected Without Compromise</h2>
+        <p class="section-desc">Built in Kotlin and Jetpack Compose with the open-source spirit of XDA and Linux EasyStroke.</p>
+      </div>
+
+      <div class="specs-grid">
+        <div class="spec-box">
+          <h4>🔋 Zero Idle Battery Drain</h4>
+          <p>Unlike background sync services, QuickDraw uses an event-driven overlay. When you are not touching the trigger area, the app consumes 0% CPU and zero wake locks.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>🛡️ 100% Offline (No Internet Permission)</h4>
+          <p>We deliberately omitted the <code>android.permission.INTERNET</code> permission from the AndroidManifest. The app physically cannot send data to the cloud.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>⚡ EasyStroke & XDA Heritage</h4>
+          <p>Inspired by the legendary EasyStroke gesture daemon on Kubuntu Linux and the de-bloated autonomy of XDA custom ROMs. Pure speed, zero ads, zero telemetry.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>📱 Target SDK 35 (Android 15)</h4>
+          <p>Fully compliant with the latest Google Play 2026 requirements, predictive back gestures, edge-to-edge system displays, and high-refresh-rate displays (90Hz / 120Hz).</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>🎮 Game & Video Friendly</h4>
+          <p>Easily reposition or hide the trigger area so it never interferes with games, horizontal video playback, or keyboard typing.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>🔒 Transparent Open Governance</h4>
+          <p>Developed independently under IAMGREATER by Mr. Abdul Saboor. Backed by our public repository and plain-English privacy commitment.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="brand">
+          <span class="brand-glyph">⚡</span>
+          <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+        </div>
+        <p class="footer-sub">QuickDraw Launcher • Sovereign Tech & Digital Craft.</p>
+      </div>
+      <div class="footer-right">
+        <p><a href="privacy.html" style="color:var(--accent-cyan); text-decoration:none;">Privacy Policy</a> • <a href="mailto:support@iamgreater.net" style="color:var(--accent-cyan); text-decoration:none;">support@iamgreater.net</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive Simulator & Gallery Script -->
+  <script>
+    // Update live clock
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const el = document.getElementById('simClockTime');
+      if (el) el.textContent = `${h}:${m}`;
+    }
+    updateClock();
+    setInterval(updateClock, 30000);
+
+    // Simulator Interactive Logic
+    const edgeZone = document.getElementById('simEdgeZone');
+    const fanMenu = document.getElementById('simFanMenu');
+    const simDevice = document.getElementById('simDevice');
+    const toast = document.getElementById('simToast');
+    const iconNodes = document.querySelectorAll('.sim-icon-node');
+    const btnAuto = document.getElementById('btnAutoDemo');
+    const btnReset = document.getElementById('btnResetDemo');
+
+    let isInteracting = false;
+
+    function openMenu() {
+      fanMenu.classList.add('active');
+    }
+
+    function closeMenu() {
+      fanMenu.classList.remove('active');
+      iconNodes.forEach(n => n.classList.remove('highlighted'));
+    }
+
+    function showToast(msg) {
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
+
+    // Touch / Mouse on edge
+    edgeZone.addEventListener('mousedown', (e) => {
+      isInteracting = true;
+      openMenu();
+    });
+
+    simDevice.addEventListener('mousemove', (e) => {
+      if (!isInteracting) return;
+      const rect = simDevice.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      iconNodes.forEach(node => {
+        const nRect = node.getBoundingClientRect();
+        const nx = nRect.left + nRect.width / 2 - rect.left;
+        const ny = nRect.top + nRect.height / 2 - rect.top;
+        const dist = Math.hypot(x - nx, y - ny);
+        if (dist < 35) {
+          node.classList.add('highlighted');
+        } else {
+          node.classList.remove('highlighted');
+        }
+      });
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (isInteracting) {
+        const highlighted = document.querySelector('.sim-icon-node.highlighted');
+        if (highlighted) {
+          showToast(`🚀 Launched ${highlighted.dataset.app}!`);
+        }
+        closeMenu();
+        isInteracting = false;
+      }
+    });
+
+    // Mobile touch events
+    edgeZone.addEventListener('touchstart', (e) => {
+      isInteracting = true;
+      openMenu();
+      e.preventDefault();
+    }, { passive: false });
+
+    simDevice.addEventListener('touchmove', (e) => {
+      if (!isInteracting) return;
+      const touch = e.touches[0];
+      const rect = simDevice.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+      const y = touch.clientY - rect.top;
+
+      iconNodes.forEach(node => {
+        const nRect = node.getBoundingClientRect();
+        const nx = nRect.left + nRect.width / 2 - rect.left;
+        const ny = nRect.top + nRect.height / 2 - rect.top;
+        const dist = Math.hypot(x - nx, y - ny);
+        if (dist < 40) {
+          node.classList.add('highlighted');
+        } else {
+          node.classList.remove('highlighted');
+        }
+      });
+      e.preventDefault();
+    }, { passive: false });
+
+    simDevice.addEventListener('touchend', () => {
+      if (isInteracting) {
+        const highlighted = document.querySelector('.sim-icon-node.highlighted');
+        if (highlighted) {
+          showToast(`🚀 Launched ${highlighted.dataset.app}!`);
+        }
+        closeMenu();
+        isInteracting = false;
+      }
+    });
+
+    // Auto Demo Runner
+    btnAuto.addEventListener('click', () => {
+      openMenu();
+      setTimeout(() => {
+        const targetNode = iconNodes[0]; // Camera
+        targetNode.classList.add('highlighted');
+        setTimeout(() => {
+          showToast(`🚀 Launched ${targetNode.dataset.app}!`);
+          closeMenu();
+        }, 800);
+      }, 600);
+    });
+
+    btnReset.addEventListener('click', () => {
+      closeMenu();
+    });
+
+    // Gallery Tabs
+    const galleryBtns = document.querySelectorAll('.gallery-tab-btn');
+    const mainImg = document.getElementById('galleryMainImg');
+    const caption = document.getElementById('galleryCaption');
+
+    galleryBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        galleryBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        mainImg.style.opacity = '0';
+        setTimeout(() => {
+          mainImg.src = btn.dataset.img;
+          caption.textContent = btn.dataset.cap;
+          mainImg.style.opacity = '1';
+        }, 150);
+      });
+    });
+  </script>
+
+</body>
+</html>

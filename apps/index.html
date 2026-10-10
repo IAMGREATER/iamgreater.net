@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Web Apps & Learning Labs | IAMGREATER</title>
+  <meta name="description" content="Free, zero-install Progressive Web Apps (PWAs) and interactive educational tools by IAMGREATER. 3D Maths net folding visualizers, functional skills tools, and browser utilities.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
+  <style>
+    .apps-hero {
+      padding: 130px 0 60px;
+      text-align: center;
+      position: relative;
+    }
+    .apps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    .app-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 36px 30px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all var(--transition-normal);
+    }
+    .app-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 30px rgba(56, 189, 248, 0.15);
+    }
+    .app-card.featured {
+      border-color: rgba(52, 211, 153, 0.4);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(10, 14, 23, 0.98) 100%);
+    }
+    .app-card.featured:hover {
+      border-color: rgba(52, 211, 153, 0.8);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 35px rgba(52, 211, 153, 0.25);
+    }
+    .app-icon-wrap {
+      font-size: 2.8rem;
+      margin-bottom: 20px;
+      display: inline-block;
+    }
+    .app-badge {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+    .app-badge.pwa {
+      background: rgba(52, 211, 153, 0.15);
+      border-color: rgba(52, 211, 153, 0.4);
+      color: #34d399;
+    }
+    .app-title {
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 14px;
+    }
+    .app-desc {
+      color: var(--text-secondary);
+      font-size: 0.96rem;
+      line-height: 1.65;
+      margin-bottom: 24px;
+      flex-grow: 1;
+    }
+    .app-features {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 28px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+    .app-features li {
+      font-family: var(--font-mono);
+      font-size: 0.84rem;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .app-features li span {
+      color: #34d399;
+    }
+    .app-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .share-pill {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      padding: 8px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 18px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: #cbd5e1;
+    }
+    .share-pill code {
+      color: var(--accent-cyan);
+    }
+    .btn-copy {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      transition: all 0.2s ease;
+    }
+    .btn-copy:hover {
+      background: rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+    }
+    .toast-notice {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #10b981;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.25s ease;
+      pointer-events: none;
+      z-index: 9999;
+    }
+    .toast-notice.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <!-- Background Animated Mesh -->
+  <div class="mesh-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="../index.html" class="brand">
+        <span class="brand-glyph">⚡</span>
+        <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="../index.html">Home</a>
+        <a href="../quickdraw.html">QuickDraw ⚡</a>
+        <a href="index.html" style="color:#34d399; font-weight:600;">Web Apps 🚀</a>
+        <a href="../privacy.html">Privacy</a>
+        <a href="../index.html#connect">Contact</a>
+      </nav>
+
+      <div class="nav-right">
+        <span class="status-pill">
+          <span class="pulse-beacon"></span>
+          <span class="status-text">PWA Ready • Zero Install</span>
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Apps Hero -->
+  <section class="apps-hero">
+    <div class="container">
+      <div class="hero-tag" style="justify-content: center; margin-bottom: 16px;">
+        <span class="cyber-bracket">[</span>
+        <span class="tag-label">PROGRESSIVE WEB APPS • ZERO INSTALL • SOVEREIGN COMPUTE</span>
+        <span class="cyber-bracket">]</span>
+      </div>
+
+      <h1 class="hero-heading" style="font-size: 3.2rem; margin-bottom: 16px;">
+        Interactive <span class="gradient-text">Web Apps & Labs</span>
+      </h1>
+      <p style="font-size: 1.15rem; color: var(--text-secondary); max-width: 720px; margin: 0 auto; line-height: 1.7;">
+        High-performance Progressive Web Apps and interactive visual simulations running directly in your browser. Installable directly to your phone, tablet, or desktop home screen—zero app store download, no login, zero tracking.
+      </p>
+    </div>
+  </section>
+
+  <!-- Apps Catalog -->
+  <section class="section" style="padding-top: 0;">
+    <div class="container">
+      <div class="apps-grid">
+
+        <!-- App 1: NetFold 3D -->
+        <article class="app-card featured">
+          <div>
+            <div class="app-icon-wrap">📐</div>
+            <span class="app-badge pwa">📲 Installable PWA • 3D WebGL</span>
+            <h2 class="app-title">NetFold 3D — 3D Nets & Folding Lab</h2>
+            <p class="app-desc">
+              The flagship interactive 3D geometry engine built for Pearson Edexcel Functional Skills and GCSE Mathematics learners. Allows students to fold, unfold, rotate, and manipulate 3D shapes from their 2D nets in real time. Works standalone with zero installation on any phone, tablet, or PC.
+            </p>
+            
+            <div class="share-pill">
+              <span>Learner Share Link: <code>iamgreater.net/netfolding/</code></span>
+              <button class="btn-copy" onclick="copyLink('https://iamgreater.net/netfolding/')">Copy Link</button>
+            </div>
+
+            <ul class="app-features">
+              <li><span>✓</span> <strong>Installable PWA:</strong> Tap "Add to Home Screen" on iOS & Android for native app feel</li>
+              <li><span>✓</span> <strong>All 11 Cube Nets:</strong> Complete step-by-step folding with opposite face highlighting</li>
+              <li><span>✓</span> <strong>3D Polyhedra:</strong> Pyramids, Prisms, Cones, Cylinders & Tetrahedrons</li>
+              <li><span>✓</span> <strong>Touch & 3D Controls:</strong> Smooth orbit, pan, pinch-zoom, and folding slider</li>
+              <li><span>✓</span> <strong>100% Offline-Capable:</strong> Caches locally; zero internet required once loaded</li>
+            </ul>
+          </div>
+          <div class="app-actions">
+            <a href="../netfolding/" class="btn btn-cyber" style="flex: 1; text-align: center; background: rgba(52, 211, 153, 0.2); border-color: rgba(52, 211, 153, 0.6); color: #34d399;">🚀 Launch Web App</a>
+            <a href="../netfolding/USER_GUIDE.pdf" target="_blank" class="btn btn-glass" style="font-size: 0.85rem;">📄 Guide (PDF)</a>
+          </div>
+        </article>
+
+        <!-- App 2: Functional Skills Revision Hub -->
+        <article class="app-card">
+          <div>
+            <div class="app-icon-wrap">📊</div>
+            <span class="app-badge" style="background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.3); color: var(--accent-cyan);">Assessment & Remediation</span>
+            <h2 class="app-title">Pearson Edexcel Skills Drills</h2>
+            <p class="app-desc">
+              Targeted remediation modules and practice drills designed specifically for Pearson Edexcel Functional Skills Level 1 & Level 2 learners in English and Mathematics.
+            </p>
+            <ul class="app-features">
+              <li><span>✓</span> Dyslexia-friendly high-legibility formatting</li>
+              <li><span>✓</span> Non-Calculator mental arithmetic visual drills</li>
+              <li><span>✓</span> Writing homework feedback benchmark comparison</li>
+              <li><span>✓</span> Formats checklist (Formal Letters, Reports, Articles)</li>
+            </ul>
+          </div>
+          <div class="app-actions">
+            <a href="../index.html#connect" class="btn btn-glass" style="width: 100%; text-align: center;">Tutor Portal ↗</a>
+          </div>
+        </article>
+
+        <!-- App 3: Sovereign Vibe Terminal -->
+        <article class="app-card">
+          <div>
+            <div class="app-icon-wrap">⚡</div>
+            <span class="app-badge" style="background: rgba(168, 85, 247, 0.12); border-color: rgba(168, 85, 247, 0.3); color: #c084fc;">Interactive Shell</span>
+            <h2 class="app-title">IAMGREATER Vibe Terminal</h2>
+            <p class="app-desc">
+              Lightweight browser terminal emulator showcasing sovereign system architecture, dotfiles orchestration, and interactive command execution.
+            </p>
+            <ul class="app-features">
+              <li><span>✓</span> Fast sub-millisecond command dispatcher</li>
+              <li><span>✓</span> Project inspector and origin milestones</li>
+              <li><span>✓</span> Quick terminal commands: <code>apps</code>, <code>netfolding</code>, <code>stack</code></li>
+            </ul>
+          </div>
+          <div class="app-actions">
+            <a href="../index.html#terminal" class="btn btn-glass" style="width: 100%; text-align: center;">Open Terminal ↗</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="brand">
+          <span class="brand-glyph">⚡</span>
+          <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+        </div>
+        <p class="footer-sub">Interactive Web Apps & Sovereign Learning Labs • Crafted by Mr. Abdul Saboor.</p>
+      </div>
+      <div class="footer-right">
+        <p><a href="../privacy.html" style="color:var(--accent-cyan); text-decoration:none;">Privacy Policy</a> • <a href="mailto:support@iamgreater.net" style="color:var(--accent-cyan); text-decoration:none;">support@iamgreater.net</a></p>
+      </div>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast-notice">Link copied to clipboard!</div>
+
+  <script>
+    function copyLink(url) {
+      navigator.clipboard.writeText(url).then(() => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+      }).catch(() => {
+        prompt('Copy link:', url);
+      });
+    }
+  </script>
+
+</body>
+</html>

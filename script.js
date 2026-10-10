@@ -86,11 +86,12 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'projects':
         outputHtml = `
           <div><strong style="color:var(--accent-cyan)">1. QuickDraw Launcher:</strong> Lightning gesture app launcher for Android (Kotlin Compose).</div>
-          <div><strong style="color:var(--accent-cyan)">2. Omarchy Tools:</strong> Sovereign Arch Linux & Hyprland desktop orchestration.</div>
-          <div><strong style="color:var(--accent-cyan)">3. Local Agent Swarm:</strong> Qwen 14B on GPU + cloud architect pair.</div>
-          <div><strong style="color:var(--accent-cyan)">4. Neural Sound Lab:</strong> ComfyUI generative music synthesis & Lo-Fi.</div>
-          <div><strong style="color:var(--accent-cyan)">5. Sterling English:</strong> Academic & clinical communication portal.</div>
-          <div><strong style="color:var(--accent-cyan)">6. ZimaOS Cloud:</strong> Sovereign edge container homelab.</div>
+          <div><strong style="color:var(--accent-emerald)">2. NetFold 3D (Web App PWA):</strong> 3D Maths net folding visualizer for Functional Skills (<a href="netfolding/" style="color:#34d399; text-decoration:underline;">iamgreater.net/netfolding/</a>).</div>
+          <div><strong style="color:var(--accent-cyan)">3. Omarchy Tools:</strong> Sovereign Arch Linux & Hyprland desktop orchestration.</div>
+          <div><strong style="color:var(--accent-cyan)">4. Local Agent Swarm:</strong> Qwen 14B on GPU + cloud architect pair.</div>
+          <div><strong style="color:var(--accent-cyan)">5. Neural Sound Lab:</strong> ComfyUI generative music synthesis & Lo-Fi.</div>
+          <div><strong style="color:var(--accent-cyan)">6. Sterling English:</strong> Academic & clinical communication portal.</div>
+          <div><strong style="color:var(--accent-cyan)">7. ZimaOS Cloud:</strong> Sovereign edge container homelab.</div>
         `;
         break;
 
@@ -106,13 +107,15 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         break;
 
+      case 'apps':
+      case 'webapps':
       case 'tools':
       case 'webtools':
         outputHtml = `
-          <div style="color:var(--accent-emerald); font-weight:600;">[IAMGREATER WEB TOOLS & LABS]</div>
-          <div>1. 3D Maths Net Folding Engine: <a href="netfolding/" style="color:#34d399; text-decoration:underline;">iamgreater.net/netfolding/</a></div>
-          <div>2. All Web Tools Hub: <a href="tools/" style="color:#38bdf8; text-decoration:underline;">iamgreater.net/tools/</a></div>
-          <div>Client-side, zero install, works on all phones, tablets, and computers.</div>
+          <div style="color:var(--accent-emerald); font-weight:600;">[IAMGREATER INTERACTIVE WEB APPS & LABS]</div>
+          <div>1. NetFold 3D (Installable PWA): <a href="netfolding/" style="color:#34d399; text-decoration:underline;">iamgreater.net/netfolding/</a></div>
+          <div>2. Web Apps Hub: <a href="apps/" style="color:#38bdf8; text-decoration:underline;">iamgreater.net/apps/</a></div>
+          <div>Progressive Web Apps: Zero install, offline capable, runs on all phones, tablets, and computers.</div>
         `;
         break;
 
@@ -120,10 +123,11 @@ document.addEventListener('DOMContentLoaded', () => {
       case 'maths':
       case 'nets':
         outputHtml = `
-          <div style="color:var(--accent-emerald); font-weight:600;">[3D MATHS NET FOLDING ENGINE]</div>
+          <div style="color:var(--accent-emerald); font-weight:600;">[NETFOLD 3D — 3D NETS & FOLDING LAB]</div>
           <div>Interactive 3D geometry engine for Functional Skills & GCSE Mathematics.</div>
           <div>11 Cube Nets, Pyramids, Prisms, Cylinders, Cones & Tetrahedrons.</div>
-          <div style="margin-top:6px;"><a href="netfolding/" style="color:#34d399; text-decoration:underline;">Launch 3D Folding Tool ➔</a></div>
+          <div>Installable Progressive Web App (PWA) with zero internet needed once loaded.</div>
+          <div style="margin-top:6px;"><a href="netfolding/" style="color:#34d399; text-decoration:underline;">Launch NetFold 3D Web App ➔</a></div>
         `;
         break;
 

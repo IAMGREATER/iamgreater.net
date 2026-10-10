@@ -1,0 +1,26 @@
+{
+  "name": "NetFold 3D — 3D Nets & Folding Lab",
+  "short_name": "NetFold 3D",
+  "description": "Interactive 3D geometry engine and net folding visualizer for Functional Skills and GCSE Mathematics.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0e17",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["education", "math", "utilities"]
+}

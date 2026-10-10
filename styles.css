@@ -233,9 +233,9 @@ body.dark-theme {
   font-family: var(--font-sans);
   font-size: 0.82rem;
   font-weight: 600;
-  color: #e2e8f0;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #c084fc;
+  background: rgba(168, 85, 247, 0.12);
+  border: 1px solid rgba(168, 85, 247, 0.35);
   padding: 6px 14px;
   border-radius: 9999px;
   text-decoration: none;
@@ -246,10 +246,15 @@ body.dark-theme {
 }
 
 .btn-nav-connect:hover {
-  background: rgba(56, 189, 248, 0.12);
-  border-color: rgba(56, 189, 248, 0.35);
-  color: #38bdf8;
+  background: rgba(168, 85, 247, 0.22);
+  border-color: rgba(168, 85, 247, 0.6);
+  color: #e9d5ff;
+  box-shadow: 0 0 16px rgba(168, 85, 247, 0.35);
   transform: translateY(-1px);
+}
+
+.nav-contact-mobile {
+  display: none;
 }
 
 .nav-toggle {
@@ -932,6 +937,32 @@ body.dark-theme {
    RESPONSIVE DESIGN
    ========================================================================== */
 @media (max-width: 768px) {
+  /* Center IAMGREATER at the top on mobile */
+  .nav-content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .brand {
+    margin: 0 auto;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .nav-right {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .btn-nav-connect {
+    display: none;
+  }
+
   .nav-links {
     display: none;
     border-radius: var(--radius-md);
@@ -953,6 +984,7 @@ body.dark-theme {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
     gap: 6px;
     margin-top: 8px;
+    z-index: 1001;
   }
 
   .nav-links.open a {
@@ -967,8 +999,28 @@ body.dark-theme {
     display: inline-flex !important;
   }
 
-  .btn-nav-connect {
-    display: none;
+  /* Purple Contacts link inside mobile dropdown menu */
+  .nav-links.open .nav-contact-mobile {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: rgba(168, 85, 247, 0.18);
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    color: #c084fc !important;
+    font-weight: 600;
+    margin-top: 10px;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 4px 18px rgba(168, 85, 247, 0.25);
+    text-align: center;
+    transition: all 0.2s ease;
+  }
+
+  .nav-links.open .nav-contact-mobile:hover,
+  .nav-links.open .nav-contact-mobile:active {
+    background: rgba(168, 85, 247, 0.3);
+    border-color: rgba(168, 85, 247, 0.8);
+    color: #f3e8ff !important;
   }
 
   .nav-toggle {

@@ -530,17 +530,21 @@
         <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
       </a>
 
-      <nav class="nav-links">
+      <nav class="nav-links" id="navLinks">
         <a href="index.html">Home</a>
         <a href="#simulator">Live Simulator</a>
         <a href="#how-it-works">How It Works</a>
         <a href="#gallery">Visual Renders</a>
         <a href="#specs">Specs & Privacy</a>
         <a href="privacy.html">Privacy</a>
+        <a href="index.html#connect" class="nav-extra-link nav-contact-mobile">Contact ➔</a>
       </nav>
 
       <div class="nav-right">
         <a href="index.html#connect" class="btn-nav-connect">Contact ➔</a>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+          <span></span><span></span><span></span>
+        </button>
       </div>
     </div>
   </header>
@@ -986,6 +990,17 @@
         }, 150);
       });
     });
+
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (navToggle && navLinks) {
+      navToggle.addEventListener('click', () => {
+        navLinks.classList.toggle('open');
+      });
+      navLinks.querySelectorAll('a').forEach(a => {
+        a.addEventListener('click', () => navLinks.classList.remove('open'));
+      });
+    }
   </script>
 
 </body>

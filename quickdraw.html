@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QuickDraw Launcher | Lightning Edge Gesture Launcher for Android</title>
-  <meta name="description" content="Official showcase, live gesture simulator, and how-to guide for QuickDraw Launcher by IAMGREATER. 100% offline, zero-tracking edge gesture launcher for Android.">
+  <title>QuickDraw Launcher | Floating Edge Grid Launcher for Android</title>
+  <meta name="description" content="Official showcase, live gesture simulator, and how-to guide for QuickDraw Launcher by IAMGREATER. 100% offline, zero-tracking rectangular edge grid launcher for Android.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -157,12 +157,12 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 40px 20px 25px;
+      padding: 40px 16px 20px;
       box-sizing: border-box;
     }
     .sim-clock {
       text-align: center;
-      margin-top: 30px;
+      margin-top: 25px;
     }
     .sim-time {
       font-size: 2.8rem;
@@ -180,9 +180,9 @@
     .sim-edge-zone {
       position: absolute;
       right: 0;
-      top: 35%;
+      top: 32%;
       width: 24px;
-      height: 160px;
+      height: 180px;
       background: linear-gradient(to left, rgba(56, 189, 248, 0.4), transparent);
       border-left: 2px solid #38bdf8;
       border-radius: 12px 0 0 12px;
@@ -207,50 +207,126 @@
       letter-spacing: 1px;
       pointer-events: none;
     }
-    .sim-fan-menu {
+
+    /* Floating Rectangular Grid Card Overlay */
+    .sim-grid-card {
       position: absolute;
-      right: -20px;
-      top: 35%;
-      transform: translateY(-50%) scale(0.6);
+      top: 48%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.92);
+      width: 274px;
+      background: rgba(15, 20, 32, 0.96);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      border-radius: 22px;
+      padding: 12px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85), 0 0 30px rgba(56, 189, 248, 0.2);
       opacity: 0;
       pointer-events: none;
-      transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 25;
     }
-    .sim-fan-menu.active {
+    .sim-grid-card.active {
       opacity: 1;
-      transform: translateY(-50%) scale(1);
+      transform: translate(-50%, -50%) scale(1);
       pointer-events: auto;
     }
-    .sim-arc-bg {
-      width: 260px;
-      height: 260px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.92) 80%);
-      border: 2px solid rgba(56, 189, 248, 0.4);
-      box-shadow: 0 0 35px rgba(56, 189, 248, 0.25);
-      position: relative;
-    }
-    .sim-icon-node {
-      position: absolute;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      background: #1e293b;
-      border: 2px solid rgba(255, 255, 255, 0.2);
+    .sim-card-header {
       display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sim-card-tabs {
+      display: flex;
+      gap: 5px;
+    }
+    .sim-tab {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+    }
+    .sim-tab.active {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      font-weight: 600;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    .sim-settings-btn {
+      font-size: 0.88rem;
+      cursor: pointer;
+      opacity: 0.75;
+      padding: 2px 4px;
+    }
+
+    /* Grid of Square App Tiles */
+    .sim-app-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .sim-grid-cell {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
       cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transition: all 0.15s ease;
+      user-select: none;
     }
-    .sim-icon-node:hover, .sim-icon-node.highlighted {
-      transform: scale(1.3);
+    .sim-grid-cell .cell-icon {
+      font-size: 1.45rem;
+      margin-bottom: 2px;
+      transition: transform 0.15s ease;
+    }
+    .sim-grid-cell .cell-label {
+      font-family: var(--font-mono);
+      font-size: 0.62rem;
+      color: #94a3b8;
+    }
+    .sim-grid-cell:hover, .sim-grid-cell.highlighted {
+      background: rgba(56, 189, 248, 0.22);
       border-color: #38bdf8;
-      background: #38bdf8;
-      box-shadow: 0 0 20px #38bdf8;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.4);
+      transform: scale(1.06);
     }
+    .sim-grid-cell:hover .cell-icon, .sim-grid-cell.highlighted .cell-icon {
+      transform: scale(1.15);
+    }
+    .sim-grid-cell:hover .cell-label, .sim-grid-cell.highlighted .cell-label {
+      color: #fff;
+    }
+
+    /* Bottom System Actions Row */
+    .sim-card-footer {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sim-action-chip {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: #64748b;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+    .sim-action-chip:hover, .sim-action-chip.highlighted {
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.18);
+    }
+
     .sim-toast {
       position: absolute;
       top: 75px;
@@ -465,7 +541,7 @@
         </h1>
 
         <p class="qd-sub">
-          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. No need to exit to your home screen or swipe through app drawers—just glide your thumb inward from any border, hover, and release.
+          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. No need to exit to your home screen or swipe through app drawers—just glide your thumb inward from any border to summon a clean, floating rectangular grid of square app tiles, hover, and release.
         </p>
 
         <div class="hero-actions">
@@ -498,7 +574,7 @@
     <div class="container">
       <div class="section-title-wrap">
         <span class="section-badge">INTERACTIVE DEMO</span>
-        <h2 class="section-heading">Test The Gesture Simulator</h2>
+        <h2 class="section-heading">Test The Edge Grid Simulator</h2>
         <p class="section-desc">Experience QuickDraw right in your browser. Glide inward from the glowing right edge or click the auto-demo trigger.</p>
       </div>
 
@@ -524,14 +600,62 @@
               <span class="sim-edge-label">GLIDE</span>
             </div>
 
-            <!-- Radial Fan-Out Menu -->
-            <div class="sim-fan-menu" id="simFanMenu">
-              <div class="sim-arc-bg">
-                <div class="sim-icon-node" style="top: 15px; left: 80px;" data-app="Camera" title="Camera">📷</div>
-                <div class="sim-icon-node" style="top: 60px; left: 30px;" data-app="Messages" title="Messages">💬</div>
-                <div class="sim-icon-node" style="top: 130px; left: 20px;" data-app="Browser" title="Browser">🌐</div>
-                <div class="sim-icon-node" style="top: 195px; left: 55px;" data-app="Settings" title="Settings">⚙️</div>
-                <div class="sim-icon-node" style="top: 220px; left: 130px;" data-app="Calculator" title="Calculator">🔢</div>
+            <!-- Floating Rectangular Grid Overlay Card -->
+            <div class="sim-grid-card" id="simGridCard">
+              <div class="sim-card-header">
+                <div class="sim-card-tabs">
+                  <span class="sim-tab active">QuickDraw</span>
+                  <span class="sim-tab">Tools</span>
+                  <span class="sim-tab">Media</span>
+                </div>
+                <div class="sim-settings-btn" title="Settings">⚙️</div>
+              </div>
+
+              <!-- 3x3 Grid of Square App Tiles -->
+              <div class="sim-app-grid">
+                <div class="sim-grid-cell" data-app="Camera">
+                  <span class="cell-icon">📷</span>
+                  <span class="cell-label">Camera</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Messages">
+                  <span class="cell-icon">💬</span>
+                  <span class="cell-label">Messages</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Chrome">
+                  <span class="cell-icon">🌐</span>
+                  <span class="cell-label">Chrome</span>
+                </div>
+                <div class="sim-grid-cell" data-app="WhatsApp">
+                  <span class="cell-icon">📞</span>
+                  <span class="cell-label">WhatsApp</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Calculator">
+                  <span class="cell-icon">🔢</span>
+                  <span class="cell-label">Calc</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Maps">
+                  <span class="cell-icon">🗺️</span>
+                  <span class="cell-label">Maps</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Gallery">
+                  <span class="cell-icon">🖼️</span>
+                  <span class="cell-label">Gallery</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Notes">
+                  <span class="cell-icon">📝</span>
+                  <span class="cell-label">Notes</span>
+                </div>
+                <div class="sim-grid-cell" data-app="Settings">
+                  <span class="cell-icon">⚙️</span>
+                  <span class="cell-label">Settings</span>
+                </div>
+              </div>
+
+              <!-- Action Bar -->
+              <div class="sim-card-footer">
+                <span class="sim-action-chip" data-action="Torch">🔦 Torch</span>
+                <span class="sim-action-chip" data-action="Recents">📑 Recents</span>
+                <span class="sim-action-chip" data-action="Close">✕ Close</span>
               </div>
             </div>
 
@@ -547,10 +671,10 @@
               <strong>1. Mouse or Touch:</strong> Click & drag the glowing cyan strip on the right border inward towards the center.
             </p>
             <p style="margin-bottom: 12px;">
-              <strong>2. Radial Expansion:</strong> As your pointer sweeps inward, the radial quick-access wheel blossoms into view.
+              <strong>2. Rectangular Grid Activation:</strong> As your thumb sweeps inward, the floating rectangular card of square app tiles slides into view.
             </p>
             <p>
-              <strong>3. Hover & Release:</strong> Glide over your target icon and let go. The app launches instantly in sub-16ms.
+              <strong>3. Hover & Release:</strong> Glide over your target square tile and let go. The app launches instantly in sub-16ms.
             </p>
           </div>
 
@@ -600,7 +724,7 @@
           <div class="step-num">03</div>
           <h3 class="step-title">Pin Your Favorite Apps</h3>
           <p class="step-desc">
-            Choose your daily arsenal—WhatsApp, Camera, Calculator, Browser, or System Settings. Arrange them around your thumb sweep for effortless muscle-memory access.
+            Choose your daily arsenal—WhatsApp, Camera, Calculator, Browser, or System Settings. Arrange them in customizable rows and columns for effortless muscle-memory access.
           </p>
         </article>
 
@@ -609,7 +733,7 @@
           <div class="step-num">04</div>
           <h3 class="step-title">Glide Inward & Release</h3>
           <p class="step-desc">
-            From inside ANY app, game, or video, swipe your thumb inward. The QuickDraw fan pops up in 60fps; hover over your icon and release. Seamless context switching in sub-16 milliseconds.
+            From inside ANY app, game, or video, swipe your thumb inward. The floating rectangular grid pops up in 60fps; hover over your target square app tile and release. Seamless context switching in sub-16 milliseconds.
           </p>
         </article>
       </div>
@@ -626,14 +750,14 @@
       </div>
 
       <div class="gallery-tabs">
-        <button class="gallery-tab-btn active" data-img="assets/renders/mockup_overlay.png" data-cap="Radial fan-out launcher triggered smoothly from the right screen border.">⚡ Radial Edge Launcher</button>
+        <button class="gallery-tab-btn active" data-img="assets/renders/mockup_overlay.png" data-cap="Floating rectangular grid overlay with square app tiles, triggered smoothly from the right screen border.">⚡ Floating Grid Launcher</button>
         <button class="gallery-tab-btn" data-img="assets/renders/mockup_main.png" data-cap="Main gesture hub & shortcut management dashboard.">📱 App Arsenal Hub</button>
         <button class="gallery-tab-btn" data-img="assets/renders/mockup_settings.png" data-cap="Custom hotzone positioning, trigger height, width, and feedback controls.">⚙️ Trigger Customizer</button>
       </div>
 
       <div class="gallery-display">
         <img id="galleryMainImg" src="assets/renders/mockup_overlay.png" alt="QuickDraw Render" class="gallery-render-img">
-        <div id="galleryCaption" class="gallery-caption">Radial fan-out launcher triggered smoothly from the right screen border.</div>
+        <div id="galleryCaption" class="gallery-caption">Floating rectangular grid overlay with square app tiles, triggered smoothly from the right screen border.</div>
       </div>
     </div>
   </section>
@@ -712,22 +836,22 @@
 
     // Simulator Interactive Logic
     const edgeZone = document.getElementById('simEdgeZone');
-    const fanMenu = document.getElementById('simFanMenu');
+    const gridCard = document.getElementById('simGridCard');
     const simDevice = document.getElementById('simDevice');
     const toast = document.getElementById('simToast');
-    const iconNodes = document.querySelectorAll('.sim-icon-node');
+    const gridCells = document.querySelectorAll('.sim-grid-cell');
     const btnAuto = document.getElementById('btnAutoDemo');
     const btnReset = document.getElementById('btnResetDemo');
 
     let isInteracting = false;
 
     function openMenu() {
-      fanMenu.classList.add('active');
+      gridCard.classList.add('active');
     }
 
     function closeMenu() {
-      fanMenu.classList.remove('active');
-      iconNodes.forEach(n => n.classList.remove('highlighted'));
+      gridCard.classList.remove('active');
+      gridCells.forEach(n => n.classList.remove('highlighted'));
     }
 
     function showToast(msg) {
@@ -745,25 +869,22 @@
     simDevice.addEventListener('mousemove', (e) => {
       if (!isInteracting) return;
       const rect = simDevice.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = e.clientX;
+      const y = e.clientY;
 
-      iconNodes.forEach(node => {
-        const nRect = node.getBoundingClientRect();
-        const nx = nRect.left + nRect.width / 2 - rect.left;
-        const ny = nRect.top + nRect.height / 2 - rect.top;
-        const dist = Math.hypot(x - nx, y - ny);
-        if (dist < 35) {
-          node.classList.add('highlighted');
+      gridCells.forEach(cell => {
+        const cRect = cell.getBoundingClientRect();
+        if (x >= cRect.left && x <= cRect.right && y >= cRect.top && y <= cRect.bottom) {
+          cell.classList.add('highlighted');
         } else {
-          node.classList.remove('highlighted');
+          cell.classList.remove('highlighted');
         }
       });
     });
 
     document.addEventListener('mouseup', () => {
       if (isInteracting) {
-        const highlighted = document.querySelector('.sim-icon-node.highlighted');
+        const highlighted = document.querySelector('.sim-grid-cell.highlighted');
         if (highlighted) {
           showToast(`🚀 Launched ${highlighted.dataset.app}!`);
         }
@@ -782,19 +903,15 @@
     simDevice.addEventListener('touchmove', (e) => {
       if (!isInteracting) return;
       const touch = e.touches[0];
-      const rect = simDevice.getBoundingClientRect();
-      const x = touch.clientX - rect.left;
-      const y = touch.clientY - rect.top;
+      const x = touch.clientX;
+      const y = touch.clientY;
 
-      iconNodes.forEach(node => {
-        const nRect = node.getBoundingClientRect();
-        const nx = nRect.left + nRect.width / 2 - rect.left;
-        const ny = nRect.top + nRect.height / 2 - rect.top;
-        const dist = Math.hypot(x - nx, y - ny);
-        if (dist < 40) {
-          node.classList.add('highlighted');
+      gridCells.forEach(cell => {
+        const cRect = cell.getBoundingClientRect();
+        if (x >= cRect.left && x <= cRect.right && y >= cRect.top && y <= cRect.bottom) {
+          cell.classList.add('highlighted');
         } else {
-          node.classList.remove('highlighted');
+          cell.classList.remove('highlighted');
         }
       });
       e.preventDefault();
@@ -802,7 +919,7 @@
 
     simDevice.addEventListener('touchend', () => {
       if (isInteracting) {
-        const highlighted = document.querySelector('.sim-icon-node.highlighted');
+        const highlighted = document.querySelector('.sim-grid-cell.highlighted');
         if (highlighted) {
           showToast(`🚀 Launched ${highlighted.dataset.app}!`);
         }
@@ -815,10 +932,10 @@
     btnAuto.addEventListener('click', () => {
       openMenu();
       setTimeout(() => {
-        const targetNode = iconNodes[0]; // Camera
-        targetNode.classList.add('highlighted');
+        const targetCell = gridCells[0]; // Camera
+        targetCell.classList.add('highlighted');
         setTimeout(() => {
-          showToast(`🚀 Launched ${targetNode.dataset.app}!`);
+          showToast(`🚀 Launched ${targetCell.dataset.app}!`);
           closeMenu();
         }, 800);
       }, 600);

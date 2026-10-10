@@ -564,7 +564,7 @@
         </h1>
 
         <p class="qd-sub">
-          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. No need to exit to your home screen or swipe through app drawers—just glide your thumb inward from any border to summon a clean, floating rectangular grid of square app tiles, hover, and release.
+          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. Choose your launch style: use <strong>Pure Swipe Mode</strong> to continuously glide onto any app and release without lifting your finger, or <strong>Swipe to Activate</strong> the floating grid and select with a second tap. Featuring an ergonomic, resizeable 7×7 rectangular grid (scalable up to 9×9) and customizable gesture toggles.
         </p>
 
         <div class="hero-actions">
@@ -697,15 +697,15 @@
       <!-- Simulator Instructions & Context -->
       <div class="sim-controls">
         <div class="spec-box">
-          <h4 style="color:#38bdf8;">🎯 How to Interact:</h4>
+          <h4 style="color:#38bdf8;">🎯 Two Ways to Launch:</h4>
           <p style="margin-bottom: 12px;">
-            <strong>1. Mouse or Touch:</strong> Click & drag the glowing cyan strip on the right border inward towards the center.
+            <strong>Option A — Pure Swipe Mode (Continuous Glide):</strong> Click & drag the glowing cyan strip inward directly onto your target square app tile and let go. The app launches immediately without having to lift or raise your finger before selecting.
           </p>
           <p style="margin-bottom: 12px;">
-            <strong>2. Rectangular Grid Activation:</strong> As your thumb sweeps inward, the floating rectangular card of square app tiles slides into view.
+            <strong>Option B — Swipe to Activate + Second Tap:</strong> Drag inward to summon the floating rectangular grid, release your thumb to browse your arsenal, then launch your chosen app with a comfortable second tap.
           </p>
           <p>
-            <strong>3. Hover & Release:</strong> Glide over your target square tile and let go. The app launches instantly in sub-16ms.
+            <strong>📐 Resizeable 7×7 Grid & Gesture Toggles:</strong> Designed with a clean, compact rectangular shape by default (~86% width). Fully customizable grid dimensions (scalable up to 9×9) with independent switches for Swipe In, Swipe Up, and Swipe Down gestures.
           </p>
         </div>
 
@@ -748,18 +748,19 @@
         <!-- Step 3 -->
         <article class="step-card">
           <div class="step-num">03</div>
-          <h3 class="step-title">Pin Your Favorite Apps</h3>
+          <h3 class="step-title">Resizeable Grid & Arsenal</h3>
           <p class="step-desc">
-            Choose your daily arsenal—WhatsApp, Camera, Calculator, Browser, or System Settings. Arrange them in customizable rows and columns for effortless muscle-memory access.
+            Organize your daily apps in an ergonomic 7×7 rectangular grid (or scale up to 9×9). Fine-tune card width and toggle Swipe In, Swipe Up, or Swipe Down gestures to match your personal workflow.
           </p>
         </article>
 
         <!-- Step 4 -->
         <article class="step-card">
           <div class="step-num">04</div>
-          <h3 class="step-title">Glide Inward & Release</h3>
+          <h3 class="step-title">Pure Swipe or Second Tap</h3>
           <p class="step-desc">
-            From inside ANY app, game, or video, swipe your thumb inward. The floating rectangular grid pops up in 60fps; hover over your target square app tile and release. Seamless context switching in sub-16 milliseconds.
+            <strong>Pure Swipe Mode:</strong> Glide continuously from the screen edge directly onto your app icon and release to launch immediately without lifting your finger.<br><br>
+            <strong>Second Tap Mode:</strong> Swipe to pop open the grid, pause/lift your thumb, then select your app with a clean second tap.
           </p>
         </article>
       </div>
@@ -820,6 +821,16 @@
         </div>
 
         <div class="spec-box">
+          <h4>📐 Resizeable 7×7 Rectangular Grid</h4>
+          <p>Ergonomic default 7×7 compact rectangular layout with a customizable card width slider (65%–98%) and scale support up to 9×9 to suit any device and thumb size.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>🎛️ Gesture Toggles & Pure Swipe</h4>
+          <p>Choose between zero-lift Pure Swipe or Swipe + Second Tap. Toggle Swipe In, Swipe Up, and Swipe Down gestures on or off individually in Settings.</p>
+        </div>
+
+        <div class="spec-box">
           <h4>🎮 Game & Video Friendly</h4>
           <p>Easily reposition or hide the trigger area so it never interferes with games, horizontal video playback, or keyboard typing.</p>
         </div>
@@ -871,31 +882,34 @@
     const btnReset = document.getElementById('btnResetDemo');
 
     let isInteracting = false;
+    let swipeSelected = false;
 
-    function openMenu() {
-      gridCard.classList.add('active');
+    // Direct Tap / Click on app cells (Second Tap mode)
+    gridCells.forEach(cell => {
+      cell.addEventListener('click', (e) => {
+        showToast(`🚀 Launched ${cell.dataset.app}! (Second Tap)`);
+        closeMenu();
+        e.stopPropagation();
+      });
+    });
+
+    const closeChip = document.querySelector('.sim-action-chip[data-action="Close"]');
+    if (closeChip) {
+      closeChip.addEventListener('click', (e) => {
+        closeMenu();
+        e.stopPropagation();
+      });
     }
 
-    function closeMenu() {
-      gridCard.classList.remove('active');
-      gridCells.forEach(n => n.classList.remove('highlighted'));
-    }
-
-    function showToast(msg) {
-      toast.textContent = msg;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2200);
-    }
-
-    // Touch / Mouse on edge
+    // Touch / Mouse on edge (Pure Swipe mode start)
     edgeZone.addEventListener('mousedown', (e) => {
       isInteracting = true;
+      swipeSelected = false;
       openMenu();
     });
 
     simDevice.addEventListener('mousemove', (e) => {
       if (!isInteracting) return;
-      const rect = simDevice.getBoundingClientRect();
       const x = e.clientX;
       const y = e.clientY;
 
@@ -903,6 +917,7 @@
         const cRect = cell.getBoundingClientRect();
         if (x >= cRect.left && x <= cRect.right && y >= cRect.top && y <= cRect.bottom) {
           cell.classList.add('highlighted');
+          swipeSelected = true;
         } else {
           cell.classList.remove('highlighted');
         }
@@ -912,10 +927,11 @@
     document.addEventListener('mouseup', () => {
       if (isInteracting) {
         const highlighted = document.querySelector('.sim-grid-cell.highlighted');
-        if (highlighted) {
-          showToast(`🚀 Launched ${highlighted.dataset.app}!`);
+        if (highlighted && swipeSelected) {
+          showToast(`🚀 Launched ${highlighted.dataset.app}! (Pure Swipe)`);
+          closeMenu();
         }
-        closeMenu();
+        // If released without selecting a cell, keep grid open for Second Tap option
         isInteracting = false;
       }
     });
@@ -923,6 +939,7 @@
     // Mobile touch events
     edgeZone.addEventListener('touchstart', (e) => {
       isInteracting = true;
+      swipeSelected = false;
       openMenu();
       e.preventDefault();
     }, { passive: false });
@@ -937,6 +954,7 @@
         const cRect = cell.getBoundingClientRect();
         if (x >= cRect.left && x <= cRect.right && y >= cRect.top && y <= cRect.bottom) {
           cell.classList.add('highlighted');
+          swipeSelected = true;
         } else {
           cell.classList.remove('highlighted');
         }
@@ -947,10 +965,10 @@
     simDevice.addEventListener('touchend', () => {
       if (isInteracting) {
         const highlighted = document.querySelector('.sim-grid-cell.highlighted');
-        if (highlighted) {
-          showToast(`🚀 Launched ${highlighted.dataset.app}!`);
+        if (highlighted && swipeSelected) {
+          showToast(`🚀 Launched ${highlighted.dataset.app}! (Pure Swipe)`);
+          closeMenu();
         }
-        closeMenu();
         isInteracting = false;
       }
     });
@@ -963,7 +981,7 @@
         const targetCell = gridCells[0]; // Camera
         targetCell.classList.add('highlighted');
         setTimeout(() => {
-          showToast(`🚀 Launched ${targetCell.dataset.app}!`);
+          showToast(`🚀 Launched ${targetCell.dataset.app}! (Pure Swipe Demo)`);
           closeMenu();
         }, 800);
       }, 600);

@@ -253,8 +253,11 @@ body.dark-theme {
   transform: translateY(-1px);
 }
 
+.nav-links a.nav-extra-link,
+.nav-links a.nav-contact-mobile,
+.nav-extra-link,
 .nav-contact-mobile {
-  display: none;
+  display: none !important;
 }
 
 .nav-toggle {

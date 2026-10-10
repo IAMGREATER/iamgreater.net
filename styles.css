@@ -229,34 +229,24 @@ body.dark-theme {
   font-weight: 500;
 }
 
-.btn-nav-connect {
-  font-family: var(--font-sans);
-  font-size: 0.82rem;
-  font-weight: 600;
+.nav-links a.nav-contact {
   color: #c084fc;
   background: rgba(168, 85, 247, 0.12);
   border: 1px solid rgba(168, 85, 247, 0.35);
-  padding: 6px 14px;
-  border-radius: 9999px;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
+  font-weight: 600;
+  margin-left: 2px;
 }
 
-.btn-nav-connect:hover {
-  background: rgba(168, 85, 247, 0.22);
+.nav-links a.nav-contact:hover {
+  color: #f3e8ff;
+  background: rgba(168, 85, 247, 0.25);
   border-color: rgba(168, 85, 247, 0.6);
-  color: #e9d5ff;
   box-shadow: 0 0 16px rgba(168, 85, 247, 0.35);
   transform: translateY(-1px);
 }
 
 .nav-links a.nav-extra-link,
-.nav-links a.nav-contact-mobile,
-.nav-extra-link,
-.nav-contact-mobile {
+.nav-extra-link {
   display: none !important;
 }
 
@@ -1003,7 +993,11 @@ body.dark-theme {
   }
 
   /* Purple Contacts link inside mobile dropdown menu */
-  .nav-links.open .nav-contact-mobile {
+  .nav-links a.nav-contact {
+    display: none;
+  }
+
+  .nav-links.open a.nav-contact {
     display: flex !important;
     align-items: center;
     justify-content: center;
@@ -1019,8 +1013,8 @@ body.dark-theme {
     transition: all 0.2s ease;
   }
 
-  .nav-links.open .nav-contact-mobile:hover,
-  .nav-links.open .nav-contact-mobile:active {
+  .nav-links.open a.nav-contact:hover,
+  .nav-links.open a.nav-contact:active {
     background: rgba(168, 85, 247, 0.3);
     border-color: rgba(168, 85, 247, 0.8);
     color: #f3e8ff !important;

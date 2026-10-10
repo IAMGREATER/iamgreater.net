@@ -3231,8 +3231,13 @@
 
       <div id="draw-workbench">
         <div class="draw-canvas-area">
-          <div style="margin-bottom:12px; font-size:0.85rem; color:var(--text-muted);">
-            7 × 7 Drawing Board (Click a tile to add/remove a square)
+          <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:10px; max-width:380px;">
+            <span style="font-size:0.84rem; color:var(--accent); font-weight:700;">
+              ✏️ 7 × 7 Drawing Board
+            </span>
+            <button id="btn-draw-quick-clear" class="btn" style="padding:4px 10px; font-size:0.75rem; border-radius:10px; background:rgba(239,68,68,0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); cursor:pointer;" title="Clear Drawing Grid">
+              🧹 Clear Grid
+            </button>
           </div>
           <div class="grid-board" id="grid-board">
           </div>
@@ -3266,6 +3271,7 @@
               </span>
               <div style="display:flex; align-items:center; gap:8px;">
                 <button id="btn-challenge-quick-fold" class="btn btn-accent" style="display:none; padding:4px 12px; font-size:0.75rem; font-weight:700; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.4); align-items:center; gap:5px; background:linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color:#0f172a; border:none; cursor:pointer;" title="Fold this net in 3D">▶ Play (Fold in 3D)</button>
+                <button id="btn-challenge-quick-clear" class="btn" style="padding:4px 10px; font-size:0.75rem; border-radius:10px; background:rgba(239,68,68,0.15); color:#fca5a5; border:1px solid rgba(239,68,68,0.3); cursor:pointer;" title="Clear Workbench">🧹 Clear Grid</button>
                 <span style="font-size:0.75rem; color:var(--text-muted);" class="hide-mobile-bench-tip">
                   Drag shapes freely onto the workbench • Edges snap automatically
                 </span>
@@ -4937,9 +4943,18 @@
         }
       });
 
-      if (!highlight || foldProgress < 0.75) {
+      const isCustomChallenge = (currentShape === 'custom-challenge');
+      const isCustomValid = isCustomChallenge ? SHAPE_DATA['custom-challenge']?.valid : true;
+
+      if (!highlight || foldProgress < 0.75 || (isCustomChallenge && isCustomValid)) {
         collisionBanner.style.display = 'none';
         collisionHudTag.style.display = 'none';
+        trackedFaces.forEach(m => {
+          if (m && m.material && m.userData?.baseColor) {
+            m.material.color.set(m.userData.baseColor);
+            if (m.material.emissive) m.material.emissive.setHex(0x000000);
+          }
+        });
         return;
       }
 
@@ -4979,6 +4994,12 @@
       } else {
         collisionBanner.style.display = 'none';
         collisionHudTag.style.display = 'none';
+        trackedFaces.forEach(m => {
+          if (m && m.material && m.userData?.baseColor) {
+            m.material.color.set(m.userData.baseColor);
+            if (m.material.emissive) m.material.emissive.setHex(0x000000);
+          }
+        });
       }
     }
 
@@ -5007,9 +5028,11 @@
       }
 
       if (isAnimating) {
-        const primarySlider = document.getElementById('fold-slider');
-        let p = primarySlider ? parseFloat(primarySlider.value) : 0;
-        p += 0.3;
+        let curSlider = document.getElementById('fold-slider');
+        if (currentViewMode === 'draw') curSlider = document.getElementById('fold-slider-draw') || curSlider;
+        if (currentViewMode === 'challenge') curSlider = document.getElementById('fold-slider-challenge') || curSlider;
+        let p = curSlider ? parseFloat(curSlider.value) : 0;
+        p += 0.65;
         if (p > 100) {
           p = 0;
         }
@@ -5303,14 +5326,32 @@
       testBtn.disabled = false;
     }
 
-    document.getElementById('btn-clear-grid').addEventListener('click', () => {
+    function clearDrawGrid() {
       pauseAnimation();
       drawSquares.clear();
       document.querySelectorAll('.grid-cell').forEach(c => {
         c.classList.remove('selected');
         c.textContent = '';
       });
+      setDrawViewSubmode('2d');
       validateDrawnNet();
+    }
+
+    const clearDrawBtn1 = document.getElementById('btn-clear-grid');
+    const clearDrawBtn2 = document.getElementById('btn-draw-quick-clear');
+    ['click', 'touchend'].forEach(evt => {
+      if (clearDrawBtn1) {
+        clearDrawBtn1.addEventListener(evt, (e) => {
+          if (evt === 'touchend') e.preventDefault();
+          clearDrawGrid();
+        });
+      }
+      if (clearDrawBtn2) {
+        clearDrawBtn2.addEventListener(evt, (e) => {
+          if (evt === 'touchend') e.preventDefault();
+          clearDrawGrid();
+        });
+      }
     });
 
     // View mode state management: preserve active tab and allow 2D/3D toggling within tabs
@@ -6107,12 +6148,7 @@
       return { color: defaultItem.color, label: defaultItem.name };
     }
 
-    let lastSpawnShapeTime = 0;
     function spawnShapeAtTop(shapeType) {
-      const now = Date.now();
-      if (now - lastSpawnShapeTime < 150) return;
-      lastSpawnShapeTime = now;
-
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
       if (placedFreeShapes.length >= challenge.totalFaces + 4) {
         alert(`You have placed enough faces! Click any placed face to remove it.`);
@@ -6282,13 +6318,8 @@
       renderFreeformCanvas();
     }
 
-    let lastPlaceFreeShapeTime = 0;
     // Place a shape at target coords with optional automatic edge-to-edge snapping
     function placeFreeShapeAt(shapeType, targetX, targetY, autoSnap = true) {
-      const now = Date.now();
-      if (now - lastPlaceFreeShapeTime < 80) return;
-      lastPlaceFreeShapeTime = now;
-
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
       if (placedFreeShapes.length >= challenge.totalFaces + 4) {
         alert(`You have placed enough faces! Click any placed face to remove it.`);
@@ -7024,18 +7055,42 @@
       }
     });
 
-    // Clear Grid / Workbench
-    document.getElementById('btn-clear-cgrid').addEventListener('click', () => {
+    // Clear Grid / Workbench for Challenge / Shape Matcher
+    function clearChallengeGrid() {
       pauseAnimation();
       placedFreeShapes = [];
+      window.challengeCustomNetData = null;
       challengeActiveShapeType = null;
       document.querySelectorAll('.draggable-face-card').forEach(card => card.classList.remove('selected-shape'));
       const qBtn = document.getElementById('btn-challenge-quick-fold');
       if (qBtn) qBtn.style.display = 'none';
       const cBtn = document.getElementById('btn-clue-fold-now');
       if (cBtn) cBtn.style.display = 'none';
+      setChallengeViewSubmode('2d');
       initChallengeGrid();
       updateChallengeUI();
+
+      const benchEl = document.getElementById('challenge-workbench');
+      if (benchEl && (window.innerWidth < 820 || isMobileViewport())) {
+        benchEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    const clearCgridBtn1 = document.getElementById('btn-clear-cgrid');
+    const clearCgridBtn2 = document.getElementById('btn-challenge-quick-clear');
+    ['click', 'touchend'].forEach(evt => {
+      if (clearCgridBtn1) {
+        clearCgridBtn1.addEventListener(evt, (e) => {
+          if (evt === 'touchend') e.preventDefault();
+          clearChallengeGrid();
+        });
+      }
+      if (clearCgridBtn2) {
+        clearCgridBtn2.addEventListener(evt, (e) => {
+          if (evt === 'touchend') e.preventDefault();
+          clearChallengeGrid();
+        });
+      }
     });
 
     // Quick Play (Fold in 3D) buttons near grid and inside clue drawer
@@ -7320,7 +7375,13 @@
       if (isNetValid) {
         feedback.style.color = 'var(--success)';
         const titleMsg = recognizedNetName ? ` (${recognizedNetName})` : '';
-        feedback.textContent = `🎬 Simulating your valid net in 3D!${titleMsg} Watch the rectangle roll and the lids fold in smoothly!`;
+        if (challenge.id === 'cylinder') {
+          feedback.textContent = `🎬 Simulating your valid net in 3D!${titleMsg} Watch the rectangle roll and the lids fold in smoothly!`;
+        } else if (challenge.id === 'cone') {
+          feedback.textContent = `🎬 Simulating your valid net in 3D!${titleMsg} Watch the curved sector roll and the circular base seal the cone!`;
+        } else {
+          feedback.textContent = `🎬 Simulating your valid net in 3D!${titleMsg} Watch your net fold smoothly into a 3D ${challenge.name}!`;
+        }
       } else {
         feedback.style.color = '#f59e0b';
         if (challenge.id === 'cylinder' && countsCorrect && !isStructureValid) {
@@ -7328,6 +7389,12 @@
         } else {
           feedback.textContent = `⚠️ Test folding your net in 3D! (Notice face count or shape mismatch in 3D).`;
         }
+      }
+
+      // Automatically collapse clue drawer on mobile so the 3D canvas is visible
+      const clueBox = document.getElementById('challenge-clue-box');
+      if (clueBox && clueBox.classList.contains('show')) {
+        clueBox.classList.remove('show');
       }
 
       setTimeout(() => {
@@ -7353,21 +7420,32 @@
 
         buildActiveNet();
 
+        // Frame camera at an attractive perspective angle
+        if (camera && controls) {
+          camera.position.set(11, 12, 16);
+          controls.target.set(0, 1.5, 0);
+          controls.update();
+        }
+
         // Start flat at 0% and animate folding so user sees their net fold smoothly
         setAllSlidersValue(0);
         updateAllSliderLabels(0);
         applyFold(0);
 
+        // Smoothly scroll the 3D canvas into view on mobile screens
+        const canvasContainer = document.getElementById('canvas-container');
+        if (canvasContainer && (window.innerWidth < 820 || isMobileViewport())) {
+          canvasContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
         if (startPlaying) {
-          setTimeout(() => {
-            isAnimating = true;
-            updateAllPlayButtons(true);
-          }, 400);
+          isAnimating = true;
+          updateAllPlayButtons(true);
         } else {
           isAnimating = false;
           updateAllPlayButtons(false);
         }
-      }, 500);
+      }, 60);
     }
 
     /* ==========================================================

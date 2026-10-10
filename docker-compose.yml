@@ -1,0 +1,7 @@
+services:
+  iamgreater:
+    build: .
+    container_name: iamgreater-web
+    restart: unless-stopped
+    ports:
+      - "8082:80"

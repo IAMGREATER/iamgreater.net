@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IAMGREATER | Vibe Coding, Agentic Systems & Digital Craft</title>
+  <meta name="description" content="Showcase of vibe coding, autonomous AI agents, Linux power tools, and high-velocity digital craft by IAMGREATER.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body class="dark-theme">
+
+  <!-- Background Animated Mesh / Glow -->
+  <div class="mesh-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <!-- Header -->
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="#" class="brand">
+        <span class="brand-glyph">⚡</span>
+        <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+      </a>
+
+      <nav class="nav-links" id="navLinks">
+        <a href="#showcase">Projects</a>
+        <a href="#journey">Journey</a>
+        <a href="#terminal">Terminal</a>
+        <a href="#stack">Stack</a>
+        <a href="#ideas">Ideas & Notes</a>
+        <a href="#connect">Connect</a>
+      </nav>
+
+      <div class="nav-right">
+        <div class="status-pill">
+          <span class="pulse-beacon"></span>
+          <span class="status-text">Vibe Coding Active</span>
+        </div>
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-tag">
+        <span class="cyber-bracket">[</span>
+        <span class="tag-label">AUTONOMOUS AGENTS • VIBE CODING • SOVEREIGN TECH</span>
+        <span class="cyber-bracket">]</span>
+      </div>
+
+      <h1 class="hero-heading">
+        High-Velocity Creation at the Speed of <span class="gradient-text">Pure Vibe</span>.
+      </h1>
+
+      <p class="hero-subtext">
+        Welcome to the IAMGREATER lab. Exploring agentic AI swarms, sovereign local computing on Linux, custom desktop orchestration, and building ideas into reality before the inspiration fades.
+      </p>
+
+      <div class="hero-actions">
+        <a href="#showcase" class="btn btn-cyber">Explore Creations</a>
+        <a href="#terminal" class="btn btn-glass">Open Vibe Terminal</a>
+      </div>
+
+      <!-- Quick Metrics -->
+      <div class="metric-ribbon">
+        <div class="metric-card">
+          <span class="metric-val">100%</span>
+          <span class="metric-key">Vibe Driven</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">Hybrid</span>
+          <span class="metric-key">Local + Cloud AI</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">Arch/Hypr</span>
+          <span class="metric-key">Sovereign OS</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-val">0-to-1</span>
+          <span class="metric-key">Rapid Prototyping</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Vibe Terminal -->
+  <section class="terminal-section" id="terminal">
+    <div class="container">
+      <div class="terminal-wrapper">
+        <div class="terminal-header">
+          <div class="window-buttons">
+            <span class="btn-dot close"></span>
+            <span class="btn-dot min"></span>
+            <span class="btn-dot max"></span>
+          </div>
+          <div class="terminal-title">iamgreater@darknight:~ (vibe-shell v2.4)</div>
+          <div class="terminal-meta">arch-linux // hyprland</div>
+        </div>
+
+        <div class="terminal-body" id="terminalBody">
+          <div class="terminal-line system-msg">Welcome to the IAMGREATER interactive shell.</div>
+          <div class="terminal-line system-msg">Type a command or click one of the quick triggers below:</div>
+          <div class="terminal-quick-actions">
+            <button class="quick-cmd" data-cmd="help">help</button>
+            <button class="quick-cmd" data-cmd="projects">projects</button>
+            <button class="quick-cmd" data-cmd="origin">origin (1996➔2026)</button>
+            <button class="quick-cmd" data-cmd="manifesto">manifesto</button>
+            <button class="quick-cmd" data-cmd="stack">stack</button>
+            <button class="quick-cmd" data-cmd="spark">spark-idea</button>
+            <button class="quick-cmd" data-cmd="clear">clear</button>
+          </div>
+          <div id="terminalHistory"></div>
+          <div class="terminal-input-row">
+            <span class="prompt-symbol">iamgreater❯</span>
+            <input type="text" id="terminalInput" placeholder="type 'help' or any command..." autocomplete="off" spellcheck="false">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects / Showcase Gallery -->
+  <section class="showcase-section" id="showcase">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">PORTFOLIO & EXPERIMENTS</span>
+        <h2 class="section-heading">Featured Vibe-Coded Projects</h2>
+        <p class="section-desc">Real-world applications, agentic workflows, and system utilities built with AI pair programming.</p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="android">Android & Mobile</button>
+        <button class="filter-btn" data-filter="agents">AI Agents</button>
+        <button class="filter-btn" data-filter="os">OS & Linux</button>
+        <button class="filter-btn" data-filter="audio">Audio & Music</button>
+        <button class="filter-btn" data-filter="web">Web & Cloud</button>
+      </div>
+
+      <div class="projects-grid" id="projectsGrid">
+        <!-- Project 0: QuickDraw Launcher -->
+        <article class="project-card" data-category="android">
+          <div class="card-glow" style="background: radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.25), transparent 70%);"></div>
+          <div class="project-tags">
+            <span class="tag" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border-color: rgba(56, 189, 248, 0.3);">Featured App</span>
+            <span class="tag">Android</span>
+            <span class="tag">Kotlin Compose</span>
+            <span class="tag">100% Offline</span>
+          </div>
+          <h3 class="project-name">QuickDraw Launcher</h3>
+          <p class="project-summary">
+            Lightning-fast edge gesture launcher for Android, inspired by the spirit of Linux EasyStroke and the sovereign XDA Developers custom ROM era. Launch favorite apps, tools & system shortcuts from any screen border with a single thumb-glide. Zero permissions, zero tracking, pure speed.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">🚀 Target SDK 35 (Android 15)</span>
+            <span class="meta-item">🛡️ 100% Offline & Private</span>
+            <span class="meta-item">⚡ EasyStroke Heritage</span>
+          </div>
+          <div class="project-links">
+            <a href="privacy.html" class="link-btn">Privacy Policy ↗</a>
+            <span class="link-btn" style="opacity: 0.7; cursor: default;">Google Play Store (Pending)</span>
+          </div>
+        </article>
+
+        
+        <!-- Project 1: Omarchy Tools -->
+        <article class="project-card" data-category="os">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">Linux</span>
+            <span class="tag">Arch/Hyprland</span>
+            <span class="tag">Automation</span>
+          </div>
+          <h3 class="project-name">Omarchy Tools & Dotfiles</h3>
+          <p class="project-summary">
+            Sovereign desktop automation harness for Arch Linux and Hyprland. Zero-touch backup, seamless restore, and dynamic desktop intelligence.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">⚡ 100% Bash & Hyprctl</span>
+            <span class="meta-item">💾 GitHub Synced</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/IAMGREATER/omarchy-tools" target="_blank" rel="noopener" class="link-btn">GitHub Repo ↗</a>
+            <button class="btn-inspect" onclick="alert('Omarchy tools orchestrate DarkNight workstation with custom keybindings, multi-monitor layouts, and fast recovery.')">Inspect Architecture</button>
+          </div>
+        </article>
+
+        <!-- Project 2: Multi-Tier Agent Orchestration -->
+        <article class="project-card" data-category="agents">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">AI Agents</span>
+            <span class="tag">Qwen 14B</span>
+            <span class="tag">Antigravity</span>
+          </div>
+          <h3 class="project-name">DarkNight Local Agent Swarm</h3>
+          <p class="project-summary">
+            Hybrid local-first AI system. High-level architect models collaborate with locally-hosted Qwen 2.5 Coder 14B on GPU for instant bash execution and token conservation.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">🤖 Tier 1 & 2 Local Models</span>
+            <span class="meta-item">🔒 Sovereign Privacy</span>
+          </div>
+          <div class="project-links">
+            <a href="#stack" class="link-btn">View Architecture ↓</a>
+            <button class="btn-inspect" onclick="alert('Local agent executes code and tests on port 8090, while online cloud models perform deep design review.')">How it Works</button>
+          </div>
+        </article>
+
+        <!-- Project 3: AI Music Generation Pipeline -->
+        <article class="project-card" data-category="audio">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">AI Audio</span>
+            <span class="tag">ComfyUI</span>
+            <span class="tag">Creativity</span>
+          </div>
+          <h3 class="project-name">Neural Sound Lab</h3>
+          <p class="project-summary">
+            Experimental generative music and audio pipeline utilizing ComfyUI, neural stem separation, and algorithmic song arrangement.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">🎵 Generative MIDI & Audio</span>
+            <span class="meta-item">🎹 GPU Accelerated</span>
+          </div>
+          <div class="project-links">
+            <a href="#ideas" class="link-btn">Read Field Notes ↓</a>
+          </div>
+        </article>
+
+        <!-- Project 4: Functional Skills Learner Engine -->
+        <article class="project-card" data-category="web">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">Education</span>
+            <span class="tag">Python</span>
+            <span class="tag">Pearson Edexcel</span>
+          </div>
+          <h3 class="project-name">Pedagogy & Remediation Engine</h3>
+          <p class="project-summary">
+            Automated diagnostic grading for Pearson Edexcel Functional Skills English & Maths. Dual-column comparative feedback generator and dyslexia-friendly output.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">📝 3-Section Format</span>
+            <span class="meta-item">📄 Auto DOCX/PDF</span>
+          </div>
+          <div class="project-links">
+            <a href="http://localhost:8081" target="_blank" class="link-btn">Sterling English ↗</a>
+          </div>
+        </article>
+
+        <!-- Project 5: Self-Hosted Cloud & ZimaOS Lab -->
+        <article class="project-card" data-category="os">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">ZimaOS</span>
+            <span class="tag">Docker</span>
+            <span class="tag">Self-Hosting</span>
+          </div>
+          <h3 class="project-name">Sovereign Personal Cloud</h3>
+          <p class="project-summary">
+            Personal homelab ecosystem powered by ZimaOS, CasaOS containers, encrypted Nextcloud sync, and Cloudflare Zero Trust tunneling.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">☁️ Zero Open Ports</span>
+            <span class="meta-item">🛡️ Private Homelab</span>
+          </div>
+          <div class="project-links">
+            <a href="#ideas" class="link-btn">Hosting Guide ↓</a>
+          </div>
+        </article>
+
+        <!-- Project 6: Vibe-Code Rapid Launchpad -->
+        <article class="project-card" data-category="agents">
+          <div class="card-glow"></div>
+          <div class="project-tags">
+            <span class="tag">Vibe Coding</span>
+            <span class="tag">HTML5/JS</span>
+            <span class="tag">Edge CDN</span>
+          </div>
+          <h3 class="project-name">Zero-Latency Static Edge Sites</h3>
+          <p class="project-summary">
+            Production web applications crafted entirely through prompt-to-production vibe workflows. 100/100 Lighthouse performance, ultra-low carbon footprint.
+          </p>
+          <div class="project-meta">
+            <span class="meta-item">⚡ 0.05s Load Time</span>
+            <span class="meta-item">🌿 Ethical & Green</span>
+          </div>
+          <div class="project-links">
+            <a href="#ideas" class="link-btn">Explore Concept ↓</a>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- The Journey / Origin Story -->
+  <section class="journey-section" id="journey">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">THE 30-YEAR CIRCLE</span>
+        <h2 class="section-heading">From Turbo Pascal to Agentic Vibe Coding</h2>
+        <p class="section-desc">From MS-DOS text-mode databases to autonomous AI swarms: the journey behind IAMGREATER.</p>
+      </div>
+
+      <div class="timeline-grid">
+        <!-- Milestone 1 -->
+        <article class="timeline-card">
+          <div class="timeline-header">
+            <span class="timeline-badge">1996 – 1998</span>
+            <span class="timeline-icon">💾</span>
+          </div>
+          <h3 class="timeline-title">The Spark: Turbo Pascal & CD Database</h3>
+          <p class="timeline-desc">
+            Learned to code in Borland Turbo Pascal 7.0 on MS-DOS. Built a custom relational database to catalogue an extensive physical CD collection—manually wrangling pointers, records, binary file I/O, and blue-and-yellow text-mode interfaces.
+          </p>
+          <div class="timeline-code-snippet">
+            PROGRAM CD_Collection;<br>
+            TYPE CDRecord = RECORD<br>
+            &nbsp;&nbsp;Artist, Title: String[40];<br>
+            &nbsp;&nbsp;Year, Tracks: Integer;<br>
+            END;
+          </div>
+        </article>
+
+        <!-- Milestone 2 -->
+        <article class="timeline-card">
+          <div class="timeline-header">
+            <span class="timeline-badge">1998 – 2000</span>
+            <span class="timeline-icon">☕</span>
+          </div>
+          <h3 class="timeline-title">Object Foundations: Java at University</h3>
+          <p class="timeline-desc">
+            Studied computer science fundamentals and early Java (JDK 1.1 / Swing applets) at university. Absorbed core object-oriented principles and system design before dropping out two years later to pursue an unconventional, self-directed path in education, language, and clinical communication.
+          </p>
+          <div class="timeline-code-snippet">
+            public class LearnerPath {<br>
+            &nbsp;&nbsp;// Stepping outside conventional tracks<br>
+            &nbsp;&nbsp;boolean autonomous = true;<br>
+            }
+          </div>
+        </article>
+
+        <!-- Milestone 3 -->
+        <article class="timeline-card">
+          <div class="timeline-header">
+            <span class="timeline-badge">2008 – 2020</span>
+            <span class="timeline-icon">🐧</span>
+          </div>
+          <h3 class="timeline-title">Device Sovereignty: XDA & EasyStroke</h3>
+          <p class="timeline-desc">
+            Deep dive into open source and hardware sovereignty. Flashing nightly custom ROMs on XDA Developers, running Kubuntu on X11, and obsessing over gesture-based productivity with <strong>EasyStroke</strong>. That ethos of frictionless gesture control and de-bloated mobile software directly inspired <strong>QuickDraw Launcher</strong>.
+          </p>
+          <div class="timeline-code-snippet">
+            # EasyStroke on Kubuntu X11<br>
+            stroke_right ➔ launch_app<br>
+            ethos: 100% open-source & user-sovereign
+          </div>
+        </article>
+
+        <!-- Milestone 4 -->
+        <article class="timeline-card">
+          <div class="timeline-header">
+            <span class="timeline-badge">2024 – 2026</span>
+            <span class="timeline-icon">⚡</span>
+          </div>
+          <h3 class="timeline-title">The Renaissance: Agentic Vibe Coding</h3>
+          <p class="timeline-desc">
+            Thirty years later, the friction of syntax has vanished. With agentic AI (Google Antigravity & local Qwen 14B) as pair-programming architects, building ideas into production happens in hours—from <strong>QuickDraw Launcher</strong> in Kotlin Compose to sovereign Linux dotfiles and custom pedagogy engines.
+          </p>
+          <div class="timeline-code-snippet">
+            // Full circle: thought to production<br>
+            QuickDraw.launch { thumbGesture() }
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- The Tech Stack -->
+  <section class="stack-section" id="stack">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">ARSENAL</span>
+        <h2 class="section-heading">The Vibe-Coding Engine</h2>
+        <p class="section-desc">The high-leverage tools, hardware, and runtime environments powering our experiments.</p>
+      </div>
+
+      <div class="stack-grid">
+        <div class="stack-box">
+          <div class="stack-icon">🧠</div>
+          <h3>AI Models & Agents</h3>
+          <p>Antigravity 2.0 CLI, Gemini Flash/Pro, Claude 3.5 Sonnet, Local Qwen 2.5 Coder 14B, Ollama, Llama 3.</p>
+        </div>
+
+        <div class="stack-box">
+          <div class="stack-icon">🐧</div>
+          <h3>OS & Workstation</h3>
+          <p>Arch Linux on 'DarkNight', Hyprland Wayland compositor, Kitty/Foot terminals, Fish/Bash orchestration.</p>
+        </div>
+
+        <div class="stack-box">
+          <div class="stack-icon">🗄️</div>
+          <h3>Homelab & Server</h3>
+          <p>ZimaOS appliance on local network, Docker containers, Caddy reverse proxy, NVMe storage pools.</p>
+        </div>
+
+        <div class="stack-box">
+          <div class="stack-icon">🛡️</div>
+          <h3>Networking & Privacy</h3>
+          <p>Cloudflare Zero Trust Tunnels, Tailscale Mesh VPN, Nextcloud end-to-end encrypted sync, WireGuard.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ideas & Manifestos -->
+  <section class="ideas-section" id="ideas">
+    <div class="container">
+      <div class="section-title-wrap">
+        <span class="section-badge">MANIFESTOS & ESSAYS</span>
+        <h2 class="section-heading">Ideas on the Future of Code</h2>
+        <p class="section-desc">Reflections from the cutting edge of AI-human collaboration.</p>
+      </div>
+
+      <div class="ideas-layout">
+        <article class="idea-card">
+          <div class="idea-date">Essay 01</div>
+          <h3 class="idea-title">What is Vibe Coding Really?</h3>
+          <p class="idea-body">
+            Vibe coding is not about being sloppy or careless; it is about eliminating friction between the human creative impulse and working software. When you operate with AI agents as an architectural partner, syntax becomes secondary to vision, constraints, and iteration velocity.
+          </p>
+        </article>
+
+        <article class="idea-card">
+          <div class="idea-date">Essay 02</div>
+          <h3 class="idea-title">The Sovereign Local AI Thesis</h3>
+          <p class="idea-body">
+            Depending 100% on external APIs is a vulnerability. The ultimate developer setup is a hybrid: local open weights (like Qwen 14B on your local GPU or ZimaOS) handling raw crunch and offline operations, with frontier models acting as high-level consultants.
+          </p>
+        </article>
+
+        <article class="idea-card">
+          <div class="idea-date">Essay 03</div>
+          <h3 class="idea-title">Ethical Web Hosting in the Age of Bloat</h3>
+          <p class="idea-body">
+            Modern websites shouldn't require 40MB of bloated JavaScript or mega-datacenter servers running on coal. By building static, pure-semantic JAMstack sites hosted on renewable-powered providers or your own hardware, the web remains fast, open, and sustainable.
+          </p>
+        </article>
+
+        <article class="idea-card">
+          <div class="idea-date">Essay 04</div>
+          <h3 class="idea-title">The 30-Year Circle: Turbo Pascal to AI</h3>
+          <p class="idea-body">
+            In 1996, hacking Turbo Pascal on a flickering CRT screen felt like absolute wizardry—you were breathing life into raw silicon byte by byte. Thirty years after building that CD database and exploring early Java, vibe coding with autonomous agents rekindles that exact childlike thrill. The gatekeeping is gone; only your imagination and taste remain.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Connect / Contact -->
+  <section class="connect-section" id="connect">
+    <div class="container">
+      <div class="connect-card">
+        <div class="connect-header">
+          <span class="section-badge">LET'S BUILD</span>
+          <h2>Connect with IAMGREATER</h2>
+          <p>Have an idea to vibe-code, want to collaborate on agentic systems, or chat about sovereign tech?</p>
+        </div>
+
+        <div class="connect-channels">
+          <a href="https://github.com/IAMGREATER" target="_blank" rel="noopener" class="channel-btn">
+            <span class="icon">🐙</span>
+            <span>GitHub / IAMGREATER</span>
+          </a>
+          <a href="mailto:support@iamgreater.net" class="channel-btn">
+            <span class="icon">✉️</span>
+            <span>support@iamgreater.net</span>
+          </a>
+          <a href="https://t.me/" target="_blank" rel="noopener" class="channel-btn">
+            <span class="icon">💬</span>
+            <span>Telegram (@darknight_subi_bot)</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content">
+      <div class="footer-left">
+        <div class="brand">
+          <span class="brand-glyph">⚡</span>
+          <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+        </div>
+        <p class="footer-sub">Vibe coding, autonomous systems, and digital sovereignty.</p>
+      </div>
+      <div class="footer-right">
+        <p>© <span id="year"></span> IAMGREATER.net • Built with AGY & Sovereign Linux.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

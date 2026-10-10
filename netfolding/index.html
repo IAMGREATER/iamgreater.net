@@ -2796,9 +2796,11 @@
         width: 28px !important;
         height: 28px !important;
       }
+      .draggable-face-card .face-title,
       .draggable-face-card span {
         font-size: 0.62rem !important;
         line-height: 1.1 !important;
+        margin-top: 2px !important;
       }
 
       /* Large Freeform Drawing Board attached to main scroll */
@@ -2819,10 +2821,30 @@
       }
 
       .canvas-staging-guide {
-        top: 8px !important;
+        top: 78px !important;
+      }
+
+      .canvas-staging-tag {
+        top: 4px !important;
         left: 8px !important;
-        font-size: 0.65rem !important;
-        padding: 2px 6px !important;
+        font-size: 0.62rem !important;
+      }
+
+      .placed-free-shape .shape-face-label {
+        font-size: 8.5px !important;
+      }
+
+      .placed-free-shape .shape-remove-btn {
+        display: flex !important;
+        width: 16px !important;
+        height: 16px !important;
+        font-size: 11px !important;
+        top: 2px !important;
+        right: 2px !important;
+      }
+
+      .hide-mobile-bench-tip {
+        display: none !important;
       }
 
       .canvas-controls-hint {
@@ -3159,9 +3181,12 @@
 
         <!-- Dynamic Clue Banner & Net Variations Database -->
         <div class="clue-banner" id="challenge-clue-box">
-          <div class="clue-variations-header">
+          <div class="clue-variations-header" style="display:flex; justify-content:space-between; align-items:center;">
             <span>💡 Clue & Valid Nets:</span>
-            <span id="clue-count-tag" style="font-size:0.75rem; color:#94a3b8; font-weight:normal;"></span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button id="btn-clue-fold-now" class="btn btn-accent" style="display:none; padding:3px 10px; font-size:0.72rem; font-weight:700; border-radius:10px; background:linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color:#0f172a; border:none; cursor:pointer;" title="Fold selected clue net in 3D">▶ Play in 3D</button>
+              <span id="clue-count-tag" style="font-size:0.75rem; color:#94a3b8; font-weight:normal;"></span>
+            </div>
           </div>
           <div id="challenge-clue-text" style="margin-bottom:6px;"></div>
           <div id="clue-variations-container" class="clue-grid"></div>
@@ -3234,14 +3259,17 @@
 
           <!-- Free-Form Free-Floating Workbench Canvas Under the Shapes -->
           <div class="challenge-board-container">
-            <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+            <div style="display:flex; justify-content:space-between; width:100%; align-items:center; flex-wrap:wrap; gap:6px;">
               <span style="font-size:0.84rem; color:var(--accent); font-weight:700; display:flex; align-items:center; gap:6px;">
                 <span>✨ Free-Floating Net Workbench</span>
                 <span style="font-size:0.72rem; padding:2px 7px; border-radius:10px; background:rgba(56,189,248,0.15); color:var(--accent);">True Edge-to-Edge Snapping</span>
               </span>
-              <span style="font-size:0.75rem; color:var(--text-muted);">
-                Drag shapes freely onto the workbench • Edges snap automatically
-              </span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <button id="btn-challenge-quick-fold" class="btn btn-accent" style="display:none; padding:4px 12px; font-size:0.75rem; font-weight:700; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.4); align-items:center; gap:5px; background:linear-gradient(135deg, #38bdf8 0%, #0284c7 100%); color:#0f172a; border:none; cursor:pointer;" title="Fold this net in 3D">▶ Play (Fold in 3D)</button>
+                <span style="font-size:0.75rem; color:var(--text-muted);" class="hide-mobile-bench-tip">
+                  Drag shapes freely onto the workbench • Edges snap automatically
+                </span>
+              </div>
             </div>
             <div class="challenge-freeform-canvas" id="challenge-freeform-canvas">
               <!-- Free-floating shapes and edge-snap indicators injected dynamically -->
@@ -3431,6 +3459,27 @@
   <div id="print-area" style="display:none;"></div>
 
   <script>
+    /* ==========================================================
+       GLOBAL RESPONSIVE 2D/3D SCALING CONFIGURATION
+       ========================================================== */
+    function isMobileViewport() {
+      return window.innerWidth < 820 || /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+    }
+    function getUnitEdge() {
+      // 52px on mobile screens creates compact faces that line up easily and leave abundant workspace; 96px on desktop
+      return isMobileViewport() ? 52 : 96;
+    }
+    let UNIT_EDGE = getUnitEdge();
+    window.addEventListener('resize', () => {
+      const newEdge = getUnitEdge();
+      if (newEdge !== UNIT_EDGE) {
+        UNIT_EDGE = newEdge;
+        if (typeof renderFreeformCanvas === 'function') {
+          renderFreeformCanvas();
+        }
+      }
+    });
+
     /* ==========================================================
        1. DATA DEFINITIONS FOR NETS & SHAPES
        ========================================================== */
@@ -5887,7 +5936,7 @@
     let isDraggingPlacedShape = null;
 
     // Standard scale for 2D net construction geometry (in pixels)
-    const UNIT_EDGE = 96; // 96px per standard unit edge for large, clear, easily readable faces
+    // UNIT_EDGE is declared dynamically at top of script via getUnitEdge() (52px mobile, 96px desktop)
 
     // Helper: Returns standard local polygon vertices for a given shape type (all oriented clockwise)
     function getStandardLocalVertices(shapeType) {
@@ -6061,7 +6110,7 @@
     let lastSpawnShapeTime = 0;
     function spawnShapeAtTop(shapeType) {
       const now = Date.now();
-      if (now - lastSpawnShapeTime < 300) return;
+      if (now - lastSpawnShapeTime < 150) return;
       lastSpawnShapeTime = now;
 
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
@@ -6071,19 +6120,22 @@
       }
 
       const canvasEl = document.getElementById('challenge-freeform-canvas');
-      const canvasW = canvasEl && canvasEl.clientWidth > 300 ? canvasEl.clientWidth : 850;
-      const startX = 85;
-      const slotSpacing = 130;
-      const topY = 70;
-      const row2Y = 175;
+      const canvasW = canvasEl && canvasEl.clientWidth > 250 ? canvasEl.clientWidth : (window.innerWidth < 820 ? window.innerWidth - 32 : 850);
+      const isMobile = isMobileViewport();
+
+      const startX = isMobile ? Math.round(UNIT_EDGE * 0.65) : 85;
+      const slotSpacing = isMobile ? Math.min(62, Math.max(48, Math.floor((canvasW - startX * 2) / Math.max(challenge.totalFaces, 5)))) : 130;
+      const topY = isMobile ? Math.round(UNIT_EDGE * 0.68) : 70;
+      const row2Y = isMobile ? Math.round(topY + UNIT_EDGE * 1.15) : 175;
+      const occupyRadius = isMobile ? Math.round(UNIT_EDGE * 0.52) : 65;
 
       let candX = startX;
       let candY = topY;
       let found = false;
 
       // Check row 1 for open slot
-      for (let x = startX; x <= canvasW - 85; x += slotSpacing) {
-        const occupied = placedFreeShapes.some(s => Math.hypot(s.center.x - x, s.center.y - topY) < 65);
+      for (let x = startX; x <= canvasW - startX; x += slotSpacing) {
+        const occupied = placedFreeShapes.some(s => Math.hypot(s.center.x - x, s.center.y - topY) < occupyRadius);
         if (!occupied) {
           candX = x;
           candY = topY;
@@ -6094,8 +6146,8 @@
 
       // If row 1 is full, check row 2
       if (!found) {
-        for (let x = startX; x <= canvasW - 85; x += slotSpacing) {
-          const occupied = placedFreeShapes.some(s => Math.hypot(s.center.x - x, s.center.y - row2Y) < 65);
+        for (let x = startX; x <= canvasW - startX; x += slotSpacing) {
+          const occupied = placedFreeShapes.some(s => Math.hypot(s.center.x - x, s.center.y - row2Y) < occupyRadius);
           if (!occupied) {
             candX = x;
             candY = row2Y;
@@ -6150,6 +6202,9 @@
 
         // Click to line up at top of dotted grid ready to move
         card.addEventListener('click', () => {
+          if (Date.now() - (window.lastPaletteTouchTimestamp || 0) < 700) {
+            return; // ignore synthetic ghost click following mobile touch tap
+          }
           spawnShapeAtTop(item.type);
         });
 
@@ -6160,7 +6215,8 @@
     // Collect all open (unsnapped) edges from placed shapes
     function getOpenEdges() {
       const allEdges = [];
-      const workbenchShapes = placedFreeShapes.filter(s => s.center.y >= 125);
+      const stagingLineY = isMobileViewport() ? 78 : 125;
+      const workbenchShapes = placedFreeShapes.filter(s => s.center.y >= stagingLineY);
       const targetShapes = (workbenchShapes.length > 0) ? workbenchShapes : placedFreeShapes;
 
       targetShapes.forEach(shape => {
@@ -6207,7 +6263,8 @@
         const dropX = e.clientX - rect.left;
         const dropY = e.clientY - rect.top;
 
-        const autoSnap = dropY >= 130;
+        const stagingLineY = isMobileViewport() ? 78 : 130;
+        const autoSnap = dropY >= stagingLineY;
         placeFreeShapeAt(shapeType, dropX, dropY, autoSnap);
       };
 
@@ -6229,7 +6286,7 @@
     // Place a shape at target coords with optional automatic edge-to-edge snapping
     function placeFreeShapeAt(shapeType, targetX, targetY, autoSnap = true) {
       const now = Date.now();
-      if (now - lastPlaceFreeShapeTime < 250) return;
+      if (now - lastPlaceFreeShapeTime < 80) return;
       lastPlaceFreeShapeTime = now;
 
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
@@ -6291,8 +6348,8 @@
             getTransformedVertices(rect.type, rect.center, rect.angle),
             rect.id
           );
-          // Long edges have length > UNIT_EDGE + 20 (~144px)
-          const longEdges = rectEdges.filter(e => e.len > UNIT_EDGE + 20);
+          // Long edges have length > UNIT_EDGE * 1.15
+          const longEdges = rectEdges.filter(e => e.len > UNIT_EDGE * 1.15);
           const candidateEdges = longEdges.length > 0 ? longEdges : rectEdges;
 
           candidateEdges.forEach(edge => {
@@ -6376,7 +6433,7 @@
         if (circles.length > 0) {
           const localVerts = getStandardLocalVertices(newShape.type);
           const candLocalEdges = getTransformedEdges(localVerts, 0);
-          const longEdges = candLocalEdges.filter(e => e.len > UNIT_EDGE + 20);
+          const longEdges = candLocalEdges.filter(e => e.len > UNIT_EDGE * 1.15);
 
           let bestRectSnap = null;
           let minRectDist = Infinity;
@@ -6583,7 +6640,9 @@
 
           // Check for nearby snap edges from other shapes on the workbench
           const otherShapes = placedFreeShapes.filter(s => s.id !== shape.id);
-          if (otherShapes.length > 0 && currentTargetY >= 110) {
+          const stagingSnapY = isMobileViewport() ? 65 : 110;
+          const stagingTrayY = isMobileViewport() ? 78 : 125;
+          if (otherShapes.length > 0 && currentTargetY >= stagingSnapY) {
             const originalPlaced = placedFreeShapes;
             placedFreeShapes = otherShapes;
             const snap = findBestEdgeSnap(shape, currentTargetX, currentTargetY, 75);
@@ -6592,7 +6651,7 @@
             if (snap) {
               const distFromOrig = Math.hypot(snap.newCenter.x - origCenterX, snap.newCenter.y - origCenterY);
               // Prevent magnetic re-snap to the starting slot until the user has moved away, or if moved from staging tray
-              if (distFromOrig > 24 || (hasDetached && distMoved > 10) || origCenterY < 125) {
+              if (distFromOrig > 24 || (hasDetached && distMoved > 10) || origCenterY < stagingTrayY) {
                 shape.center.x = snap.newCenter.x;
                 shape.center.y = snap.newCenter.y;
                 shape.angle = snap.newAngle;
@@ -6623,7 +6682,8 @@
 
           // Final magnetic snap check on drop
           const otherShapes = placedFreeShapes.filter(s => s.id !== shape.id);
-          if (otherShapes.length > 0 && shape.center.y >= 110) {
+          const stagingSnapDropY = isMobileViewport() ? 65 : 110;
+          if (otherShapes.length > 0 && shape.center.y >= stagingSnapDropY) {
             const originalPlaced = placedFreeShapes;
             placedFreeShapes = otherShapes;
             const snap = findBestEdgeSnap(shape, shape.center.x, shape.center.y, 80);
@@ -6691,6 +6751,7 @@
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
       const countEl = document.getElementById('challenge-grid-count');
       const feedback = document.getElementById('challenge-feedback');
+      const quickFoldBtn = document.getElementById('btn-challenge-quick-fold');
 
       if (countEl) {
         countEl.textContent = `${placedFreeShapes.length} / ${challenge.totalFaces}`;
@@ -6699,15 +6760,22 @@
       if (placedFreeShapes.length === 0) {
         feedback.style.color = 'var(--text-muted)';
         feedback.textContent = `Drag shapes from the shelf above onto the free-floating workbench to build a ${challenge.name} net.`;
+        if (quickFoldBtn) quickFoldBtn.style.display = 'none';
       } else if (placedFreeShapes.length < challenge.totalFaces) {
         feedback.style.color = 'var(--accent)';
         feedback.textContent = `Placed ${placedFreeShapes.length} of ${challenge.totalFaces} faces. Drag next shape near an edge to snap together!`;
+        if (quickFoldBtn) quickFoldBtn.style.display = 'none';
       } else if (placedFreeShapes.length === challenge.totalFaces) {
         feedback.style.color = '#fbbf24';
         feedback.textContent = `You have placed all ${challenge.totalFaces} faces! Click "Play (Test Fold)" to test your net.`;
+        if (quickFoldBtn) {
+          quickFoldBtn.style.display = 'inline-flex';
+          quickFoldBtn.textContent = '▶ Play (Fold in 3D)';
+        }
       } else {
         feedback.style.color = 'var(--danger)';
         feedback.textContent = `Too many faces placed (${placedFreeShapes.length} / ${challenge.totalFaces}). Click a face to remove it.`;
+        if (quickFoldBtn) quickFoldBtn.style.display = 'none';
       }
     }
 
@@ -6768,11 +6836,12 @@
           rawShapes.push({ type: 'triangle', color: '#8b5cf6', label: 'WEST', rx: -s/2 - triH/3, ry: 0, angle: -Math.PI/2 });
         } else if (netIdx === 1) {
           // T-Chain
-          rawShapes.push({ type: 'square', color: '#38bdf8', label: 'BASE', rx: -40, ry: 0, angle: 0 });
-          rawShapes.push({ type: 'triangle', color: '#10b981', label: 'NORTH', rx: -40, ry: -s/2 - triH/3, angle: 0 });
-          rawShapes.push({ type: 'triangle', color: '#8b5cf6', label: 'WEST', rx: -40 - s/2 - triH/3, ry: 0, angle: -Math.PI/2 });
-          rawShapes.push({ type: 'triangle', color: '#ec4899', label: 'EAST', rx: -40 + s/2 + triH/3, ry: 0, angle: Math.PI/2 });
-          rawShapes.push({ type: 'triangle', color: '#f59e0b', label: 'SOUTH', rx: -40 + s/2 + 2*triH/3, ry: s/2, angle: Math.PI/6 });
+          const xOff = Math.round(s * 0.42);
+          rawShapes.push({ type: 'square', color: '#38bdf8', label: 'BASE', rx: -xOff, ry: 0, angle: 0 });
+          rawShapes.push({ type: 'triangle', color: '#10b981', label: 'NORTH', rx: -xOff, ry: -s/2 - triH/3, angle: 0 });
+          rawShapes.push({ type: 'triangle', color: '#8b5cf6', label: 'WEST', rx: -xOff - s/2 - triH/3, ry: 0, angle: -Math.PI/2 });
+          rawShapes.push({ type: 'triangle', color: '#ec4899', label: 'EAST', rx: -xOff + s/2 + triH/3, ry: 0, angle: Math.PI/2 });
+          rawShapes.push({ type: 'triangle', color: '#f59e0b', label: 'SOUTH', rx: -xOff + s/2 + 2*triH/3, ry: s/2, angle: Math.PI/6 });
         } else {
           // Chain-Flap (opposite flaps)
           rawShapes.push({ type: 'square', color: '#38bdf8', label: 'BASE', rx: 0, ry: 0, angle: 0 });
@@ -6796,7 +6865,7 @@
           rawShapes.push({ type: 'triangle', color: '#ec4899', label: 'WALL 3', rx: 1.5*(s/2), ry: -triH/6, angle: Math.PI });
         }
       } else if (c.id === 'tri-prism') {
-        // 3 rectangles in a row sharing their long (144px) edges, with angle Math.PI / 2
+        // 3 rectangles in a row sharing their long edges, with angle Math.PI / 2
         rawShapes.push({ type: 'rectangle', color: '#f59e0b', label: 'SLANT 1', rx: -s, ry: 0, angle: Math.PI/2 });
         rawShapes.push({ type: 'rectangle', color: '#38bdf8', label: 'BASE RECT', rx: 0, ry: 0, angle: Math.PI/2 });
         rawShapes.push({ type: 'rectangle', color: '#10b981', label: 'SLANT 2', rx: s, ry: 0, angle: Math.PI/2 });
@@ -6815,18 +6884,19 @@
           rawShapes.push({ type: 'triangle', color: '#8b5cf6', label: 'END 2', rx: -s, ry: w/2 + triH/3, angle: Math.PI });
         }
       } else if (c.id === 'cylinder') {
+        const lidOff = Math.round(w * 0.24);
         if (netIdx === 0) {
           rawShapes.push({ type: 'rectangle', color: '#38bdf8', label: 'BODY', rx: 0, ry: 0, angle: 0 });
-          rawShapes.push({ type: 'circle', color: '#f59e0b', label: 'TOP LID', rx: -35, ry: -h/2 - r, angle: 0 });
-          rawShapes.push({ type: 'circle', color: '#10b981', label: 'BASE LID', rx: 35, ry: h/2 + r, angle: 0 });
+          rawShapes.push({ type: 'circle', color: '#f59e0b', label: 'TOP LID', rx: -lidOff, ry: -h/2 - r, angle: 0 });
+          rawShapes.push({ type: 'circle', color: '#10b981', label: 'BASE LID', rx: lidOff, ry: h/2 + r, angle: 0 });
         } else {
           rawShapes.push({ type: 'rectangle', color: '#38bdf8', label: 'BODY', rx: 0, ry: 0, angle: 0 });
           rawShapes.push({ type: 'circle', color: '#f59e0b', label: 'TOP LID', rx: 0, ry: -h/2 - r, angle: 0 });
           rawShapes.push({ type: 'circle', color: '#10b981', label: 'BASE LID', rx: 0, ry: h/2 + r, angle: 0 });
         }
       } else if (c.id === 'cone') {
-        rawShapes.push({ type: 'sector', color: '#f59e0b', label: 'CURVED SECTOR', rx: 0, ry: -50, angle: 0 });
-        rawShapes.push({ type: 'circle', color: '#38bdf8', label: 'BASE', rx: 0, ry: 75, angle: 0 });
+        rawShapes.push({ type: 'sector', color: '#f59e0b', label: 'CURVED SECTOR', rx: 0, ry: -Math.round(s * 0.52), angle: 0 });
+        rawShapes.push({ type: 'circle', color: '#38bdf8', label: 'BASE', rx: 0, ry: Math.round(s * 0.78), angle: 0 });
       }
 
       // Calculate exact local bounding box of all shapes in the net
@@ -6841,15 +6911,15 @@
         });
       });
 
-      // The staging line is at y = 130px. Ensure the topmost shape vertex is >= 148px (comfortably below staging line)
-      const minWorkbenchY = 148;
+      // Staging line offset
+      const minWorkbenchY = isMobileViewport() ? 92 : 148;
       const netH = maxY - minY;
       const netMidX = (minX + maxX) / 2;
 
       // Center horizontally on canvas
       const cx = Math.round(cw / 2) - Math.round(netMidX);
 
-      // Center vertically in available space below staging area (y >= 148), with bottom margin
+      // Center vertically in available space below staging area, with bottom margin
       const availableH = Math.max(netH, ch - minWorkbenchY - 24);
       const cy = Math.max(Math.round(minWorkbenchY - minY), Math.round(minWorkbenchY + (availableH - netH) / 2 - minY));
 
@@ -6865,6 +6935,17 @@
       placedFreeShapes = shapes;
       renderFreeformCanvas();
       updateChallengeUI();
+
+      const quickFoldBtn = document.getElementById('btn-challenge-quick-fold');
+      if (quickFoldBtn) {
+        quickFoldBtn.style.display = 'inline-flex';
+        quickFoldBtn.textContent = '▶ Play (Fold in 3D)';
+      }
+      const clueFoldBtn = document.getElementById('btn-clue-fold-now');
+      if (clueFoldBtn) {
+        clueFoldBtn.style.display = 'inline-flex';
+        clueFoldBtn.textContent = '▶ Play in 3D';
+      }
 
       const feedback = document.getElementById('challenge-feedback');
       if (feedback) {
@@ -6910,6 +6991,15 @@
               clueText.innerHTML = `<strong>${netEntry.name}:</strong> ${netEntry.desc}`;
             }
             applyClueNetToWorkbench(c.id, nIdx);
+            const quickBtn = document.getElementById('btn-challenge-quick-fold');
+            if (quickBtn) {
+              quickBtn.style.display = 'inline-flex';
+              quickBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            const clueBtn = document.getElementById('btn-clue-fold-now');
+            if (clueBtn) {
+              clueBtn.style.display = 'inline-flex';
+            }
           });
           variationsContainer.appendChild(card);
         });
@@ -6917,6 +7007,8 @@
       
       const clueBox = document.getElementById('challenge-clue-box');
       if (clueBox) clueBox.classList.remove('show');
+      const clueFoldNowBtn = document.getElementById('btn-clue-fold-now');
+      if (clueFoldNowBtn) clueFoldNowBtn.style.display = 'none';
 
       placedFreeShapes = [];
       initChallengeGrid();
@@ -6938,9 +7030,27 @@
       placedFreeShapes = [];
       challengeActiveShapeType = null;
       document.querySelectorAll('.draggable-face-card').forEach(card => card.classList.remove('selected-shape'));
+      const qBtn = document.getElementById('btn-challenge-quick-fold');
+      if (qBtn) qBtn.style.display = 'none';
+      const cBtn = document.getElementById('btn-clue-fold-now');
+      if (cBtn) cBtn.style.display = 'none';
       initChallengeGrid();
       updateChallengeUI();
     });
+
+    // Quick Play (Fold in 3D) buttons near grid and inside clue drawer
+    const quickFoldBtnEl = document.getElementById('btn-challenge-quick-fold');
+    if (quickFoldBtnEl) {
+      quickFoldBtnEl.addEventListener('click', () => {
+        triggerChallenge3DFold(true);
+      });
+    }
+    const clueFoldBtnEl = document.getElementById('btn-clue-fold-now');
+    if (clueFoldBtnEl) {
+      clueFoldBtnEl.addEventListener('click', () => {
+        triggerChallenge3DFold(true);
+      });
+    }
 
     // Prev / Next Challenge navigation via arrows beside Target Solid card
     const btnPrevChal = document.getElementById('btn-prev-challenge');
@@ -8717,6 +8827,7 @@
             const touch = endEv.changedTouches[0];
 
             if (!touchMoved) {
+              window.lastPaletteTouchTimestamp = Date.now();
               if (endEv.cancelable) endEv.preventDefault();
               // Short tap — behave like a click: spawn shape at top staging area
               if (typeof spawnShapeAtTop === 'function') {
@@ -8736,7 +8847,7 @@
                 if (fx >= rect.left && fx <= rect.right && fy >= rect.top && fy <= rect.bottom) {
                   const dropX = fx - rect.left;
                   const dropY = fy - rect.top;
-                  const autoSnap = dropY >= 130;
+                  const autoSnap = dropY >= (shouldUseMobileLayout() ? 78 : 130);
                   if (typeof placeFreeShapeAt === 'function') {
                     placeFreeShapeAt(shapeType, dropX, dropY, autoSnap);
                   }
@@ -8796,15 +8907,21 @@
       });
     }
 
-    // Immediately purge legacy stale caches (v1/v2) from prior visits
+    // Immediately purge legacy stale caches from prior visits
     if ('caches' in window) {
       caches.keys().then((keys) => {
-        keys.forEach((key) => {
-          if (key !== 'netfold3d-v4') {
-            caches.delete(key).then(() => {
-              console.log('Cleared legacy cache:', key);
-              window.location.reload();
-            });
+        let deletedAny = false;
+        const promises = keys.map((key) => {
+          if (key !== 'netfold3d-v5') {
+            deletedAny = true;
+            console.log('Clearing old cache:', key);
+            return caches.delete(key);
+          }
+        });
+        Promise.all(promises).then(() => {
+          if (deletedAny && !sessionStorage.getItem('reloaded_for_netfold_v5')) {
+            sessionStorage.setItem('reloaded_for_netfold_v5', '1');
+            window.location.reload();
           }
         });
       });

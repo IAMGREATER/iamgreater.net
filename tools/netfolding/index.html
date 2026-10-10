@@ -6058,8 +6058,12 @@
       return { color: defaultItem.color, label: defaultItem.name };
     }
 
-    // Render palette with ONLY name and large visual shape
+    let lastSpawnShapeTime = 0;
     function spawnShapeAtTop(shapeType) {
+      const now = Date.now();
+      if (now - lastSpawnShapeTime < 300) return;
+      lastSpawnShapeTime = now;
+
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
       if (placedFreeShapes.length >= challenge.totalFaces + 4) {
         alert(`You have placed enough faces! Click any placed face to remove it.`);
@@ -6221,8 +6225,13 @@
       renderFreeformCanvas();
     }
 
+    let lastPlaceFreeShapeTime = 0;
     // Place a shape at target coords with optional automatic edge-to-edge snapping
     function placeFreeShapeAt(shapeType, targetX, targetY, autoSnap = true) {
+      const now = Date.now();
+      if (now - lastPlaceFreeShapeTime < 250) return;
+      lastPlaceFreeShapeTime = now;
+
       const challenge = CHALLENGE_SHAPES[currentChallengeIdx];
       if (placedFreeShapes.length >= challenge.totalFaces + 4) {
         alert(`You have placed enough faces! Click any placed face to remove it.`);
@@ -8708,6 +8717,7 @@
             const touch = endEv.changedTouches[0];
 
             if (!touchMoved) {
+              if (endEv.cancelable) endEv.preventDefault();
               // Short tap — behave like a click: spawn shape at top staging area
               if (typeof spawnShapeAtTop === 'function') {
                 spawnShapeAtTop(shapeType);
@@ -8790,7 +8800,7 @@
     if ('caches' in window) {
       caches.keys().then((keys) => {
         keys.forEach((key) => {
-          if (key === 'netfold3d-v1' || key === 'netfold3d-v2') {
+          if (key !== 'netfold3d-v4') {
             caches.delete(key).then(() => {
               console.log('Cleared legacy cache:', key);
               window.location.reload();

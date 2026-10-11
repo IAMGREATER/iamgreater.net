@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChopTorch | Motorola Double-Chop Flashlight Gesture for Android</title>
+  <meta name="description" content="Official showcase, interactive simulator, and APK download for ChopTorch by IAMGREATER. 100% ad-free Motorola double-chop & sideways shake flashlight for Android.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/choptorch-icon.png">
+  <style>
+    /* Specific ChopTorch Showcase Styles */
+    :root {
+      --amber-primary: #ffb800;
+      --amber-glow: #ffd54f;
+      --amber-dark: #c78700;
+      --bg-dark-card: #141720;
+    }
+
+    .ct-hero {
+      padding: 130px 0 70px;
+      position: relative;
+    }
+    .ct-hero-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .ct-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .ct-badge {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 184, 0, 0.3);
+      background: rgba(255, 184, 0, 0.1);
+      color: var(--amber-primary);
+    }
+    .ct-badge.green {
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.1);
+      color: #34d399;
+    }
+    .ct-badge.purple {
+      border-color: rgba(168, 85, 247, 0.3);
+      background: rgba(168, 85, 247, 0.1);
+      color: #c084fc;
+    }
+    .ct-title {
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    .ct-sub {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+    }
+
+    /* Interactive Simulator */
+    .ct-mockup-wrapper {
+      position: relative;
+      max-width: 330px;
+      margin: 0 auto;
+    }
+    .ct-phone-mockup {
+      position: relative;
+      border-radius: 40px;
+      padding: 14px;
+      background: #0d1017;
+      border: 2px solid rgba(255, 184, 0, 0.25);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 60px rgba(255, 184, 0, 0.15);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.15s ease, box-shadow 0.3s ease;
+    }
+    .ct-phone-mockup:hover {
+      transform: translateY(-4px);
+    }
+    .ct-screen {
+      border-radius: 30px;
+      background: #101014;
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .torch-beam {
+      position: absolute;
+      top: -120px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(255, 213, 79, 0.5) 0%, rgba(255, 184, 0, 0.15) 50%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .torch-active .torch-beam {
+      opacity: 1;
+    }
+    .torch-button-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: #1e1e24;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 30px 0;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .torch-active .torch-button-circle {
+      background: var(--amber-primary);
+      border-color: var(--amber-glow);
+      box-shadow: 0 0 45px rgba(255, 184, 0, 0.8);
+      transform: scale(1.05);
+    }
+    .torch-icon-svg {
+      width: 52px;
+      height: 52px;
+      fill: #888899;
+      transition: fill 0.3s ease;
+    }
+    .torch-active .torch-icon-svg {
+      fill: #000000;
+    }
+    .torch-status-text {
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      margin-top: 6px;
+      color: #777788;
+      transition: color 0.3s ease;
+    }
+    .torch-active .torch-status-text {
+      color: #000000;
+    }
+    .sim-hint {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px dashed rgba(255, 184, 0, 0.3);
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      color: #cbd5e1;
+    }
+
+    .ct-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .btn-gold {
+      background: linear-gradient(135deg, #ffb800, #ff9100);
+      color: #000000 !important;
+      font-weight: 700;
+      padding: 14px 28px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 20px rgba(255, 184, 0, 0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-gold:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 26px rgba(255, 184, 0, 0.45);
+    }
+    .btn-outline-gold {
+      border: 1px solid rgba(255, 184, 0, 0.4);
+      background: rgba(255, 184, 0, 0.08);
+      color: #ffb800 !important;
+      font-weight: 600;
+      padding: 14px 24px;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s;
+    }
+    .btn-outline-gold:hover {
+      background: rgba(255, 184, 0, 0.16);
+    }
+
+    /* Features Grid */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+      gap: 24px;
+      margin: 60px 0;
+    }
+    .f-card {
+      background: var(--bg-dark-card);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 30px;
+      transition: border-color 0.2s;
+    }
+    .f-card:hover {
+      border-color: rgba(255, 184, 0, 0.35);
+    }
+    .f-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .f-title {
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      color: #ffffff;
+      margin-bottom: 10px;
+    }
+    .f-desc {
+      color: #94a3b8;
+      font-size: 0.95rem;
+      line-height: 1.65;
+    }
+
+    /* Comparison Table */
+    .comparison-section {
+      margin: 80px 0;
+      padding: 40px;
+      background: #0e111a;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+    }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 24px;
+    }
+    .comp-table th, .comp-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .comp-table th {
+      color: #cbd5e1;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .comp-table td {
+      color: #94a3b8;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 900px) {
+      .ct-hero-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+      .ct-badge-row, .ct-actions {
+        justify-content: center;
+      }
+      .ct-title {
+        font-size: 2.4rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <span class="brand-bracket">[</span>
+        <span class="brand-name">IAMGREATER</span>
+        <span class="brand-bracket">]</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#showcase">Portfolio</a>
+        <a href="quickdraw.html">QuickDraw</a>
+        <a href="choptorch.html" style="color: var(--amber-primary);">ChopTorch</a>
+        <a href="choptorch-privacy.html">Privacy</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="ct-hero">
+    <div class="container">
+      <div class="ct-hero-grid">
+        <div class="ct-hero-content">
+          <div class="ct-badge-row">
+            <span class="ct-badge">⚡ MOTOROLA CHOP-CHOP</span>
+            <span class="ct-badge green">🛡️ 100% AD-FREE</span>
+            <span class="ct-badge purple">🔒 OFFLINE PRIVACY</span>
+          </div>
+
+          <h1 class="ct-title">
+            The Iconic Double-Chop Flashlight.<br>
+            <span style="color: var(--amber-primary);">Now on Any Android Phone.</span>
+          </h1>
+
+          <p class="ct-sub">
+            Miss the legendary Motorola "Chop Twice for Torch" motion? ChopTorch brings calibrated physical double-chop and sideways shake flashlight toggling to your Android phone. No fumbling with lock screens, no invasive ads, no analytics. Just two quick chops and the light is on.
+          </p>
+
+          <div class="ct-actions">
+            <a href="assets/ChopTorch.apk" class="btn-gold" download>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+              Download Release APK (v1.0.0)
+            </a>
+            <a href="#simulator" class="btn-outline-gold">
+              Interactive Simulator ↓
+            </a>
+          </div>
+
+          <div style="font-family: var(--font-mono); font-size: 0.82rem; color: #64748b;">
+            Direct APK: 13 MB • Android 8.0 through Android 16 • Signed Release Build
+          </div>
+        </div>
+
+        <!-- Interactive Phone Simulator -->
+        <div class="ct-mockup-wrapper" id="simulator">
+          <div class="ct-phone-mockup" id="phoneMockup" onclick="toggleSimTorch()">
+            <div class="ct-screen" id="simScreen">
+              <div class="torch-beam"></div>
+
+              <div>
+                <div style="font-family: var(--font-heading); font-weight: 800; font-size: 1.1rem; color: var(--amber-primary);">ChopTorch</div>
+                <div style="font-size: 0.72rem; color: #888899; margin-top: 2px;">Interactive Web Preview</div>
+              </div>
+
+              <div class="torch-button-circle" id="simButton">
+                <svg class="torch-icon-svg" viewBox="0 0 24 24">
+                  <path d="M6 2h12v3l-2 3v14H8V8L6 5V2zm4 7v10h4V9l2-3V4H8v2l2 3zm1 4h2v3h-2v-3z"/>
+                </svg>
+                <div class="torch-status-text" id="simStatus">OFF</div>
+              </div>
+
+              <div class="sim-hint">
+                💡 <strong>Click phone</strong> to simulate double-chop toggle
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container" style="padding: 40px 0;">
+    <div style="text-align: center; max-width: 650px; margin: 0 auto;">
+      <span class="ct-badge">ENGINEERING & SENSORS</span>
+      <h2 style="font-family: var(--font-heading); font-size: 2.2rem; color: #fff; margin-top: 14px;">Built for Everyday Reliability</h2>
+      <p style="color: #94a3b8; line-height: 1.7; margin-top: 8px;">Calibrated with a physical two-stage state machine that models real human wrist dynamics instead of naive shake listeners.</p>
+    </div>
+
+    <div class="features-grid">
+      <div class="f-card">
+        <div class="f-icon">🥋</div>
+        <h3 class="f-title">True Double-Chop State Machine</h3>
+        <p class="f-desc">A single hard bump, drop, or running stride will <strong>never</strong> trigger the flashlight. Our algorithm requires Chop 1, followed by a human hand reset lull (&le;5.5 m/s²), followed by a distinct Chop 2 within 180–850ms.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon">🛡️</div>
+        <h3 class="f-title">Smart Pocket Mode Guard</h3>
+        <p class="f-desc">Listens to your device's hardware proximity sensor. If the phone is inside your jeans pocket, backpack, or resting face-down on a desk, all gesture triggers are strictly suppressed to prevent battery drain.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon">🔒</div>
+        <h3 class="f-title">Screen-Off & Lock Screen Ready</h3>
+        <p class="f-desc">Runs as an ultra-lightweight foreground sensor service. Double-chop works instantly when walking outdoors in the dark, even while your phone display is locked and sleeping.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon">🚫</div>
+        <h3 class="f-title">100% Ad-Free Forever</h3>
+        <p class="f-desc">Other flashlight apps are notorious for deafening full-screen video ads. ChopTorch has zero advertisements, zero tracking telemetry, and zero network bloat. Pure utility.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon">📳</div>
+        <h3 class="f-title">Tactile Haptic Feedback</h3>
+        <p class="f-desc">Feel a crisp double-buzz click when the torch turns ON, and a solid single click when it turns OFF. You always know your light toggled without having to look at the screen.</p>
+      </div>
+
+      <div class="f-card">
+        <div class="f-icon">💎</div>
+        <h3 class="f-title">ChopTorch Pro & Supporter</h3>
+        <p class="f-desc">Love the app? An optional small one-time purchase unlocks an <strong>Auto-Off Sleep Timer</strong> (1m/2m/5m/10m) to save your battery, plus custom vibration rhythms (Motorola Classic, Crisp, Pulse).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison Table -->
+  <section class="container">
+    <div class="comparison-section">
+      <h2 style="font-family: var(--font-heading); font-size: 1.8rem; color: #fff;">ChopTorch vs. Generic Play Store Flashlight Apps</h2>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>FEATURE</th>
+            <th>GENERIC APPS</th>
+            <th style="color: var(--amber-primary);">CHOPTORCH</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Advertisements</strong></td>
+            <td style="color: #ef4444;">Aggressive full-screen video popups</td>
+            <td style="color: #34d399; font-weight: bold;">0% Ads (Zero forever)</td>
+          </tr>
+          <tr>
+            <td><strong>Double-Chop Accuracy</strong></td>
+            <td>Triggers accidentally on 1 bump</td>
+            <td style="color: #34d399; font-weight: bold;">Physical 2-stage state machine</td>
+          </tr>
+          <tr>
+            <td><strong>Pocket Protection</strong></td>
+            <td>Rarely implemented</td>
+            <td style="color: #34d399; font-weight: bold;">Hardware Proximity Guard</td>
+          </tr>
+          <tr>
+            <td><strong>Privacy & Tracking</strong></td>
+            <td>Ad IDs, location tracking SDKs</td>
+            <td style="color: #34d399; font-weight: bold;">100% Offline, Zero Telemetry</td>
+          </tr>
+          <tr>
+            <td><strong>Status Bar Notification</strong></td>
+            <td>Cluttered persistent banner</td>
+            <td style="color: #34d399; font-weight: bold;">Silent / Fully hideable</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- Download & Links CTA -->
+  <section class="container" style="text-align: center; padding: 70px 0 100px;">
+    <h2 style="font-family: var(--font-heading); font-size: 2.2rem; color: #ffffff;">Ready for Effortless Light?</h2>
+    <p style="color: #94a3b8; margin: 12px 0 32px; font-size: 1.1rem;">Install the signed APK directly or look out for the upcoming Google Play release.</p>
+    
+    <div class="ct-actions" style="justify-content: center;">
+      <a href="assets/ChopTorch.apk" class="btn-gold" download>
+        Download Signed APK (v1.0.0)
+      </a>
+      <a href="choptorch-privacy.html" class="btn-outline-gold">
+        Read Privacy Policy ↗
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-content" style="text-align: center; padding: 40px 0; color: #64748b; font-size: 0.85rem;">
+      <p>© 2026 IAMGREATER. Built with sovereign privacy. Zero tracking.</p>
+    </div>
+  </footer>
+
+  <script>
+    let isTorchLit = false;
+    function toggleSimTorch() {
+      isTorchLit = !isTorchLit;
+      const screen = document.getElementById('simScreen');
+      const status = document.getElementById('simStatus');
+      
+      if (isTorchLit) {
+        screen.classList.add('torch-active');
+        status.textContent = 'LIT 🔦';
+      } else {
+        screen.classList.remove('torch-active');
+        status.textContent = 'OFF';
+      }
+
+      // Haptic on supported browsers
+      if (navigator.vibrate) {
+        navigator.vibrate(isTorchLit ? [40, 60, 40] : 50);
+      }
+    }
+  </script>
+</body>
+</html>

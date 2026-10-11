@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | ChopTorch — IAMGREATER</title>
+  <meta name="description" content="Official Privacy Policy for ChopTorch by IAMGREATER. Zero tracking, zero telemetry, 100% offline.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/choptorch-icon.png">
+  <style>
+    .policy-container {
+      max-width: 860px;
+      margin: 120px auto 80px;
+      padding: 40px;
+      background: rgba(18, 22, 32, 0.75);
+      border: 1px solid rgba(255, 184, 0, 0.2);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      color: #e2e8f0;
+      line-height: 1.75;
+    }
+    .policy-container h1 {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #ffb800;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .policy-meta {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+    .policy-container h2 {
+      font-size: 1.4rem;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .policy-container h3 {
+      font-size: 1.15rem;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: #ffd54f;
+    }
+    .policy-container ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+    .policy-container li {
+      margin-bottom: 8px;
+    }
+    .highlight-box {
+      background: rgba(255, 184, 0, 0.08);
+      border-left: 4px solid #ffb800;
+      padding: 16px 20px;
+      border-radius: 0 8px 8px 0;
+      margin: 24px 0;
+      font-size: 0.95rem;
+    }
+    .back-nav {
+      margin-bottom: 24px;
+    }
+    .back-nav a {
+      color: #ffb800;
+      text-decoration: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .back-nav a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <span class="brand-bracket">[</span>
+        <span class="brand-name">IAMGREATER</span>
+        <span class="brand-bracket">]</span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#showcase">Portfolio</a>
+        <a href="quickdraw.html">QuickDraw</a>
+        <a href="choptorch.html" style="color: #ffb800;">ChopTorch</a>
+        <a href="index.html#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="policy-container">
+    <div class="back-nav">
+      <a href="choptorch.html">← Back to ChopTorch Showcase</a>
+    </div>
+
+    <h1>Privacy Policy for ChopTorch</h1>
+    <div class="policy-meta">
+      Last Updated: October 11, 2026 • Developer: IAMGREATER • Contact: apps@iamgreater.dev
+    </div>
+
+    <div class="highlight-box">
+      <strong>Core Privacy Guarantee:</strong> ChopTorch is engineered with an uncompromising <strong>Offline-First & Privacy-First</strong> standard. It collects zero personal information, transmits zero telemetry, displays zero advertisements, and contains zero tracking libraries.
+    </div>
+
+    <h2>1. Data Collection & Telemetry</h2>
+    <p>
+      ChopTorch does <strong>not collect, record, process, store, or transmit</strong> any personal data, device identifiers, location records, or usage telemetry.
+    </p>
+    <ul>
+      <li><strong>No Analytics SDKs:</strong> There is no Google Firebase Analytics, Mixpanel, Crashlytics, or third-party telemetry inside this app.</li>
+      <li><strong>No Advertising SDKs:</strong> There are no ad networks, banner trackers, or behavioral profiling tools.</li>
+      <li><strong>No Cloud Sync:</strong> All settings (sensitivity thresholds, pocket mode, vibration styles) remain strictly on your local device storage.</li>
+    </ul>
+
+    <h2>2. Permissions Requested & Why</h2>
+    <p>
+      ChopTorch requests only the minimum Android runtime capabilities necessary to provide the physical gesture flashlight toggle:
+    </p>
+
+    <h3>A. Flashlight / Camera Access (<code>android.permission.FLASHLIGHT</code>)</h3>
+    <p>
+      Required by Android's <code>CameraManager</code> API to switch the rear camera LED on and off. <strong>ChopTorch never takes photos, captures video streams, or inspects camera preview frames.</strong>
+    </p>
+
+    <h3>B. Motion & Proximity Sensors (<code>TYPE_ACCELEROMETER</code>, <code>TYPE_PROXIMITY</code>)</h3>
+    <p>
+      The accelerometer monitors physical wrist chops and lateral shakes. The proximity sensor ensures the torch is not accidentally activated while the phone is in your pocket, bag, or facing down on a surface. <strong>Sensor measurements are evaluated in real time within device RAM and immediately discarded.</strong>
+    </p>
+
+    <h3>C. Foreground Service & Wake Lock (<code>FOREGROUND_SERVICE_SPECIAL_USE</code>)</h3>
+    <p>
+      Allows the motion listener to remain active when your phone screen is locked or turned off. You can disable the tray notification in system settings at any time without disrupting the gesture.
+    </p>
+
+    <h3>D. Google Play In-App Billing (<code>com.android.vending.BILLING</code>)</h3>
+    <p>
+      Enables the optional one-time ChopTorch Pro unlock ($1.99) or developer tip ($0.99) for users who wish to support ad-free indie software. All payment transactions are handled exclusively by Google Play. ChopTorch never accesses, processes, or stores payment or financial credentials.
+    </p>
+
+    <h2>3. Children's Privacy</h2>
+    <p>
+      ChopTorch does not collect any data whatsoever and is fully compliant with the Children's Online Privacy Protection Act (COPPA) and GDPR regulations.
+    </p>
+
+    <h2>4. Policy Updates & Inquiries</h2>
+    <p>
+      Should this policy be updated in future releases, modifications will be posted directly to this URL. For any questions or technical inquiries, please reach out to:
+    </p>
+    <p>
+      <strong>IAMGREATER Software</strong><br>
+      Email: <a href="mailto:apps@iamgreater.dev" style="color: #ffb800;">apps@iamgreater.dev</a><br>
+      Website: <a href="https://iamgreater.net" style="color: #ffb800;">https://iamgreater.net</a>
+    </p>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-content" style="text-align: center; padding: 40px 0; color: #64748b; font-size: 0.85rem;">
+      <p>© 2026 IAMGREATER. Built with sovereign privacy. Zero tracking.</p>
+    </div>
+  </footer>
+
+</body>
+</html>

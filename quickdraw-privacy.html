@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy | QuickDraw Launcher — IAMGREATER</title>
+  <meta name="description" content="Official Privacy Policy for QuickDraw Launcher by IAMGREATER. Zero tracking, zero telemetry, 100% offline.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+  <style>
+    .policy-container {
+      max-width: 860px;
+      margin: 120px auto 80px;
+      padding: 40px;
+      background: rgba(18, 22, 32, 0.75);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      backdrop-filter: blur(16px);
+      color: #e2e8f0;
+      line-height: 1.75;
+    }
+    .policy-container h1 {
+      font-size: 2.2rem;
+      margin-bottom: 8px;
+      color: #38bdf8;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .policy-meta {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin-bottom: 32px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 16px;
+    }
+    .policy-container h2 {
+      font-size: 1.4rem;
+      margin-top: 32px;
+      margin-bottom: 12px;
+      color: #f1f5f9;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .policy-container h3 {
+      font-size: 1.15rem;
+      margin-top: 20px;
+      margin-bottom: 8px;
+      color: #a5b4fc;
+    }
+    .policy-container ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+    .policy-container li {
+      margin-bottom: 8px;
+    }
+    .highlight-box {
+      background: rgba(56, 189, 248, 0.08);
+      border-left: 4px solid #38bdf8;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #38bdf8;
+      text-decoration: none;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+      transition: gap 0.2s ease;
+    }
+    .back-btn:hover {
+      gap: 12px;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="dark-theme">
+
+  <div class="mesh-bg"></div>
+  <div class="grid-overlay"></div>
+
+  <header class="navbar">
+    <div class="container nav-content">
+      <a href="index.html" class="brand">
+        <span class="brand-glyph">⚡</span>
+        <span class="brand-text">IAM<span class="brand-accent">GREATER</span></span>
+      </a>
+      <nav class="nav-links">
+        <a href="index.html#showcase">Projects</a>
+        <a href="index.html#connect">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="policy-container">
+      <a href="index.html" class="back-btn">← Back to IAMGREATER</a>
+      
+      <h1>Privacy Policy for QuickDraw Launcher</h1>
+      <div class="policy-meta">
+        <strong>Last Updated:</strong> October 9, 2026 &nbsp;|&nbsp; 
+        <strong>Developer:</strong> IAMGREATER &nbsp;|&nbsp; 
+        <strong>Contact:</strong> support@iamgreater.net
+      </div>
+
+      <div class="highlight-box">
+        <strong>Privacy-First Guarantee:</strong> QuickDraw Launcher operates <strong>100% offline</strong>. It does not contain any analytics libraries, advertising trackers, or background telemetry. No user data, device identifiers, or app usage history is ever collected, transmitted, or sold.
+      </div>
+
+      <h2>1. Overview & Data Collection</h2>
+      <p>QuickDraw Launcher, developed by IAMGREATER, is designed from the ground up with zero data collection:</p>
+      <ul>
+        <li><strong>Zero Data Collected:</strong> We do not track which apps you install, open, or add to your grids.</li>
+        <li><strong>No Internet Permission:</strong> QuickDraw does not request the <code>android.permission.INTERNET</code> permission. The app has no network access and cannot communicate with any remote servers.</li>
+        <li><strong>No Account Required:</strong> You do not need to create an account, log in, or provide an email address to use the launcher.</li>
+      </ul>
+
+      <h2>2. Android Permissions & Usage</h2>
+      <p>QuickDraw requests only the absolute minimum permissions strictly necessary to deliver its overlay and shortcut functionality:</p>
+      
+      <h3>A. Display Over Other Apps (<code>SYSTEM_ALERT_WINDOW</code>)</h3>
+      <p>Used solely to draw edge touch hitboxes and display your customized app grid when you swipe from screen edges over other applications. No screen content is captured or read.</p>
+
+      <h3>B. Query All Packages (<code>QUERY_ALL_PACKAGES</code>)</h3>
+      <p>Required by Android launcher applications to display your list of installed apps so you can select and organize them into your custom grids. This package list is processed locally and never leaves your device.</p>
+
+      <h3>C. Accessibility Service (Optional)</h3>
+      <p>If enabled by the user, this permission allows QuickDraw shortcuts to trigger system hardware actions: <em>Lock Screen</em>, <em>Open Notification Shade</em>, <em>Recent Apps</em>, and <em>Take Screenshot</em>. No keystrokes, personal communications, or screen inputs are observed or logged.</p>
+
+      <h2>3. Data Storage & Backups</h2>
+      <p>All your grid configurations, categories, and settings are saved locally on your device in private app storage. When you use the <strong>Backup & Restore</strong> feature, configuration files are exported only to locations you explicitly select via the standard Android system file picker.</p>
+
+      <h2>4. Children's Privacy</h2>
+      <p>QuickDraw Launcher does not collect any personal information from anyone, including children under the age of 13.</p>
+
+      <h2>5. Contact Us</h2>
+      <p>If you have any questions or feedback regarding this Privacy Policy, please contact us at:</p>
+      <p>
+        <strong>Email:</strong> <a href="mailto:support@iamgreater.net" style="color: #38bdf8;">support@iamgreater.net</a><br>
+        <strong>Website:</strong> <a href="https://iamgreater.net" style="color: #38bdf8;">https://iamgreater.net</a>
+      </p>
+    </div>
+  </main>
+
+</body>
+</html>

@@ -100,7 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputHtml = `
           <div style="color:var(--accent-cyan); font-weight:600;">[QUICKDRAW LAUNCHER]</div>
           <div>Lightning-fast edge gesture launcher for Android.</div>
-          <div>Package: <span style="color:#38bdf8;">apps.ipsofacto.swiftopen.modern</span></div>
+          <div>Package: <span style="color:#38bdf8;">net.iamgreater.quickdraw</span></div>
           <div>Status: Staged for Google Play (Target SDK 35 / Android 15)</div>
           <div>Privacy: 100% Offline, Zero Internet Permission, Zero Battery Drain.</div>
           <div style="margin-top:6px;"><a href="quickdraw.html" style="color:#38bdf8; text-decoration:underline;">Open Interactive Showcase & Simulator ➔</a></div>

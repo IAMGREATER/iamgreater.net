@@ -1,0 +1,20 @@
+{
+  "name": "ShapeMorph 3D — Interactive Nets, Plans & Elevations 3D Laboratory",
+  "short_name": "ShapeMorph 3D",
+  "description": "Interactive 3D geometry laboratory for geometry, functional skills maths, and STEM learners. Fold 2D nets to 3D solids, explore orthographic plans & elevations, dynamic dimensions, and export printable templates.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080c14",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "math", "utilities"]
+}

@@ -34,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const filter = btn.getAttribute('data-filter');
 
       projectCards.forEach(card => {
-        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+        const categories = (card.getAttribute('data-category') || '').trim().split(/\s+/);
+        if (filter === 'all' || categories.includes(filter)) {
           card.style.display = 'flex';
         } else {
           card.style.display = 'none';
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         outputHtml = `
           <div class="system-msg">Available commands:</div>
           <div>• <span style="color:var(--accent-cyan)">projects</span>   : list active vibe-coded projects (QuickDraw Launcher, etc.)</div>
+          <div>• <span style="color:#fbbf24">testing</span>    : preview apps currently in beta testing (EdgeVolume, PieControls, ReadRuler)</div>
           <div>• <span style="color:var(--accent-cyan)">origin</span>     : the 1996 Turbo Pascal to 2026 journey</div>
           <div>• <span style="color:var(--accent-cyan)">manifesto</span>  : our philosophy of vibe coding & craft</div>
           <div>• <span style="color:var(--accent-cyan)">stack</span>      : inspect hardware & agentic tools</div>
@@ -104,6 +106,51 @@ document.addEventListener('DOMContentLoaded', () => {
           <div>Status: Staged for Google Play (Target SDK 35 / Android 15)</div>
           <div>Privacy: 100% Offline, Zero Internet Permission, Zero Battery Drain.</div>
           <div style="margin-top:6px;"><a href="quickdraw.html" style="color:#38bdf8; text-decoration:underline;">Open Interactive Showcase & Simulator ➔</a></div>
+        `;
+        break;
+
+      case 'testing':
+      case 'beta':
+      case 'labs':
+        outputHtml = `
+          <div style="color:#fbbf24; font-weight:600;">[🧪 IN TESTING — SOVEREIGN ANDROID UTILITIES]</div>
+          <div>1. <strong style="color:#38bdf8;">EdgeVolume</strong>: Smooth thumb edge-glide volume control with haptic ticks (<a href="downloads/edgevolume-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download APK</a>)</div>
+          <div>2. <strong style="color:#a855f7;">PieControls 2026</strong>: Material 3 radial thumb launcher & system navigation fan (<a href="downloads/piecontrols-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download APK</a>)</div>
+          <div>3. <strong style="color:#34d399;">ReadRuler</strong>: Floating dyslexia reading guide & 6 pastel screen tint overlays (<a href="downloads/readruler-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download APK</a>)</div>
+          <div style="margin-top:6px; color:#94a3b8;">All 100% offline, zero internet permissions, and free for beta testing. <a href="#testing" style="color:#fbbf24; text-decoration:underline;">Jump to Testing Section ➔</a></div>
+        `;
+        break;
+
+      case 'edgevolume':
+      case 'soundglide':
+        outputHtml = `
+          <div style="color:#38bdf8; font-weight:600;">[EDGEVOLUME (SOUNDGLIDE) — IN TESTING]</div>
+          <div>Smooth vertical edge-glide volume control with crisp haptic stepping.</div>
+          <div>Package: <span style="color:#38bdf8;">net.iamgreater.edgevolume</span></div>
+          <div>Privacy: 100% Offline, Zero Internet Permission, Zero CPU drain when idle.</div>
+          <div style="margin-top:6px;"><a href="downloads/edgevolume-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download EdgeVolume Preview APK (19 MB) ➔</a></div>
+        `;
+        break;
+
+      case 'piecontrols':
+      case 'pie':
+        outputHtml = `
+          <div style="color:#a855f7; font-weight:600;">[PIECONTROLS 2026 — IN TESTING]</div>
+          <div>Modern Material 3 revival of the radial fan gesture launcher.</div>
+          <div>Package: <span style="color:#a855f7;">net.iamgreater.piecontrols</span></div>
+          <div>Trigonometric slice detection with 120Hz Canvas spring physics.</div>
+          <div style="margin-top:6px;"><a href="downloads/piecontrols-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download PieControls Preview APK (19 MB) ➔</a></div>
+        `;
+        break;
+
+      case 'readruler':
+      case 'tintglide':
+        outputHtml = `
+          <div style="color:#34d399; font-weight:600;">[READRULER (TINTGLIDE) — IN TESTING]</div>
+          <div>Floating reading guide overlay & 6 dyslexia-friendly pastel tints.</div>
+          <div>Package: <span style="color:#34d399;">net.iamgreater.readruler</span></div>
+          <div>100% non-blocking touch pass-through over Chrome, Kindle, and PDFs.</div>
+          <div style="margin-top:6px;"><a href="downloads/readruler-latest.apk" style="color:#fbbf24; text-decoration:underline;">Download ReadRuler Preview APK (19 MB) ➔</a></div>
         `;
         break;
 

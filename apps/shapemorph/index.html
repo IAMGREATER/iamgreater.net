@@ -1,0 +1,3345 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>ShapeMorph 3D — Interactive Nets, Plans & Elevations 3D Laboratory | IAMGREATER</title>
+  <meta name="description" content="Advanced 3D geometry laboratory for Functional Skills Maths, GCSE, and STEM learners. Fold 2D nets into 3D polyhedra in real time, analyze orthographic plans & elevations, inspect live formulas, and export printable vector nets.">
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#080c14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+
+  <!-- Google Fonts: Space Grotesk, Atkinson Hyperlegible, Fira Code -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================
+       CSS VARIABLES & THEME CONFIGURATION
+       ========================================================== */
+    :root {
+      --bg-base: #080c14;
+      --bg-surface: rgba(15, 23, 42, 0.88);
+      --bg-card: rgba(30, 41, 59, 0.72);
+      --bg-card-hover: rgba(51, 65, 85, 0.85);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(56, 189, 248, 0.35);
+      --border-emerald: rgba(52, 211, 153, 0.4);
+      --accent-cyan: #38bdf8;
+      --accent-cyan-glow: rgba(56, 189, 248, 0.25);
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #f43f5e;
+      --accent-purple: #a855f7;
+      --accent-indigo: #818cf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-faint: #64748b;
+      --font-ui: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-full: 9999px;
+      --shadow-lg: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.1);
+      --backdrop-blur: blur(14px);
+      --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Dyslexia-Friendly Mode Active Override */
+    body.dyslexia-font {
+      font-family: 'Atkinson Hyperlegible', 'Comic Neue', system-ui, -apple-system, sans-serif !important;
+      letter-spacing: 0.04em !important;
+      word-spacing: 0.08em !important;
+      line-height: 1.75 !important;
+    }
+    body.dyslexia-font button,
+    body.dyslexia-font input,
+    body.dyslexia-font select {
+      font-family: 'Atkinson Hyperlegible', 'Comic Neue', system-ui, sans-serif !important;
+      letter-spacing: 0.03em !important;
+    }
+
+    /* Reset & Base Setup */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-ui);
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #app-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ==========================================================
+       TOP NAVIGATION BAR
+       ========================================================== */
+    .top-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(8, 12, 20, 0.75);
+      backdrop-filter: var(--backdrop-blur);
+      border-bottom: 1px solid var(--border-subtle);
+      z-index: 50;
+      pointer-events: auto;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-badge {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(52, 211, 153, 0.2));
+      border: 1px solid var(--border-accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      box-shadow: 0 0 15px var(--accent-cyan-glow);
+    }
+
+    .brand-titles {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-title span.grad {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-emerald));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      font-size: 1rem;
+      position: relative;
+    }
+
+    .icon-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+      transform: translateY(-1px);
+    }
+
+    .icon-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--accent-cyan);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan-glow);
+    }
+
+    .icon-btn:active {
+      transform: translateY(1px);
+    }
+
+    .pill-btn {
+      padding: 7px 14px;
+      border-radius: var(--radius-full);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .pill-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-accent);
+    }
+
+    .pill-btn.primary {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(52, 211, 153, 0.25));
+      border-color: var(--border-emerald);
+      color: var(--accent-emerald);
+    }
+
+    .pill-btn.primary:hover {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.4), rgba(52, 211, 153, 0.4));
+      box-shadow: 0 0 16px rgba(52, 211, 153, 0.25);
+    }
+
+    /* ==========================================================
+       THREE.JS 3D CANVAS VIEWPORT
+       ========================================================== */
+    #viewport-3d {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    #viewport-3d:active {
+      cursor: grabbing;
+    }
+
+    /* ==========================================================
+       SHAPE SELECTOR BAR (TOP-LEFT FLOATING)
+       ========================================================== */
+    .shape-selector-wrapper {
+      position: absolute;
+      top: 72px;
+      left: 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      pointer-events: none;
+    }
+
+    .shape-selector-scroll {
+      display: flex;
+      gap: 6px;
+      background: var(--bg-surface);
+      backdrop-filter: var(--backdrop-blur);
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      pointer-events: auto;
+      box-shadow: var(--shadow-lg);
+      overflow-x: auto;
+      max-width: calc(100vw - 32px);
+      scrollbar-width: none;
+    }
+    .shape-selector-scroll::-webkit-scrollbar { display: none; }
+
+    .shape-chip {
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+    }
+
+    .shape-chip:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .shape-chip.active {
+      background: rgba(56, 189, 248, 0.16);
+      border-color: var(--border-accent);
+      color: var(--accent-cyan);
+      box-shadow: 0 0 12px var(--accent-cyan-glow);
+    }
+
+    .shape-chip .shape-emoji {
+      font-size: 1.05rem;
+    }
+
+    /* ==========================================================
+       VIEWPORT CAMERA QUICK TOOLBAR (TOP-RIGHT FLOATING)
+       ========================================================== */
+    .camera-presets-bar {
+      position: absolute;
+      top: 72px;
+      right: 16px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-surface);
+      backdrop-filter: var(--backdrop-blur);
+      padding: 6px;
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .cam-btn {
+      padding: 6px 11px;
+      border-radius: var(--radius-md);
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+
+    .cam-btn:hover {
+      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .cam-btn.active {
+      background: rgba(52, 211, 153, 0.18);
+      border-color: var(--border-emerald);
+      color: var(--accent-emerald);
+    }
+
+    /* ==========================================================
+       BOTTOM FOLD CONTROLS DOCK (FLOATING ACTION BAR)
+       ========================================================== */
+    .bottom-dock {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 32px);
+      max-width: 860px;
+      background: var(--bg-surface);
+      backdrop-filter: var(--backdrop-blur);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 12px 18px;
+      z-index: 45;
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform var(--transition-normal);
+    }
+
+    .slider-main-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .btn-fold-quick {
+      padding: 6px 12px;
+      border-radius: var(--radius-md);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .btn-fold-quick:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-main);
+      border-color: var(--border-accent);
+    }
+
+    .btn-play-pause {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
+      border: none;
+      color: #04101d;
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 0 18px var(--accent-cyan-glow);
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .btn-play-pause:hover {
+      transform: scale(1.06);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.45);
+    }
+
+    .btn-play-pause:active {
+      transform: scale(0.95);
+    }
+
+    .slider-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+    }
+
+    .slider-labels-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .fold-badge {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--accent-cyan);
+      background: rgba(56, 189, 248, 0.14);
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+
+    /* Custom Accessible Range Slider */
+    .fold-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 8px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(to right, #38bdf8 0%, #34d399 var(--fold-pct, 0%), #1e293b var(--fold-pct, 0%), #1e293b 100%);
+      outline: none;
+      cursor: ew-resize;
+      transition: background 0.1s ease;
+    }
+
+    .fold-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      cursor: grab;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .fold-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 0 18px var(--accent-cyan);
+    }
+    .fold-slider::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.25);
+    }
+
+    .fold-slider::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 3px solid var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
+      cursor: grab;
+      transition: transform 0.15s ease;
+    }
+
+    /* Sub-Controls Row in Dock */
+    .dock-sub-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-top: 6px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .toggle-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .toggle-chip input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      display: grid;
+      place-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .toggle-chip input[type="checkbox"]:checked {
+      background: var(--accent-cyan);
+      border-color: var(--accent-cyan);
+    }
+    .toggle-chip input[type="checkbox"]:checked::before {
+      content: "✓";
+      color: #04101d;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .speed-pills {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.72rem;
+      color: var(--text-faint);
+    }
+
+    .speed-btn {
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .speed-btn.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: var(--border-accent);
+      color: var(--accent-cyan);
+    }
+
+    /* ==========================================================
+       SIDE DRAWER / INSPECTOR TABS (PLANS & MATHS)
+       ========================================================== */
+    .drawer-trigger-bar {
+      position: absolute;
+      top: 132px;
+      right: 16px;
+      z-index: 40;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tab-trigger-btn {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--bg-surface);
+      backdrop-filter: var(--backdrop-blur);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      box-shadow: var(--shadow-lg);
+      transition: all var(--transition-fast);
+    }
+
+    .tab-trigger-btn:hover {
+      border-color: var(--border-accent);
+      transform: translateX(-2px);
+    }
+
+    .tab-trigger-btn.active {
+      background: rgba(15, 23, 42, 0.95);
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 16px var(--accent-cyan-glow);
+      color: var(--accent-cyan);
+    }
+
+    .drawer-panel {
+      position: absolute;
+      top: 60px;
+      right: 0;
+      bottom: 0;
+      width: 440px;
+      max-width: 100vw;
+      background: rgba(10, 15, 26, 0.94);
+      backdrop-filter: blur(20px);
+      border-left: 1px solid var(--border-subtle);
+      z-index: 48;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -10px 0 40px rgba(0, 0, 0, 0.7);
+      transform: translateX(100%);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      overflow: hidden;
+    }
+
+    .drawer-panel.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(15, 23, 42, 0.6);
+      flex-shrink: 0;
+    }
+
+    .drawer-title-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .drawer-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .drawer-badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid var(--border-accent);
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
+    .drawer-close {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      background: transparent;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all var(--transition-fast);
+    }
+    .drawer-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+    }
+
+    .drawer-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-accent) transparent;
+    }
+
+    /* ==========================================================
+       PLANS & ELEVATIONS VIEWPORT CARDS
+       ========================================================== */
+    .elevations-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .elevation-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition-fast);
+      position: relative;
+    }
+
+    .elevation-card:hover {
+      border-color: var(--border-accent);
+      background: var(--bg-card-hover);
+    }
+
+    .elevation-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .elevation-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .elevation-title span.tag {
+      font-size: 0.68rem;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .btn-snap-cam {
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--accent-cyan);
+      font-size: 0.72rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all var(--transition-fast);
+    }
+    .btn-snap-cam:hover {
+      background: var(--accent-cyan);
+      color: #04101d;
+    }
+
+    .elevation-svg-frame {
+      width: 100%;
+      height: 160px;
+      background: #090e18;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .elevation-svg-frame svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
+    }
+
+    .elevation-caption {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* ==========================================================
+       MATHS & DIMENSIONS INSPECTOR
+       ========================================================== */
+    .maths-section-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 6px;
+    }
+
+    .dimension-control-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .dim-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dim-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .dim-value-badge {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-emerald);
+      background: rgba(52, 211, 153, 0.12);
+      padding: 1px 6px;
+      border-radius: 4px;
+    }
+
+    .dim-slider {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      background: #1e293b;
+      border-radius: var(--radius-full);
+      outline: none;
+    }
+    .dim-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--accent-emerald);
+      cursor: pointer;
+    }
+
+    .calc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .calc-formula-display {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-cyan);
+      background: #090e18;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--accent-cyan);
+      line-height: 1.5;
+    }
+
+    .calc-working-row {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .calc-result-pill {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      background: rgba(52, 211, 153, 0.12);
+      border: 1px solid var(--border-emerald);
+      font-weight: 700;
+      color: var(--accent-emerald);
+      font-size: 0.92rem;
+    }
+
+    .euler-audit-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: rgba(168, 85, 247, 0.1);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      font-size: 0.8rem;
+    }
+    .euler-audit-box span.val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent-purple);
+    }
+
+    /* ==========================================================
+       MODAL DIALOGS (PRINT/EXPORT & GUIDE)
+       ========================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(4, 7, 14, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-dialog {
+      background: #0f172a;
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 680px;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 30px var(--accent-cyan-glow);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: transform 0.25s ease;
+    }
+    .modal-overlay.open .modal-dialog {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .modal-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-body {
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(10, 14, 23, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .preview-net-canvas {
+      width: 100%;
+      height: 280px;
+      background: #ffffff;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border: 2px dashed #94a3b8;
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.06);
+    }
+
+    .preview-net-canvas svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Print Worksheet Output Setup */
+    #print-sheet {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #print-sheet, #print-sheet * {
+        visibility: visible !important;
+      }
+      #print-sheet {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 24px;
+      }
+      @page {
+        size: A4;
+        margin: 1cm;
+      }
+    }
+
+    /* ==========================================================
+       RESPONSIVE DESIGN BREAKPOINTS
+       ========================================================== */
+    @media (max-width: 820px) {
+      .top-header {
+        height: 54px;
+        padding: 0 12px;
+      }
+      .brand-title {
+        font-size: 0.95rem;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+      .shape-selector-wrapper {
+        top: 60px;
+        left: 10px;
+      }
+      .camera-presets-bar {
+        display: none; /* Accessible via drawer on mobile */
+      }
+      .drawer-trigger-bar {
+        top: auto;
+        bottom: 125px;
+        right: 12px;
+        flex-direction: row;
+      }
+      .drawer-panel {
+        width: 100vw;
+        top: 0;
+      }
+      .bottom-dock {
+        bottom: 12px;
+        width: calc(100% - 24px);
+        padding: 10px 14px;
+      }
+      .slider-main-row {
+        gap: 10px;
+      }
+      .btn-play-pause {
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+
+  <!-- Bundled Standalone Three.js & OrbitControls -->
+  <script src="js/three.min.js"></script>
+  <script src="js/orbitcontrols.js"></script>
+  <!-- Auto-fallback to CDN if local files are missing -->
+  <script>
+    if (typeof THREE === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+      document.write('<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"><\/script>');
+    }
+  </script>
+</head>
+<body>
+
+  <div id="app-container">
+
+    <!-- Top Header -->
+    <header class="top-header">
+      <a href="../index.html" class="brand-wrap" title="Back to IAMGREATER Hub">
+        <div class="brand-logo-badge">📐</div>
+        <div class="brand-titles">
+          <h1 class="brand-title"><span class="grad">ShapeMorph 3D</span></h1>
+          <span class="brand-subtitle">Interactive Nets, Plans &amp; Elevations Lab</span>
+        </div>
+      </a>
+
+      <div class="header-actions">
+        <!-- Audio Synthesizer Toggle -->
+        <button id="btn-sound" class="icon-btn active" title="Sound Effects (Synthesized Web Audio)" aria-label="Toggle Sound">
+          🔊
+        </button>
+
+        <!-- Dyslexia Font Toggle -->
+        <button id="btn-dyslexia" class="icon-btn" title="Toggle Dyslexia-Friendly High Legibility Typography" aria-label="Toggle Dyslexia Typography">
+          👁️
+        </button>
+
+        <!-- Export & Print Net Modal Trigger -->
+        <button id="btn-export-open" class="pill-btn primary" title="Generate Vector Net / Print Worksheet">
+          ✂️ Export Net / Print
+        </button>
+
+        <!-- Pedagogical Theory / Guide Modal Trigger -->
+        <button id="btn-guide-open" class="icon-btn" title="Interactive Guide &amp; Formulae Reference" aria-label="Help Guide">
+          ❓
+        </button>
+      </div>
+    </header>
+
+    <!-- 3D Three.js WebGL Viewport -->
+    <canvas id="viewport-3d"></canvas>
+
+    <!-- Shape Selection Pills (Top-Left) -->
+    <div class="shape-selector-wrapper">
+      <div class="shape-selector-scroll" id="shape-chips-container" role="tablist" aria-label="3D Polyhedra Selection">
+        <button class="shape-chip active" data-shape="cube" role="tab" aria-selected="true">
+          <span class="shape-emoji">🧊</span> Cube
+        </button>
+        <button class="shape-chip" data-shape="cuboid" role="tab" aria-selected="false">
+          <span class="shape-emoji">📦</span> Rectangular Cuboid
+        </button>
+        <button class="shape-chip" data-shape="tri-prism" role="tab" aria-selected="false">
+          <span class="shape-emoji">⛺</span> Triangular Prism
+        </button>
+        <button class="shape-chip" data-shape="sq-pyramid" role="tab" aria-selected="false">
+          <span class="shape-emoji">🔺</span> Square Pyramid
+        </button>
+        <button class="shape-chip" data-shape="cylinder" role="tab" aria-selected="false">
+          <span class="shape-emoji">🛢️</span> Cylinder
+        </button>
+        <button class="shape-chip" data-shape="cone" role="tab" aria-selected="false">
+          <span class="shape-emoji">🍦</span> Cone
+        </button>
+        <button class="shape-chip" data-shape="tetrahedron" role="tab" aria-selected="false">
+          <span class="shape-emoji">🔶</span> Tetrahedron
+        </button>
+      </div>
+    </div>
+
+    <!-- Quick Camera Presets (Top-Right) -->
+    <div class="camera-presets-bar" id="cam-presets-bar">
+      <button class="cam-btn" data-cam="plan" title="Plan View (Looking directly from above)">📐 Plan</button>
+      <button class="cam-btn" data-cam="front" title="Front Elevation (Looking straight from front)">🏛️ Front</button>
+      <button class="cam-btn" data-cam="side" title="Side Elevation (Looking from right side)">🏢 Side</button>
+      <button class="cam-btn active" data-cam="iso" title="Perspective 3D Orbit View">🌐 3D</button>
+      <button class="cam-btn" data-cam="reset" title="Reset Camera View">🔄 Reset</button>
+    </div>
+
+    <!-- Drawer Triggers (Right Margin) -->
+    <div class="drawer-trigger-bar">
+      <button class="tab-trigger-btn" id="trigger-plans">
+        <span>📐</span> Plans &amp; Elevations
+      </button>
+      <button class="tab-trigger-btn" id="trigger-maths">
+        <span>🧮</span> Dimensions &amp; Formulas
+      </button>
+    </div>
+
+    <!-- Bottom Folding Controls Dock -->
+    <div class="bottom-dock">
+      <div class="slider-main-row">
+        <!-- Play / Pause Folding Animation -->
+        <button id="btn-play-fold" class="btn-play-pause" title="Play / Pause Auto Folding Animation" aria-label="Auto Fold">
+          ▶
+        </button>
+
+        <button class="btn-fold-quick" id="btn-snap-flat" title="Snap to 0% Flat Net">
+          0% Flat Net
+        </button>
+
+        <!-- The Central Folding Slider -->
+        <div class="slider-container">
+          <div class="slider-labels-row">
+            <span>2D Flat Net</span>
+            <span class="fold-badge" id="fold-percent-label">0% FOLDED</span>
+            <span>3D Solid</span>
+          </div>
+          <input type="range" min="0" max="100" value="0" step="0.5" class="fold-slider" id="fold-range" aria-label="Fold Progress Slider">
+        </div>
+
+        <button class="btn-fold-quick" id="btn-snap-solid" title="Snap to 100% Solid">
+          100% Solid
+        </button>
+      </div>
+
+      <!-- Secondary Toggles Row -->
+      <div class="dock-sub-row">
+        <label class="toggle-chip" title="Display face identification labels in 2D and 3D">
+          <input type="checkbox" id="chk-labels" checked>
+          <span>Face Labels</span>
+        </label>
+
+        <label class="toggle-chip" title="Toggle semi-transparent internal X-Ray view">
+          <input type="checkbox" id="chk-xray">
+          <span>X-Ray Mode</span>
+        </label>
+
+        <label class="toggle-chip" title="Show 3D projection screens and laser rays to elevation planes">
+          <input type="checkbox" id="chk-rays">
+          <span>Projection Rays 🔦</span>
+        </label>
+
+        <!-- Animation Speed Selector -->
+        <div class="speed-pills">
+          <span>Speed:</span>
+          <button class="speed-btn" data-speed="0.5">0.5x</button>
+          <button class="speed-btn active" data-speed="1.0">1x</button>
+          <button class="speed-btn" data-speed="2.0">2x</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         DRAWER 1: PLANS & ELEVATIONS (ORTHOGRAPHIC PROJECTIONS)
+         ========================================================== -->
+    <aside class="drawer-panel" id="drawer-plans" aria-label="Plans and Elevations Panel">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span style="font-size: 1.3rem;">📐</span>
+          <div>
+            <h2 class="drawer-title">Plans &amp; Elevations</h2>
+            <span class="drawer-badge">Orthographic Projections</span>
+          </div>
+        </div>
+        <button class="drawer-close" data-close="drawer-plans" aria-label="Close Drawer">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+          Orthographic projections display a 3D solid as three perpendicular 2D technical drawings on a 1cm grid scale. Click <strong>Align 3D View</strong> on any elevation to align the 3D camera directly with that viewpoint!
+        </p>
+
+        <div class="elevations-grid">
+          <!-- 1. Plan View Card -->
+          <article class="elevation-card">
+            <div class="elevation-header">
+              <div class="elevation-title">
+                <span>Plan View</span>
+                <span class="tag">Top-Down (Bird's Eye)</span>
+              </div>
+              <button class="btn-snap-cam" data-cam="plan">🎯 Align 3D</button>
+            </div>
+            <div class="elevation-svg-frame" id="svg-plan-frame"></div>
+            <p class="elevation-caption" id="cap-plan">View looking straight down on the shape from above.</p>
+          </article>
+
+          <!-- 2. Front Elevation Card -->
+          <article class="elevation-card">
+            <div class="elevation-header">
+              <div class="elevation-title">
+                <span>Front Elevation</span>
+                <span class="tag">Front-Facing</span>
+              </div>
+              <button class="btn-snap-cam" data-cam="front">🎯 Align 3D</button>
+            </div>
+            <div class="elevation-svg-frame" id="svg-front-frame"></div>
+            <p class="elevation-caption" id="cap-front">View looking directly at the front of the shape.</p>
+          </article>
+
+          <!-- 3. Side Elevation Card -->
+          <article class="elevation-card">
+            <div class="elevation-header">
+              <div class="elevation-title">
+                <span>Side Elevation</span>
+                <span class="tag">Right Side</span>
+              </div>
+              <button class="btn-snap-cam" data-cam="side">🎯 Align 3D</button>
+            </div>
+            <div class="elevation-svg-frame" id="svg-side-frame"></div>
+            <p class="elevation-caption" id="cap-side">View looking directly at the side profile of the shape.</p>
+          </article>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================================
+         DRAWER 2: MATHS & DIMENSIONS INSPECTOR
+         ========================================================== -->
+    <aside class="drawer-panel" id="drawer-maths" aria-label="Maths Inspector Panel">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span style="font-size: 1.3rem;">🧮</span>
+          <div>
+            <h2 class="drawer-title">Maths Inspector</h2>
+            <span class="drawer-badge">Live Geometry Calculations</span>
+          </div>
+        </div>
+        <button class="drawer-close" data-close="drawer-maths" aria-label="Close Drawer">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <!-- Interactive Dimension Controls -->
+        <div>
+          <h3 class="maths-section-title">📏 Shape Dimensions</h3>
+          <div class="dimension-control-card" id="dimensions-container">
+            <!-- Dynamically populated by JS according to active shape -->
+          </div>
+        </div>
+
+        <!-- Surface Area Breakdown -->
+        <div>
+          <h3 class="maths-section-title">✨ Total Surface Area</h3>
+          <div class="calc-card">
+            <div class="calc-formula-display" id="sa-formula-display">
+              Total SA = Sum of all face areas
+            </div>
+            <div class="calc-working-row" id="sa-working-display">
+              Calculating...
+            </div>
+            <div class="calc-result-pill">
+              <span>Total Area:</span>
+              <span id="sa-result-display">0.00 cm²</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Volume Calculation -->
+        <div>
+          <h3 class="maths-section-title">📦 Solid Volume</h3>
+          <div class="calc-card">
+            <div class="calc-formula-display" id="vol-formula-display">
+              Volume = Base Area × Height
+            </div>
+            <div class="calc-working-row" id="vol-working-display">
+              Calculating...
+            </div>
+            <div class="calc-result-pill">
+              <span>Volume:</span>
+              <span id="vol-result-display">0.00 cm³</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Euler's Polyhedron Formula -->
+        <div>
+          <h3 class="maths-section-title">⚖️ Euler's Characteristic</h3>
+          <div class="euler-audit-box">
+            <span>Faces (F): <span class="val" id="euler-f">6</span></span>
+            <span>Vertices (V): <span class="val" id="euler-v">8</span></span>
+            <span>Edges (E): <span class="val" id="euler-e">12</span></span>
+            <span>F - E + V = <span class="val" id="euler-check">2 ✓</span></span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================================
+         MODAL 1: EXPORT SVG & PRINTABLE NET TEMPLATE
+         ========================================================== -->
+    <div class="modal-overlay" id="modal-export" role="dialog" aria-modal="true" aria-labelledby="export-modal-title">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2 class="modal-title" id="export-modal-title">
+            <span>✂️</span> 2D Net Template &amp; Print Studio
+          </h2>
+          <button class="drawer-close" data-close="modal-export" aria-label="Close Modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Export a high-precision, true-to-scale 2D net complete with cutting outlines (solid ✂), folding crease lines (dashed - - -), and glue tabs for classroom craft or laser cutting.
+          </p>
+
+          <div class="preview-net-canvas" id="export-svg-preview">
+            <!-- Live Vector Net SVG inserted here -->
+          </div>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.82rem; color: var(--text-muted);">
+            <label class="toggle-chip">
+              <input type="checkbox" id="chk-export-tabs" checked>
+              <span>Include Glue Tabs</span>
+            </label>
+            <label class="toggle-chip">
+              <input type="checkbox" id="chk-export-labels" checked>
+              <span>Include Dimensions &amp; Face Names</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="pill-btn" id="btn-download-svg">
+            💾 Download SVG
+          </button>
+          <button class="pill-btn primary" id="btn-print-sheet">
+            🖨️ Print Worksheet (A4)
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==========================================================
+         MODAL 2: GEOMETRY GUIDE & FUNCTIONAL SKILLS CHEAT SHEET
+         ========================================================== -->
+    <div class="modal-overlay" id="modal-guide" role="dialog" aria-modal="true" aria-labelledby="guide-modal-title">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h2 class="modal-title" id="guide-modal-title">
+            <span>📖</span> ShapeMorph 3D Guide &amp; Maths Lab
+          </h2>
+          <button class="drawer-close" data-close="modal-guide" aria-label="Close Modal">&times;</button>
+        </div>
+
+        <div class="modal-body" style="font-size: 0.88rem; line-height: 1.7; color: #cbd5e1;">
+          <h3 style="color: var(--accent-cyan); font-size: 1rem;">1. What is a 2D Net?</h3>
+          <p>
+            A <strong>2D net</strong> is a flat two-dimensional pattern formed by unfolding the faces of a 3D solid along its edges. When cut and folded along the crease lines, it joins seamlessly into the closed 3D solid without any overlapping faces.
+          </p>
+
+          <h3 style="color: var(--accent-emerald); font-size: 1rem; margin-top: 10px;">2. Plans &amp; Elevations (Orthographic Projections)</h3>
+          <p>
+            Architects and engineers visualize 3D structures from 3 perpendicular viewpoints:
+          </p>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px;">
+            <li><strong>Plan View:</strong> What you see looking straight down from directly above (bird's-eye view).</li>
+            <li><strong>Front Elevation:</strong> What you see standing directly in front of the shape.</li>
+            <li><strong>Side Elevation:</strong> What you see looking from the left or right side profile.</li>
+          </ul>
+
+          <h3 style="color: var(--accent-amber); font-size: 1rem; margin-top: 10px;">3. Surface Area vs. Volume</h3>
+          <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px;">
+            <li><strong>Total Surface Area:</strong> The combined 2D area of all outward-facing surfaces ($cm^2$). Simply calculate the area of each face in the flat net and sum them up!</li>
+            <li><strong>Volume:</strong> The total 3D space enclosed inside the closed solid ($cm^3$). For uniform prisms: $\text{Base Area} \times \text{Height}$. For pyramids and cones: $\frac{1}{3} \times \text{Base Area} \times \text{Height}$.</li>
+          </ul>
+
+          <h3 style="color: var(--accent-purple); font-size: 1rem; margin-top: 10px;">4. Euler's Characteristic</h3>
+          <p>
+            For any convex polyhedron:
+            <code style="font-family: var(--font-mono); color: var(--accent-cyan); background: rgba(0,0,0,0.3); padding: 2px 6px; border-radius: 4px;">Faces (F) - Edges (E) + Vertices (V) = 2</code>
+          </p>
+        </div>
+
+        <div class="modal-footer">
+          <button class="pill-btn primary" data-close="modal-guide">
+            Got it, Let's Explore!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hidden Print Worksheet Sheet -->
+    <div id="print-sheet"></div>
+
+  </div>
+
+  <!-- Application Logic -->
+  <script>
+    /* ==========================================================
+       1. SYNTHESIZED WEB AUDIO FEEDBACK (Tactile Clicks & Chimes)
+       ========================================================== */
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+        this.enabled = true;
+      }
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+      playClick(freq = 700, dur = 0.03) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + dur);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + dur);
+        } catch (e) {}
+      }
+      playChord(freqs = [523.25, 659.25, 783.99, 1046.50]) {
+        if (!this.enabled) return;
+        try {
+          this.init();
+          if (!this.ctx) return;
+          freqs.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + idx * 0.05);
+            gain.gain.setValueAtTime(0.05, this.ctx.currentTime + idx * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.0005, this.ctx.currentTime + idx * 0.05 + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + idx * 0.05);
+            osc.stop(this.ctx.currentTime + idx * 0.05 + 0.35);
+          });
+        } catch (e) {}
+      }
+    }
+    const audio = new SoundEngine();
+
+    /* ==========================================================
+       2. SHAPE CONFIGURATIONS, GEOMETRY & CALCULATIONS
+       ========================================================== */
+    const SHAPES_CONFIG = {
+      'cube': {
+        name: 'Cube',
+        polyhedron: true,
+        emoji: '🧊',
+        faces: 6, edges: 12, vertices: 8,
+        dims: {
+          s: { label: 'Side Length (s)', min: 2, max: 7, step: 0.5, val: 4.0, unit: 'cm' }
+        },
+        saFormula: 'Total SA = 6 × s²',
+        volFormula: 'Volume = s³',
+        calcSA(d) {
+          const faceArea = d.s * d.s;
+          return {
+            total: 6 * faceArea,
+            working: `6 faces × (${d.s} × ${d.s}) = 6 × ${faceArea.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const vol = Math.pow(d.s, 3);
+          return {
+            total: vol,
+            working: `${d.s} × ${d.s} × ${d.s} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'cuboid': {
+        name: 'Rectangular Cuboid',
+        polyhedron: true,
+        emoji: '📦',
+        faces: 6, edges: 12, vertices: 8,
+        dims: {
+          L: { label: 'Length (L)', min: 3, max: 8, step: 0.5, val: 5.0, unit: 'cm' },
+          W: { label: 'Width (W)', min: 2, max: 6, step: 0.5, val: 3.0, unit: 'cm' },
+          H: { label: 'Height (H)', min: 2, max: 6, step: 0.5, val: 4.0, unit: 'cm' }
+        },
+        saFormula: 'Total SA = 2(LW + LH + WH)',
+        volFormula: 'Volume = L × W × H',
+        calcSA(d) {
+          const a1 = d.L * d.W; // top & bottom
+          const a2 = d.L * d.H; // front & back
+          const a3 = d.W * d.H; // left & right
+          const total = 2 * (a1 + a2 + a3);
+          return {
+            total: total,
+            working: `2 × (${a1.toFixed(1)} + ${a2.toFixed(1)} + ${a3.toFixed(1)}) = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const vol = d.L * d.W * d.H;
+          return {
+            total: vol,
+            working: `${d.L} × ${d.W} × ${d.H} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'tri-prism': {
+        name: 'Triangular Prism',
+        polyhedron: true,
+        emoji: '⛺',
+        faces: 5, edges: 9, vertices: 6,
+        dims: {
+          b: { label: 'Base Triangle Width (b)', min: 2.5, max: 6, step: 0.5, val: 4.0, unit: 'cm' },
+          h: { label: 'Triangle Height (h)', min: 2, max: 6, step: 0.5, val: 3.5, unit: 'cm' },
+          L: { label: 'Prism Length (L)', min: 3, max: 8, step: 0.5, val: 6.0, unit: 'cm' }
+        },
+        saFormula: 'Total SA = 2 × (½bh) + (b + 2s) × L',
+        volFormula: 'Volume = (½bh) × L',
+        calcSA(d) {
+          const slant = Math.sqrt((d.b / 2) * (d.b / 2) + d.h * d.h);
+          const endArea = 0.5 * d.b * d.h;
+          const rectBase = d.b * d.L;
+          const rectSides = 2 * slant * d.L;
+          const total = 2 * endArea + rectBase + rectSides;
+          return {
+            total: total,
+            working: `Ends: 2 × ${endArea.toFixed(1)} + Base: ${rectBase.toFixed(1)} + Sides: ${rectSides.toFixed(1)} = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const endArea = 0.5 * d.b * d.h;
+          const vol = endArea * d.L;
+          return {
+            total: vol,
+            working: `(½ × ${d.b} × ${d.h}) × ${d.L} = ${endArea.toFixed(1)} × ${d.L} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'sq-pyramid': {
+        name: 'Square-Based Pyramid',
+        polyhedron: true,
+        emoji: '🔺',
+        faces: 5, edges: 8, vertices: 5,
+        dims: {
+          b: { label: 'Base Width (b)', min: 2.5, max: 6, step: 0.5, val: 4.0, unit: 'cm' },
+          H: { label: 'Vertical Height (H)', min: 2.5, max: 7, step: 0.5, val: 4.5, unit: 'cm' }
+        },
+        saFormula: 'Total SA = b² + 4 × (½ × b × s_l)',
+        volFormula: 'Volume = ⅓ × b² × H',
+        calcSA(d) {
+          const slant = Math.sqrt(d.H * d.H + (d.b / 2) * (d.b / 2));
+          const baseArea = d.b * d.b;
+          const triArea = 0.5 * d.b * slant;
+          const total = baseArea + 4 * triArea;
+          return {
+            total: total,
+            working: `Base: ${baseArea.toFixed(1)} + 4 Triangles: 4 × ${triArea.toFixed(1)} (slant: ${slant.toFixed(1)}cm) = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const baseArea = d.b * d.b;
+          const vol = (1 / 3) * baseArea * d.H;
+          return {
+            total: vol,
+            working: `⅓ × (${d.b} × ${d.b}) × ${d.H} = ⅓ × ${baseArea.toFixed(1)} × ${d.H} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'cylinder': {
+        name: 'Cylinder',
+        polyhedron: false,
+        emoji: '🛢️',
+        faces: 3, edges: 2, vertices: 0,
+        dims: {
+          r: { label: 'Radius (r)', min: 1.2, max: 3.5, step: 0.2, val: 2.0, unit: 'cm' },
+          H: { label: 'Height (H)', min: 2.5, max: 7, step: 0.5, val: 5.0, unit: 'cm' }
+        },
+        saFormula: 'Total SA = 2πr² + 2πrH',
+        volFormula: 'Volume = πr²H',
+        calcSA(d) {
+          const base = Math.PI * d.r * d.r;
+          const curved = 2 * Math.PI * d.r * d.H;
+          const total = 2 * base + curved;
+          return {
+            total: total,
+            working: `2 Bases: 2 × ${base.toFixed(1)} + Curved Body: (2π × ${d.r} × ${d.H}) = ${curved.toFixed(1)} = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const vol = Math.PI * d.r * d.r * d.H;
+          return {
+            total: vol,
+            working: `π × ${d.r}² × ${d.H} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'cone': {
+        name: 'Cone',
+        polyhedron: false,
+        emoji: '🍦',
+        faces: 2, edges: 1, vertices: 1,
+        dims: {
+          r: { label: 'Radius (r)', min: 1.5, max: 3.5, step: 0.2, val: 2.4, unit: 'cm' },
+          H: { label: 'Height (H)', min: 2.5, max: 7, step: 0.5, val: 4.8, unit: 'cm' }
+        },
+        saFormula: 'Total SA = πr² + πrL  (L = √(r² + H²))',
+        volFormula: 'Volume = ⅓πr²H',
+        calcSA(d) {
+          const slantL = Math.sqrt(d.r * d.r + d.H * d.H);
+          const base = Math.PI * d.r * d.r;
+          const curved = Math.PI * d.r * slantL;
+          const total = base + curved;
+          return {
+            total: total,
+            working: `Base: π × ${d.r}² = ${base.toFixed(1)} + Curved: π × ${d.r} × ${slantL.toFixed(1)} = ${curved.toFixed(1)} = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const vol = (1 / 3) * Math.PI * d.r * d.r * d.H;
+          return {
+            total: vol,
+            working: `⅓ × π × ${d.r}² × ${d.H} = ${vol.toFixed(1)} cm³`
+          };
+        }
+      },
+      'tetrahedron': {
+        name: 'Regular Tetrahedron',
+        polyhedron: true,
+        emoji: '🔶',
+        faces: 4, edges: 6, vertices: 4,
+        dims: {
+          s: { label: 'Edge Length (s)', min: 2.5, max: 7, step: 0.5, val: 4.5, unit: 'cm' }
+        },
+        saFormula: 'Total SA = 4 × (¼√3 s²) = √3 s²',
+        volFormula: 'Volume = s³ / (6√2)',
+        calcSA(d) {
+          const total = Math.sqrt(3) * Math.pow(d.s, 2);
+          return {
+            total: total,
+            working: `4 Equilateral Triangles = √3 × ${d.s}² = ${total.toFixed(1)} cm²`
+          };
+        },
+        calcVol(d) {
+          const vol = Math.pow(d.s, 3) / (6 * Math.sqrt(2));
+          return {
+            total: vol,
+            working: `${d.s}³ / (6√2) = ${vol.toFixed(1)} cm³`
+          };
+        }
+      }
+    };
+
+    /* ==========================================================
+       3. THREE.JS 3D SCENE & ENGINE INITIALIZATION
+       ========================================================== */
+    let currentShapeKey = 'cube';
+    let currentDims = {};
+    let foldProgress = 0; // 0 (flat) to 1 (solid)
+    let isPlaying = false;
+    let playSpeed = 1.0;
+    let playDirection = 1;
+
+    // Three.js instances
+    let scene, camera, renderer, controls;
+    let shapeRootGroup = null;
+    let activeNodes = [];
+    let projectionRaysGroup = null;
+    let projectionScreensGroup = null;
+
+    // Distinct Harmonious Face Colors
+    const FACE_COLORS = [
+      0x38bdf8, // Cyan / Sky
+      0x34d399, // Emerald
+      0xfbbf24, // Amber
+      0xf43f5e, // Rose / Coral
+      0xa855f7, // Purple
+      0x6366f1  // Indigo
+    ];
+
+    function init3D() {
+      const container = document.getElementById('viewport-3d');
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x080c14);
+
+      // Camera setup
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(16, 14, 20);
+
+      // WebGL Renderer
+      renderer = new THREE.WebGLRenderer({ canvas: container, antialias: true, alpha: false });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+      // OrbitControls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.target.set(0, 2, 0);
+      controls.maxPolarAngle = Math.PI / 2 + 0.08; // Allow viewing slightly below horizon
+      controls.minDistance = 4;
+      controls.maxDistance = 60;
+
+      // Lights
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.72);
+      scene.add(ambientLight);
+
+      const dirLight = new THREE.DirectionalLight(0xffffff, 0.75);
+      dirLight.position.set(15, 25, 18);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 1024;
+      dirLight.shadow.mapSize.height = 1024;
+      scene.add(dirLight);
+
+      const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.35);
+      fillLight.position.set(-15, 12, -15);
+      scene.add(fillLight);
+
+      // Elegant Coordinate Grid Ground Floor
+      const gridHelper = new THREE.GridHelper(40, 40, 0x38bdf8, 0x1e293b);
+      gridHelper.position.y = -0.005;
+      scene.add(gridHelper);
+
+      // Projection Rays & Screens groups
+      projectionRaysGroup = new THREE.Group();
+      scene.add(projectionRaysGroup);
+      projectionScreensGroup = new THREE.Group();
+      scene.add(projectionScreensGroup);
+
+      // Window resize handler
+      window.addEventListener('resize', onWindowResize);
+
+      // Build initial shape
+      loadShape(currentShapeKey);
+
+      // Start render loop
+      animateLoop();
+    }
+
+    function onWindowResize() {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+
+    /* ==========================================================
+       4. PROCEDURAL 3D MESH GENERATION & FOLD KINEMATICS
+       ========================================================== */
+    function createFaceTexture(label, hexColor) {
+      const cvs = document.createElement('canvas');
+      cvs.width = 512;
+      cvs.height = 512;
+      const ctx = cvs.getContext('2d');
+
+      // Base background fill
+      ctx.fillStyle = '#' + hexColor.toString(16).padStart(6, '0');
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Subtle inset border
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = 14;
+      ctx.strokeRect(7, 7, 498, 498);
+
+      // Label text
+      const showLabels = document.getElementById('chk-labels').checked;
+      if (showLabels && label) {
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 44px Space Grotesk, Atkinson Hyperlegible, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowColor = 'rgba(0,0,0,0.8)';
+        ctx.shadowBlur = 10;
+        ctx.fillText(label, 256, 256);
+      }
+
+      const tex = new THREE.CanvasTexture(cvs);
+      tex.anisotropy = 4;
+      return tex;
+    }
+
+    function createFaceMesh(width, height, label, colorHex, isXRay) {
+      const geom = new THREE.PlaneGeometry(width, height);
+      geom.rotateX(-Math.PI / 2); // Lay flat on XZ plane
+
+      const mat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        roughness: 0.32,
+        metalness: 0.1,
+        side: THREE.DoubleSide,
+        transparent: isXRay,
+        opacity: isXRay ? 0.45 : 1.0,
+        map: createFaceTexture(label, colorHex)
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+
+      // Crisp White Border Line
+      const edgeGeo = new THREE.BufferGeometry();
+      const hw = width / 2, hh = height / 2;
+      const verts = new Float32Array([
+        -hw, 0.015, -hh,   hw, 0.015, -hh,
+         hw, 0.015, -hh,   hw, 0.015,  hh,
+         hw, 0.015,  hh,  -hw, 0.015,  hh,
+        -hw, 0.015,  hh,  -hw, 0.015, -hh
+      ]);
+      edgeGeo.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+      const line = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
+      mesh.add(line);
+
+      return mesh;
+    }
+
+    function createCircleMesh(radius, label, colorHex, isXRay) {
+      const geom = new THREE.CircleGeometry(radius, 48);
+      geom.rotateX(-Math.PI / 2);
+
+      const mat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        roughness: 0.32,
+        metalness: 0.1,
+        side: THREE.DoubleSide,
+        transparent: isXRay,
+        opacity: isXRay ? 0.45 : 1.0,
+        map: createFaceTexture(label, colorHex)
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.castShadow = true;
+
+      // Outer ring border
+      const ringGeo = new THREE.RingGeometry(radius - 0.035, radius + 0.01, 64);
+      ringGeo.rotateX(-Math.PI / 2);
+      const ring = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0xffffff, side: THREE.DoubleSide }));
+      ring.position.y = 0.015;
+      mesh.add(ring);
+
+      return mesh;
+    }
+
+    function createTriangleMesh(p1, p2, p3, label, colorHex, isXRay) {
+      const geom = new THREE.BufferGeometry();
+      const verts = new Float32Array([
+        p1[0], p1[1], p1[2],
+        p2[0], p2[1], p2[2],
+        p3[0], p3[1], p3[2]
+      ]);
+      geom.setAttribute('position', new THREE.BufferAttribute(verts, 3));
+      geom.computeVertexNormals();
+
+      const mat = new THREE.MeshStandardMaterial({
+        color: colorHex,
+        roughness: 0.32,
+        metalness: 0.1,
+        side: THREE.DoubleSide,
+        transparent: isXRay,
+        opacity: isXRay ? 0.45 : 1.0
+      });
+      const mesh = new THREE.Mesh(geom, mat);
+      mesh.castShadow = true;
+
+      // Crisp White Border Line
+      const edgeGeo = new THREE.BufferGeometry();
+      const lineVerts = new Float32Array([
+        p1[0], p1[1] + 0.015, p1[2],  p2[0], p2[1] + 0.015, p2[2],
+        p2[0], p2[1] + 0.015, p2[2],  p3[0], p3[1] + 0.015, p3[3] || p3[2],
+        p3[0], p3[1] + 0.015, p3[2],  p1[0], p1[1] + 0.015, p1[2]
+      ]);
+      edgeGeo.setAttribute('position', new THREE.BufferAttribute(lineVerts, 3));
+      const line = new THREE.LineSegments(edgeGeo, new THREE.LineBasicMaterial({ color: 0xffffff, linewidth: 2 }));
+      mesh.add(line);
+
+      return mesh;
+    }
+
+    /* Build Shape Net & Hinges according to active shape & dimensions */
+    function buildShapeMesh() {
+      if (shapeRootGroup) {
+        scene.remove(shapeRootGroup);
+      }
+      activeNodes = [];
+      shapeRootGroup = new THREE.Group();
+      scene.add(shapeRootGroup);
+
+      const d = currentDims;
+      const isXRay = document.getElementById('chk-xray').checked;
+
+      if (currentShapeKey === 'cube') {
+        const s = d.s;
+        // Base Face (Center)
+        const base = createFaceMesh(s, s, 'BASE', FACE_COLORS[0], isXRay);
+        shapeRootGroup.add(base);
+
+        // North Flap (Z = -s/2)
+        const northH = new THREE.Group();
+        northH.position.set(0, 0, -s / 2);
+        shapeRootGroup.add(northH);
+
+        const northFrame = new THREE.Group();
+        northFrame.position.set(0, 0, -s / 2);
+        northH.add(northFrame);
+        const north = createFaceMesh(s, s, 'NORTH', FACE_COLORS[1], isXRay);
+        northFrame.add(north);
+        activeNodes.push({ obj: northH, axis: 'x', maxAngle: Math.PI / 2 });
+
+        // Roof Flap (attached to North Flap at local Z = -s)
+        const roofH = new THREE.Group();
+        roofH.position.set(0, 0, -s / 2);
+        northFrame.add(roofH);
+
+        const roofFrame = new THREE.Group();
+        roofFrame.position.set(0, 0, -s / 2);
+        roofH.add(roofFrame);
+        const roof = createFaceMesh(s, s, 'ROOF', FACE_COLORS[2], isXRay);
+        roofFrame.add(roof);
+        activeNodes.push({ obj: roofH, axis: 'x', maxAngle: Math.PI / 2 });
+
+        // South Flap (Z = +s/2)
+        const southH = new THREE.Group();
+        southH.position.set(0, 0, s / 2);
+        shapeRootGroup.add(southH);
+
+        const southFrame = new THREE.Group();
+        southFrame.position.set(0, 0, s / 2);
+        southH.add(southFrame);
+        const south = createFaceMesh(s, s, 'SOUTH', FACE_COLORS[3], isXRay);
+        southFrame.add(south);
+        activeNodes.push({ obj: southH, axis: 'x', maxAngle: -Math.PI / 2 });
+
+        // West Flap (X = -s/2)
+        const westH = new THREE.Group();
+        westH.position.set(-s / 2, 0, 0);
+        shapeRootGroup.add(westH);
+
+        const westFrame = new THREE.Group();
+        westFrame.position.set(-s / 2, 0, 0);
+        westH.add(westFrame);
+        const west = createFaceMesh(s, s, 'WEST', FACE_COLORS[4], isXRay);
+        westFrame.add(west);
+        activeNodes.push({ obj: westH, axis: 'z', maxAngle: -Math.PI / 2 });
+
+        // East Flap (X = +s/2)
+        const eastH = new THREE.Group();
+        eastH.position.set(s / 2, 0, 0);
+        shapeRootGroup.add(eastH);
+
+        const eastFrame = new THREE.Group();
+        eastFrame.position.set(s / 2, 0, 0);
+        eastH.add(eastFrame);
+        const east = createFaceMesh(s, s, 'EAST', FACE_COLORS[5], isXRay);
+        eastFrame.add(east);
+        activeNodes.push({ obj: eastH, axis: 'z', maxAngle: Math.PI / 2 });
+      }
+      else if (currentShapeKey === 'cuboid') {
+        const L = d.L, W = d.W, H = d.H;
+
+        // Base Face: L × W
+        const base = createFaceMesh(L, W, 'BASE', FACE_COLORS[0], isXRay);
+        shapeRootGroup.add(base);
+
+        // Front Face: L × H (hinged at Z = +W/2)
+        const frontH = new THREE.Group();
+        frontH.position.set(0, 0, W / 2);
+        shapeRootGroup.add(frontH);
+
+        const frontFrame = new THREE.Group();
+        frontFrame.position.set(0, 0, H / 2);
+        frontH.add(frontFrame);
+        const front = createFaceMesh(L, H, 'FRONT', FACE_COLORS[1], isXRay);
+        frontFrame.add(front);
+        activeNodes.push({ obj: frontH, axis: 'x', maxAngle: -Math.PI / 2 });
+
+        // Back Face: L × H (hinged at Z = -W/2)
+        const backH = new THREE.Group();
+        backH.position.set(0, 0, -W / 2);
+        shapeRootGroup.add(backH);
+
+        const backFrame = new THREE.Group();
+        backFrame.position.set(0, 0, -H / 2);
+        backH.add(backFrame);
+        const back = createFaceMesh(L, H, 'BACK', FACE_COLORS[2], isXRay);
+        backFrame.add(back);
+        activeNodes.push({ obj: backH, axis: 'x', maxAngle: Math.PI / 2 });
+
+        // Top Lid: L × W (attached to outer edge of Back Face: local Z = -H)
+        const topH = new THREE.Group();
+        topH.position.set(0, 0, -H / 2);
+        backFrame.add(topH);
+
+        const topFrame = new THREE.Group();
+        topFrame.position.set(0, 0, -W / 2);
+        topH.add(topFrame);
+        const top = createFaceMesh(L, W, 'TOP (LID)', FACE_COLORS[3], isXRay);
+        topFrame.add(top);
+        activeNodes.push({ obj: topH, axis: 'x', maxAngle: Math.PI / 2 });
+
+        // Left Face: H × W (hinged at X = -L/2)
+        const leftH = new THREE.Group();
+        leftH.position.set(-L / 2, 0, 0);
+        shapeRootGroup.add(leftH);
+
+        const leftFrame = new THREE.Group();
+        leftFrame.position.set(-H / 2, 0, 0);
+        leftH.add(leftFrame);
+        const left = createFaceMesh(H, W, 'LEFT', FACE_COLORS[4], isXRay);
+        leftFrame.add(left);
+        activeNodes.push({ obj: leftH, axis: 'z', maxAngle: -Math.PI / 2 });
+
+        // Right Face: H × W (hinged at X = +L/2)
+        const rightH = new THREE.Group();
+        rightH.position.set(L / 2, 0, 0);
+        shapeRootGroup.add(rightH);
+
+        const rightFrame = new THREE.Group();
+        rightFrame.position.set(H / 2, 0, 0);
+        rightH.add(rightFrame);
+        const right = createFaceMesh(H, W, 'RIGHT', FACE_COLORS[5], isXRay);
+        rightFrame.add(right);
+        activeNodes.push({ obj: rightH, axis: 'z', maxAngle: Math.PI / 2 });
+      }
+      else if (currentShapeKey === 'tri-prism') {
+        const b = d.b, h = d.h, L = d.L;
+        const slant = Math.sqrt((b / 2) * (b / 2) + h * h);
+        const foldAngle = Math.PI - Math.atan(h / (b / 2));
+
+        // Base rectangle: L × b
+        const base = createFaceMesh(L, b, 'BASE', FACE_COLORS[0], isXRay);
+        shapeRootGroup.add(base);
+
+        // Slant Face 1 (North: Z = -b/2)
+        const s1H = new THREE.Group();
+        s1H.position.set(0, 0, -b / 2);
+        shapeRootGroup.add(s1H);
+
+        const s1Frame = new THREE.Group();
+        s1Frame.position.set(0, 0, -slant / 2);
+        s1H.add(s1Frame);
+        const s1 = createFaceMesh(L, slant, 'SLANT 1', FACE_COLORS[1], isXRay);
+        s1Frame.add(s1);
+        activeNodes.push({ obj: s1H, axis: 'x', maxAngle: foldAngle });
+
+        // Slant Face 2 (South: Z = +b/2)
+        const s2H = new THREE.Group();
+        s2H.position.set(0, 0, b / 2);
+        shapeRootGroup.add(s2H);
+
+        const s2Frame = new THREE.Group();
+        s2Frame.position.set(0, 0, slant / 2);
+        s2H.add(s2Frame);
+        const s2 = createFaceMesh(L, slant, 'SLANT 2', FACE_COLORS[2], isXRay);
+        s2Frame.add(s2);
+        activeNodes.push({ obj: s2H, axis: 'x', maxAngle: -foldAngle });
+
+        // End Triangle 1 (West: X = -L/2)
+        const end1H = new THREE.Group();
+        end1H.position.set(-L / 2, 0, 0);
+        shapeRootGroup.add(end1H);
+        const tri1 = createTriangleMesh([-h, 0, 0], [0, 0, -b / 2], [0, 0, b / 2], 'END 1', FACE_COLORS[3], isXRay);
+        end1H.add(tri1);
+        activeNodes.push({ obj: end1H, axis: 'z', maxAngle: -Math.PI / 2 });
+
+        // End Triangle 2 (East: X = +L/2)
+        const end2H = new THREE.Group();
+        end2H.position.set(L / 2, 0, 0);
+        shapeRootGroup.add(end2H);
+        const tri2 = createTriangleMesh([h, 0, 0], [0, 0, b / 2], [0, 0, -b / 2], 'END 2', FACE_COLORS[4], isXRay);
+        end2H.add(tri2);
+        activeNodes.push({ obj: end2H, axis: 'z', maxAngle: Math.PI / 2 });
+      }
+      else if (currentShapeKey === 'sq-pyramid') {
+        const b = d.b, H = d.H;
+        const slant = Math.sqrt(H * H + (b / 2) * (b / 2));
+        const foldAngle = Math.PI - Math.atan(H / (b / 2));
+
+        // Base square: b × b
+        const base = createFaceMesh(b, b, 'BASE', FACE_COLORS[0], isXRay);
+        shapeRootGroup.add(base);
+
+        // North triangle (hinged at Z = -b/2)
+        const northH = new THREE.Group();
+        northH.position.set(0, 0, -b / 2);
+        shapeRootGroup.add(northH);
+        const triN = createTriangleMesh([-b / 2, 0, 0], [b / 2, 0, 0], [0, 0, -slant], 'NORTH', FACE_COLORS[1], isXRay);
+        northH.add(triN);
+        activeNodes.push({ obj: northH, axis: 'x', maxAngle: foldAngle });
+
+        // South triangle (hinged at Z = +b/2)
+        const southH = new THREE.Group();
+        southH.position.set(0, 0, b / 2);
+        shapeRootGroup.add(southH);
+        const triS = createTriangleMesh([b / 2, 0, 0], [-b / 2, 0, 0], [0, 0, slant], 'SOUTH', FACE_COLORS[2], isXRay);
+        southH.add(triS);
+        activeNodes.push({ obj: southH, axis: 'x', maxAngle: -foldAngle });
+
+        // East triangle (hinged at X = +b/2)
+        const eastH = new THREE.Group();
+        eastH.position.set(b / 2, 0, 0);
+        shapeRootGroup.add(eastH);
+        const triE = createTriangleMesh([0, 0, -b / 2], [0, 0, b / 2], [slant, 0, 0], 'EAST', FACE_COLORS[3], isXRay);
+        eastH.add(triE);
+        activeNodes.push({ obj: eastH, axis: 'z', maxAngle: foldAngle });
+
+        // West triangle (hinged at X = -b/2)
+        const westH = new THREE.Group();
+        westH.position.set(-b / 2, 0, 0);
+        shapeRootGroup.add(westH);
+        const triW = createTriangleMesh([0, 0, b / 2], [0, 0, -b / 2], [-slant, 0, 0], 'WEST', FACE_COLORS[4], isXRay);
+        westH.add(triW);
+        activeNodes.push({ obj: westH, axis: 'z', maxAngle: -foldAngle });
+      }
+      else if (currentShapeKey === 'cylinder') {
+        const r = d.r, H = d.H, segs = 48;
+        const C = 2 * Math.PI * r;
+
+        // Custom parametric plane laid flat in XZ plane
+        const geom = new THREE.PlaneGeometry(C, H, segs, 1);
+        geom.rotateX(-Math.PI / 2);
+
+        const mat = new THREE.MeshStandardMaterial({
+          color: FACE_COLORS[0],
+          roughness: 0.35,
+          side: THREE.DoubleSide,
+          transparent: isXRay,
+          opacity: isXRay ? 0.45 : 1.0
+        });
+        const bodyMesh = new THREE.Mesh(geom, mat);
+        shapeRootGroup.add(bodyMesh);
+
+        const posAttr = geom.attributes.position;
+        const origPositions = new Float32Array(posAttr.array);
+
+        // Top Circle (attached at North: Z = -H/2)
+        const topH = new THREE.Group();
+        topH.position.set(0, 0, -H / 2);
+        shapeRootGroup.add(topH);
+        const topCap = createCircleMesh(r, 'TOP LID', FACE_COLORS[1], isXRay);
+        topCap.position.set(0, 0, -r);
+        topH.add(topCap);
+
+        // Bottom Circle (attached at South: Z = +H/2)
+        const botH = new THREE.Group();
+        botH.position.set(0, 0, H / 2);
+        shapeRootGroup.add(botH);
+        const botCap = createCircleMesh(r, 'BASE LID', FACE_COLORS[2], isXRay);
+        botCap.position.set(0, 0, r);
+        botH.add(botCap);
+
+        activeNodes.push({
+          customUpdate: (prog) => {
+            const arr = posAttr.array;
+            for (let i = 0; i < arr.length; i += 3) {
+              const xFlat = origPositions[i];
+              const zVal = origPositions[i + 2];
+
+              if (prog <= 0.0001) {
+                arr[i] = xFlat;
+                arr[i + 1] = 0;
+                arr[i + 2] = zVal;
+              } else {
+                const theta = (xFlat / r) * prog;
+                const curRadius = r / prog;
+                arr[i] = curRadius * Math.sin(theta);
+                arr[i + 1] = curRadius * (1 - Math.cos(theta));
+                arr[i + 2] = zVal;
+              }
+            }
+            posAttr.needsUpdate = true;
+            geom.computeVertexNormals();
+
+            topH.rotation.x = (Math.PI / 2) * prog;
+            botH.rotation.x = -(Math.PI / 2) * prog;
+          }
+        });
+      }
+      else if (currentShapeKey === 'cone') {
+        const r = d.r, H = d.H, segs = 48;
+        const L = Math.sqrt(r * r + H * H);
+        const thetaSec = 2 * Math.PI * (r / L);
+
+        const geom = new THREE.BufferGeometry();
+        const verts = [];
+        const indices = [];
+
+        // Vertex 0: Apex (at (0, 0, L) in flat net)
+        verts.push(0, 0, L);
+
+        for (let i = 0; i <= segs; i++) {
+          const frac = i / segs;
+          const phi = (frac - 0.5) * thetaSec;
+          verts.push(L * Math.sin(phi), 0, L - L * Math.cos(phi));
+          if (i > 0) {
+            indices.push(0, i, i + 1);
+          }
+        }
+
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(verts.flat(), 3));
+        geom.setIndex(indices);
+        geom.computeVertexNormals();
+
+        const mat = new THREE.MeshStandardMaterial({
+          color: FACE_COLORS[1],
+          roughness: 0.32,
+          metalness: 0.08,
+          side: THREE.DoubleSide,
+          transparent: isXRay,
+          opacity: isXRay ? 0.45 : 1.0
+        });
+        const coneSector = new THREE.Mesh(geom, mat);
+        shapeRootGroup.add(coneSector);
+
+        const origPositions = new Float32Array(verts.flat());
+
+        // Base Circle
+        const baseH = new THREE.Group();
+        baseH.position.set(0, 0, -r);
+        shapeRootGroup.add(baseH);
+
+        const baseCircle = createCircleMesh(r, 'BASE', FACE_COLORS[0], isXRay);
+        baseH.add(baseCircle);
+
+        activeNodes.push({
+          customUpdate: (prog) => {
+            const pos = geom.attributes.position.array;
+            // Apex rises from (0, 0, L) to (0, H, -r)
+            pos[0] = 0;
+            pos[1] = H * prog;
+            pos[2] = L * (1 - prog) + (-r) * prog;
+
+            for (let i = 1; i <= segs + 1; i++) {
+              const origX = origPositions[i * 3];
+              const origZ = origPositions[i * 3 + 2];
+              const phi = Math.atan2(origX, L - origZ);
+              const psi = phi * (L / r);
+
+              const curPhi = phi * (1 - prog) + psi * prog;
+              const curR = L * (1 - prog) + r * prog;
+
+              pos[i * 3] = curR * Math.sin(curPhi);
+              pos[i * 3 + 1] = 0;
+              pos[i * 3 + 2] = -r * prog + curR * Math.cos(curPhi) * prog + origZ * (1 - prog);
+            }
+            geom.attributes.position.needsUpdate = true;
+            geom.computeVertexNormals();
+          }
+        });
+      }
+      else if (currentShapeKey === 'tetrahedron') {
+        const s = d.s;
+        const triH = (s * Math.sqrt(3)) / 2;
+        const foldAngle = Math.acos(-1 / 3);
+
+        // Center equilateral base triangle
+        const base = createTriangleMesh([0, 0, -triH / 3], [-s / 2, 0, (2 * triH) / 3], [s / 2, 0, (2 * triH) / 3], 'BASE', FACE_COLORS[0], isXRay);
+        shapeRootGroup.add(base);
+
+        // Flap 1 (hinged at bottom edge: Z = (2*triH)/3)
+        const f1H = new THREE.Group();
+        f1H.position.set(0, 0, (2 * triH) / 3);
+        shapeRootGroup.add(f1H);
+        const t1 = createTriangleMesh([-s / 2, 0, 0], [s / 2, 0, 0], [0, 0, triH], 'FACE 1', FACE_COLORS[1], isXRay);
+        f1H.add(t1);
+        activeNodes.push({ obj: f1H, axis: 'x', maxAngle: -foldAngle });
+
+        // Flap 2 (North-West)
+        const f2H = new THREE.Group();
+        f2H.position.set(-s / 4, 0, triH / 6);
+        f2H.rotation.y = -Math.PI / 3;
+        shapeRootGroup.add(f2H);
+        const t2 = createTriangleMesh([-s / 2, 0, 0], [s / 2, 0, 0], [0, 0, triH], 'FACE 2', FACE_COLORS[2], isXRay);
+        f2H.add(t2);
+        activeNodes.push({ obj: t2, axis: 'x', maxAngle: -foldAngle });
+
+        // Flap 3 (North-East)
+        const f3H = new THREE.Group();
+        f3H.position.set(s / 4, 0, triH / 6);
+        f3H.rotation.y = Math.PI / 3;
+        shapeRootGroup.add(f3H);
+        const t3 = createTriangleMesh([-s / 2, 0, 0], [s / 2, 0, 0], [0, 0, triH], 'FACE 3', FACE_COLORS[3], isXRay);
+        f3H.add(t3);
+        activeNodes.push({ obj: t3, axis: 'x', maxAngle: -foldAngle });
+      }
+
+      // Apply current fold progress immediately
+      applyFold(foldProgress);
+
+      // Update Projection Rays & Screens if active
+      updateProjectionRays();
+    }
+
+    function applyFold(prog) {
+      activeNodes.forEach(node => {
+        if (node.customUpdate) {
+          node.customUpdate(prog);
+        } else if (node.obj) {
+          if (node.axis === 'x') {
+            node.obj.rotation.x = node.maxAngle * prog;
+          } else if (node.axis === 'z') {
+            node.obj.rotation.z = node.maxAngle * prog;
+          }
+        }
+      });
+    }
+
+    /* ==========================================================
+       5. IN-SCENE 3D ORTHOGRAPHIC PROJECTION RAYS & SCREENS
+       ========================================================== */
+    function updateProjectionRays() {
+      if (!projectionRaysGroup || !projectionScreensGroup) return;
+
+      projectionRaysGroup.clear();
+      projectionScreensGroup.clear();
+
+      const showRays = document.getElementById('chk-rays').checked;
+      if (!showRays) return;
+
+      const d = currentDims;
+      const extent = 10;
+
+      // 1. Plan Screen (Under the shape at Y = -0.05)
+      const planMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.1, side: THREE.DoubleSide });
+      const planScreen = new THREE.Mesh(new THREE.PlaneGeometry(16, 16), planMat);
+      planScreen.rotateX(-Math.PI / 2);
+      planScreen.position.set(0, -0.05, 0);
+      projectionScreensGroup.add(planScreen);
+
+      // 2. Front Elevation Screen (Behind the shape at Z = -extent)
+      const frontMat = new THREE.MeshBasicMaterial({ color: 0x34d399, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+      const frontScreen = new THREE.Mesh(new THREE.PlaneGeometry(16, 14), frontMat);
+      frontScreen.position.set(0, 5, -extent);
+      projectionScreensGroup.add(frontScreen);
+
+      // 3. Side Elevation Screen (Beside the shape at X = -extent)
+      const sideMat = new THREE.MeshBasicMaterial({ color: 0xfbbf24, transparent: true, opacity: 0.12, side: THREE.DoubleSide });
+      const sideScreen = new THREE.Mesh(new THREE.PlaneGeometry(16, 14), sideMat);
+      sideScreen.rotateY(Math.PI / 2);
+      sideScreen.position.set(-extent, 5, 0);
+      projectionScreensGroup.add(sideScreen);
+
+      // Laser Projection Lines from Shape Vertices to Screens
+      const rayPoints = [];
+      const colors = [];
+
+      // Sample key coordinates based on shape
+      let keyVerts = [];
+      if (currentShapeKey === 'cube') {
+        const s = d.s;
+        keyVerts = [
+          [-s/2, s, -s/2], [s/2, s, -s/2], [s/2, s, s/2], [-s/2, s, s/2]
+        ];
+      } else if (currentShapeKey === 'cuboid') {
+        const L = d.L, W = d.W, H = d.H;
+        keyVerts = [
+          [-L/2, H, -W/2], [L/2, H, -W/2], [L/2, H, W/2], [-L/2, H, W/2]
+        ];
+      } else if (currentShapeKey === 'sq-pyramid') {
+        const b = d.b, H = d.H;
+        keyVerts = [[0, H, 0], [-b/2, 0, -b/2], [b/2, 0, b/2]];
+      } else {
+        keyVerts = [[0, 4, 0], [2, 0, 2], [-2, 0, -2]];
+      }
+
+      keyVerts.forEach(pt => {
+        // Ray to Front Screen
+        rayPoints.push(new THREE.Vector3(pt[0], pt[1], pt[2]));
+        rayPoints.push(new THREE.Vector3(pt[0], pt[1], -extent));
+
+        // Ray to Side Screen
+        rayPoints.push(new THREE.Vector3(pt[0], pt[1], pt[2]));
+        rayPoints.push(new THREE.Vector3(-extent, pt[1], pt[2]));
+
+        // Ray to Plan Floor
+        rayPoints.push(new THREE.Vector3(pt[0], pt[1], pt[2]));
+        rayPoints.push(new THREE.Vector3(pt[0], -0.05, pt[2]));
+      });
+
+      const rayGeo = new THREE.BufferGeometry().setFromPoints(rayPoints);
+      const rayLine = new THREE.LineSegments(rayGeo, new THREE.LineDashedMaterial({
+        color: 0x38bdf8,
+        dashSize: 0.35,
+        gapSize: 0.2,
+        opacity: 0.6,
+        transparent: true
+      }));
+      rayLine.computeLineDistances();
+      projectionRaysGroup.add(rayLine);
+    }
+
+    /* ==========================================================
+       6. 2D ORTHOGRAPHIC PROJECTIONS (PLANS & ELEVATIONS SVG)
+       ========================================================== */
+    function renderOrthographicSVGs() {
+      const d = currentDims;
+      const planFrame = document.getElementById('svg-plan-frame');
+      const frontFrame = document.getElementById('svg-front-frame');
+      const sideFrame = document.getElementById('svg-side-frame');
+      if (!planFrame || !frontFrame || !sideFrame) return;
+
+      const gridPattern = `
+        <defs>
+          <pattern id="grid-pattern" width="16" height="16" patternUnits="userSpaceOnUse">
+            <path d="M 16 0 L 0 0 0 16" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          </pattern>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#38bdf8"/>
+          </marker>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+      `;
+
+      let planSvg = '', frontSvg = '', sideSvg = '';
+      let capPlan = '', capFront = '', capSide = '';
+
+      if (currentShapeKey === 'cube') {
+        const s = d.s;
+        const scale = 22;
+        const sizePx = s * scale;
+        const cx = 150, cy = 80;
+        const x1 = cx - sizePx / 2, y1 = cy - sizePx / 2;
+
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${x1}" y="${y1}" width="${sizePx}" height="${sizePx}" fill="rgba(56,189,248,0.25)" stroke="#38bdf8" stroke-width="2.5" rx="2"/>
+            <text x="${cx}" y="${cy}" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">Top Face: ${s} × ${s}</text>
+            <line x1="${x1}" y1="${y1 - 10}" x2="${x1 + sizePx}" y2="${y1 - 10}" stroke="#38bdf8" stroke-width="1.5" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+            <text x="${cx}" y="${y1 - 14}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">${s} cm</text>
+          </svg>
+        `;
+        frontSvg = planSvg.replace('Top Face', 'Front Face');
+        sideSvg = planSvg.replace('Top Face', 'Side Profile');
+        capPlan = `Plan View: Square with side ${s} cm (${(s*s).toFixed(1)} cm²).`;
+        capFront = `Front Elevation: Identical square of ${s} × ${s} cm.`;
+        capSide = `Side Elevation: Identical square of ${s} × ${s} cm.`;
+      }
+      else if (currentShapeKey === 'cuboid') {
+        const L = d.L, W = d.W, H = d.H;
+        const scale = 18;
+        const lPx = L * scale, wPx = W * scale, hPx = H * scale;
+        const cx = 150, cy = 80;
+
+        // Plan: L × W
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - lPx/2}" y="${cy - wPx/2}" width="${lPx}" height="${wPx}" fill="rgba(56,189,248,0.22)" stroke="#38bdf8" stroke-width="2.5" rx="2"/>
+            <text x="${cx}" y="${cy}" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">Plan: ${L} × ${W}</text>
+            <text x="${cx}" y="${cy - wPx/2 - 8}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">L = ${L} cm</text>
+            <text x="${cx + lPx/2 + 18}" y="${cy}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">W = ${W} cm</text>
+          </svg>
+        `;
+        // Front: L × H
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - lPx/2}" y="${cy - hPx/2}" width="${lPx}" height="${hPx}" fill="rgba(52,211,153,0.22)" stroke="#34d399" stroke-width="2.5" rx="2"/>
+            <text x="${cx}" y="${cy}" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">Front: ${L} × ${H}</text>
+            <text x="${cx}" y="${cy - hPx/2 - 8}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">L = ${L} cm</text>
+            <text x="${cx + lPx/2 + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">H = ${H} cm</text>
+          </svg>
+        `;
+        // Side: W × H
+        sideSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - wPx/2}" y="${cy - hPx/2}" width="${wPx}" height="${hPx}" fill="rgba(251,191,36,0.22)" stroke="#fbbf24" stroke-width="2.5" rx="2"/>
+            <text x="${cx}" y="${cy}" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">Side: ${W} × ${H}</text>
+            <text x="${cx}" y="${cy - hPx/2 - 8}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">W = ${W} cm</text>
+            <text x="${cx + wPx/2 + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">H = ${H} cm</text>
+          </svg>
+        `;
+        capPlan = `Plan: Rectangle with Length ${L} cm and Width ${W} cm.`;
+        capFront = `Front: Rectangle with Length ${L} cm and Height ${H} cm.`;
+        capSide = `Side: Rectangle with Width ${W} cm and Height ${H} cm.`;
+      }
+      else if (currentShapeKey === 'tri-prism') {
+        const b = d.b, h = d.h, L = d.L;
+        const scale = 18;
+        const lPx = L * scale, bPx = b * scale, hPx = h * scale;
+        const cx = 150, cy = 80;
+
+        // Plan: Rectangle with center ridge line
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - lPx/2}" y="${cy - bPx/2}" width="${lPx}" height="${bPx}" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2.5" rx="2"/>
+            <line x1="${cx - lPx/2}" y1="${cy}" x2="${cx + lPx/2}" y2="${cy}" stroke="#ffffff" stroke-width="2" stroke-dasharray="3 3"/>
+            <text x="${cx}" y="${cy - bPx/2 - 8}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Length: ${L} cm</text>
+            <text x="${cx + lPx/2 + 20}" y="${cy}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">b: ${b} cm</text>
+            <text x="${cx}" y="${cy + 18}" fill="#f8fafc" font-size="10" font-weight="600" text-anchor="middle">Center Apex Ridge</text>
+          </svg>
+        `;
+        // Front: Triangle
+        const xA = cx, yA = cy - hPx/2;
+        const xB = cx - bPx/2, yB = cy + hPx/2;
+        const xC = cx + bPx/2, yC = cy + hPx/2;
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="${xA}" y1="${yA}" x2="${xA}" y2="${yB}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="${cx}" y="${yB + 16}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Base = ${b} cm</text>
+            <text x="${xA + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700">h = ${h} cm</text>
+          </svg>
+        `;
+        // Side: Rectangle L × h
+        sideSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - lPx/2}" y="${cy - hPx/2}" width="${lPx}" height="${hPx}" fill="rgba(251,191,36,0.2)" stroke="#fbbf24" stroke-width="2.5" rx="2"/>
+            <text x="${cx}" y="${cy}" fill="#f8fafc" font-size="12" font-weight="700" text-anchor="middle" dominant-baseline="middle">Side: ${L} × ${h}</text>
+            <text x="${cx}" y="${cy - hPx/2 - 8}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">L = ${L} cm</text>
+            <text x="${cx + lPx/2 + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">h = ${h} cm</text>
+          </svg>
+        `;
+        capPlan = `Plan: ${L} × ${b} cm rectangle with the central apex ridge visible.`;
+        capFront = `Front: Triangle with base ${b} cm and vertical altitude ${h} cm.`;
+        capSide = `Side: Rectangle with length ${L} cm and height ${h} cm.`;
+      }
+      else if (currentShapeKey === 'sq-pyramid') {
+        const b = d.b, H = d.H;
+        const scale = 20;
+        const bPx = b * scale, hPx = H * scale;
+        const cx = 150, cy = 80;
+        const x1 = cx - bPx/2, y1 = cy - bPx/2;
+        const x2 = cx + bPx/2, y2 = cy + bPx/2;
+
+        // Plan: Square with diagonal "X"
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${x1}" y="${y1}" width="${bPx}" height="${bPx}" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2.5" rx="2"/>
+            <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffffff" stroke-width="2"/>
+            <line x1="${x2}" y1="${y1}" x2="${x1}" y2="${y2}" stroke="#ffffff" stroke-width="2"/>
+            <circle cx="${cx}" cy="${cy}" r="4" fill="#38bdf8"/>
+            <text x="${cx}" y="${y1 - 8}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Base: ${b} × ${b} cm</text>
+          </svg>
+        `;
+        // Front: Triangle with center height axis
+        const xA = cx, yA = cy - hPx/2;
+        const xB = cx - bPx/2, yB = cy + hPx/2;
+        const xC = cx + bPx/2, yC = cy + hPx/2;
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="${xA}" y1="${yA}" x2="${xA}" y2="${yB}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="${cx}" y="${yB + 16}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Base = ${b} cm</text>
+            <text x="${xA + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700">H = ${H} cm</text>
+          </svg>
+        `;
+        sideSvg = frontSvg; // Symmetric square pyramid
+        capPlan = `Plan: Square showing 4 triangular faces meeting at the central apex.`;
+        capFront = `Front: Isosceles triangle with base ${b} cm and vertical height ${H} cm.`;
+        capSide = `Side: Identical isosceles triangle with base ${b} cm and height ${H} cm.`;
+      }
+      else if (currentShapeKey === 'cylinder') {
+        const r = d.r, H = d.H;
+        const scale = 18;
+        const rPx = r * scale, dPx = 2 * rPx, hPx = H * scale;
+        const cx = 150, cy = 80;
+
+        // Plan: Circle
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <circle cx="${cx}" cy="${cy}" r="${rPx}" fill="rgba(56,189,248,0.22)" stroke="#38bdf8" stroke-width="2.5"/>
+            <line x1="${cx}" y1="${cy}" x2="${cx + rPx}" y2="${cy}" stroke="#ffffff" stroke-width="2"/>
+            <circle cx="${cx}" cy="${cy}" r="3" fill="#ffffff"/>
+            <text x="${cx + rPx/2}" y="${cy - 6}" fill="#f8fafc" font-size="10" font-weight="700" text-anchor="middle">r = ${r}</text>
+            <text x="${cx}" y="${cy + rPx + 16}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Diameter: ${(2*r).toFixed(1)} cm</text>
+          </svg>
+        `;
+        // Front: Rectangle
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <rect x="${cx - rPx}" y="${cy - hPx/2}" width="${dPx}" height="${hPx}" fill="rgba(52,211,153,0.22)" stroke="#34d399" stroke-width="2.5" rx="2"/>
+            <line x1="${cx}" y1="${cy - hPx/2 - 8}" x2="${cx}" y2="${cy + hPx/2 + 8}" stroke="#ffffff" stroke-width="1.2" stroke-dasharray="6 3 2 3"/>
+            <text x="${cx}" y="${cy - hPx/2 - 12}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">2r = ${(2*r).toFixed(1)} cm</text>
+            <text x="${cx + rPx + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700" text-anchor="middle">H = ${H} cm</text>
+          </svg>
+        `;
+        sideSvg = frontSvg;
+        capPlan = `Plan: Perfect circle of radius ${r} cm (diameter ${(2*r).toFixed(1)} cm).`;
+        capFront = `Front: Rectangle of width ${(2*r).toFixed(1)} cm and height ${H} cm.`;
+        capSide = `Side: Identical rectangle of ${(2*r).toFixed(1)} × ${H} cm.`;
+      }
+      else if (currentShapeKey === 'cone') {
+        const r = d.r, H = d.H;
+        const scale = 18;
+        const rPx = r * scale, dPx = 2 * rPx, hPx = H * scale;
+        const cx = 150, cy = 80;
+
+        // Plan: Circle with apex dot
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <circle cx="${cx}" cy="${cy}" r="${rPx}" fill="rgba(56,189,248,0.22)" stroke="#38bdf8" stroke-width="2.5"/>
+            <circle cx="${cx}" cy="${cy}" r="4" fill="#fbbf24"/>
+            <text x="${cx}" y="${cy + rPx + 16}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Circle Base (Apex at Center)</text>
+          </svg>
+        `;
+        // Front: Triangle
+        const xA = cx, yA = cy - hPx/2;
+        const xB = cx - rPx, yB = cy + hPx/2;
+        const xC = cx + rPx, yC = cy + hPx/2;
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <polygon points="${xA},${yA} ${xB},${yB} ${xC},${yC}" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="${xA}" y1="${yA}" x2="${xA}" y2="${yB}" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4 4"/>
+            <text x="${cx}" y="${yB + 16}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Base Diameter = ${(2*r).toFixed(1)} cm</text>
+            <text x="${xA + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700">H = ${H} cm</text>
+          </svg>
+        `;
+        sideSvg = frontSvg;
+        capPlan = `Plan: Circle of radius ${r} cm with a central marker for the cone apex.`;
+        capFront = `Front: Isosceles triangle with base ${(2*r).toFixed(1)} cm and height ${H} cm.`;
+        capSide = `Side: Identical isosceles triangle profile.`;
+      }
+      else if (currentShapeKey === 'tetrahedron') {
+        const s = d.s;
+        const scale = 20;
+        const sPx = s * scale;
+        const hTri = (sPx * Math.sqrt(3)) / 2;
+        const H = s * Math.sqrt(2 / 3);
+        const hPx = H * scale;
+        const cx = 150, cy = 80;
+
+        // Plan: Equilateral triangle with centroid apex
+        const p1 = [cx, cy - (2/3)*hTri];
+        const p2 = [cx - sPx/2, cy + (1/3)*hTri];
+        const p3 = [cx + sPx/2, cy + (1/3)*hTri];
+        planSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <polygon points="${p1[0]},${p1[1]} ${p2[0]},${p2[1]} ${p3[0]},${p3[1]}" fill="rgba(56,189,248,0.2)" stroke="#38bdf8" stroke-width="2.5"/>
+            <line x1="${p1[0]}" y1="${p1[1]}" x2="${cx}" y2="${cy}" stroke="#ffffff" stroke-width="2"/>
+            <line x1="${p2[0]}" y1="${p2[1]}" x2="${cx}" y2="${cy}" stroke="#ffffff" stroke-width="2"/>
+            <line x1="${p3[0]}" y1="${p3[1]}" x2="${cx}" y2="${cy}" stroke="#ffffff" stroke-width="2"/>
+            <circle cx="${cx}" cy="${cy}" r="4" fill="#38bdf8"/>
+            <text x="${cx}" y="${p3[1] + 16}" fill="#38bdf8" font-size="10" font-weight="700" text-anchor="middle">Edge s = ${s} cm</text>
+          </svg>
+        `;
+        // Front: Triangle
+        frontSvg = `
+          <svg viewBox="0 0 300 160">
+            ${gridPattern}
+            <polygon points="${cx},${cy - hPx/2} ${cx - sPx/2},${cy + hPx/2} ${cx + sPx/2},${cy + hPx/2}" fill="rgba(52,211,153,0.25)" stroke="#34d399" stroke-width="2.5"/>
+            <text x="${cx}" y="${cy + hPx/2 + 16}" fill="#34d399" font-size="10" font-weight="700" text-anchor="middle">Base = ${s} cm</text>
+            <text x="${cx + 18}" y="${cy}" fill="#fbbf24" font-size="10" font-weight="700">H = ${H.toFixed(1)} cm</text>
+          </svg>
+        `;
+        sideSvg = frontSvg;
+        capPlan = `Plan: Equilateral triangle with 3 edges converging at the top centroid apex.`;
+        capFront = `Front: Triangle with base ${s} cm and height ${H.toFixed(1)} cm.`;
+        capSide = `Side: Identical profile.`;
+      }
+
+      planFrame.innerHTML = planSvg;
+      frontFrame.innerHTML = frontSvg;
+      sideFrame.innerHTML = sideSvg;
+
+      document.getElementById('cap-plan').textContent = capPlan;
+      document.getElementById('cap-front').textContent = capFront;
+      document.getElementById('cap-side').textContent = capSide;
+    }
+
+    /* ==========================================================
+       7. MATHS INSPECTOR & FORMULA CALCULATION ENGINE
+       ========================================================== */
+    function updateMathsInspector() {
+      const cfg = SHAPES_CONFIG[currentShapeKey];
+      if (!cfg) return;
+
+      // Update Euler Characteristic
+      document.getElementById('euler-f').textContent = cfg.faces;
+      document.getElementById('euler-v').textContent = cfg.vertices;
+      document.getElementById('euler-e').textContent = cfg.edges;
+      if (cfg.polyhedron) {
+        const val = cfg.faces - cfg.edges + cfg.vertices;
+        document.getElementById('euler-check').textContent = `${val} ✓`;
+      } else {
+        document.getElementById('euler-check').textContent = 'N/A (Curved)';
+      }
+
+      // Populate Dimensions Sliders
+      const dimContainer = document.getElementById('dimensions-container');
+      dimContainer.innerHTML = '';
+
+      Object.keys(cfg.dims).forEach(key => {
+        const dInfo = cfg.dims[key];
+        const val = currentDims[key] !== undefined ? currentDims[key] : dInfo.val;
+
+        const row = document.createElement('div');
+        row.className = 'dim-row';
+        row.innerHTML = `
+          <div class="dim-header">
+            <span>${dInfo.label}</span>
+            <span class="dim-value-badge" id="val-${key}">${val.toFixed(1)} ${dInfo.unit}</span>
+          </div>
+          <input type="range" class="dim-slider" min="${dInfo.min}" max="${dInfo.max}" step="${dInfo.step}" value="${val}" data-dim="${key}">
+        `;
+        dimContainer.appendChild(row);
+
+        const slider = row.querySelector('.dim-slider');
+        slider.addEventListener('input', (e) => {
+          const newVal = parseFloat(e.target.value);
+          currentDims[key] = newVal;
+          document.getElementById(`val-${key}`).textContent = `${newVal.toFixed(1)} ${dInfo.unit}`;
+          audio.playClick(850, 0.02);
+          onDimensionsChanged();
+        });
+      });
+
+      // Update Formulas & Calculations
+      document.getElementById('sa-formula-display').textContent = cfg.saFormula;
+      document.getElementById('vol-formula-display').textContent = cfg.volFormula;
+
+      const saRes = cfg.calcSA(currentDims);
+      document.getElementById('sa-working-display').textContent = saRes.working;
+      document.getElementById('sa-result-display').textContent = `${saRes.total.toFixed(2)} cm²`;
+
+      const volRes = cfg.calcVol(currentDims);
+      document.getElementById('vol-working-display').textContent = volRes.working;
+      document.getElementById('vol-result-display').textContent = `${volRes.total.toFixed(2)} cm³`;
+    }
+
+    function onDimensionsChanged() {
+      buildShapeMesh();
+      renderOrthographicSVGs();
+      const cfg = SHAPES_CONFIG[currentShapeKey];
+      const saRes = cfg.calcSA(currentDims);
+      document.getElementById('sa-working-display').textContent = saRes.working;
+      document.getElementById('sa-result-display').textContent = `${saRes.total.toFixed(2)} cm²`;
+
+      const volRes = cfg.calcVol(currentDims);
+      document.getElementById('vol-working-display').textContent = volRes.working;
+      document.getElementById('vol-result-display').textContent = `${volRes.total.toFixed(2)} cm³`;
+    }
+
+    /* ==========================================================
+       8. EXPORT SVG NET GENERATOR & PRINT TEMPLATE
+       ========================================================== */
+    function generateVectorNetSVG() {
+      const d = currentDims;
+      const incTabs = document.getElementById('chk-export-tabs').checked;
+      const incLabels = document.getElementById('chk-export-labels').checked;
+      const cfg = SHAPES_CONFIG[currentShapeKey];
+
+      let svgContent = '';
+      const w = 500, h = 420;
+      const cx = w / 2, cy = h / 2;
+
+      // Stylized cut & fold net drawing for active shape
+      if (currentShapeKey === 'cube') {
+        const s = d.s * 15;
+        // Latin cross: 1-4-1
+        svgContent = `
+          <!-- Center Column -->
+          <rect x="${cx - s/2}" y="${cy - 3*s/2}" width="${s}" height="${s}" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <rect x="${cx - s/2}" y="${cy - s/2}" width="${s}" height="${s}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <rect x="${cx - s/2}" y="${cy + s/2}" width="${s}" height="${s}" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+          <rect x="${cx - s/2}" y="${cy + 3*s/2}" width="${s}" height="${s}" fill="#38bdf8" stroke="#0284c7" stroke-width="2"/>
+          <!-- Wings -->
+          <rect x="${cx - 3*s/2}" y="${cy - s/2}" width="${s}" height="${s}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <rect x="${cx + s/2}" y="${cy - s/2}" width="${s}" height="${s}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+
+          <!-- Dashed Fold Creases -->
+          <line x1="${cx - s/2}" y1="${cy - s/2}" x2="${cx + s/2}" y2="${cy - s/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - s/2}" y1="${cy + s/2}" x2="${cx + s/2}" y2="${cy + s/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - s/2}" y1="${cy - s/2}" x2="${cx - s/2}" y2="${cy + s/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx + s/2}" y1="${cy - s/2}" x2="${cx + s/2}" y2="${cy + s/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+
+          ${incLabels ? `
+            <text x="${cx}" y="${cy}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">BASE (${d.s}cm)</text>
+            <text x="${cx}" y="${cy - s}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">NORTH</text>
+            <text x="${cx}" y="${cy + s}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">SOUTH</text>
+            <text x="${cx - s}" y="${cy}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">WEST</text>
+            <text x="${cx + s}" y="${cy}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">EAST</text>
+            <text x="${cx}" y="${cy + 2*s}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">TOP</text>
+          ` : ''}
+        `;
+      }
+      else if (currentShapeKey === 'cuboid') {
+        const L = d.L * 14, W = d.W * 14, H = d.H * 14;
+        svgContent = `
+          <!-- Base L × W -->
+          <rect x="${cx - L/2}" y="${cy - W/2}" width="${L}" height="${W}" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <!-- Front L × H -->
+          <rect x="${cx - L/2}" y="${cy + W/2}" width="${L}" height="${H}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <!-- Back L × H -->
+          <rect x="${cx - L/2}" y="${cy - W/2 - H}" width="${L}" height="${H}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <!-- Top L × W -->
+          <rect x="${cx - L/2}" y="${cy - 3*W/2 - H}" width="${L}" height="${W}" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+          <!-- Left H × W -->
+          <rect x="${cx - L/2 - H}" y="${cy - W/2}" width="${H}" height="${W}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <!-- Right H × W -->
+          <rect x="${cx + L/2}" y="${cy - W/2}" width="${H}" height="${W}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+
+          <!-- Dashed Folds -->
+          <line x1="${cx - L/2}" y1="${cy - W/2}" x2="${cx + L/2}" y2="${cy - W/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - L/2}" y1="${cy + W/2}" x2="${cx + L/2}" y2="${cy + W/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - L/2}" y1="${cy - W/2}" x2="${cx - L/2}" y2="${cy + W/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx + L/2}" y1="${cy - W/2}" x2="${cx + L/2}" y2="${cy + W/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+
+          ${incLabels ? `
+            <text x="${cx}" y="${cy}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">BASE (${d.L} × ${d.W}cm)</text>
+            <text x="${cx}" y="${cy + W/2 + H/2}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">FRONT</text>
+            <text x="${cx}" y="${cy - W/2 - H/2}" font-size="11" font-weight="700" fill="#0369a1" text-anchor="middle">BACK</text>
+            <text x="${cx - L/2 - H/2}" y="${cy}" font-size="10" font-weight="700" fill="#0369a1" text-anchor="middle">LEFT</text>
+            <text x="${cx + L/2 + H/2}" y="${cy}" font-size="10" font-weight="700" fill="#0369a1" text-anchor="middle">RIGHT</text>
+          ` : ''}
+        `;
+      }
+      else if (currentShapeKey === 'tri-prism') {
+        const b = d.b * 14, hVal = d.h * 14, L = d.L * 14;
+        const slant = Math.sqrt((b/2)*(b/2) + hVal*hVal);
+        svgContent = `
+          <!-- Base L × b -->
+          <rect x="${cx - L/2}" y="${cy - b/2}" width="${L}" height="${b}" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <!-- Slant 1 -->
+          <rect x="${cx - L/2}" y="${cy - b/2 - slant}" width="${L}" height="${slant}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <!-- Slant 2 -->
+          <rect x="${cx - L/2}" y="${cy + b/2}" width="${L}" height="${slant}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <!-- Tri End 1 -->
+          <polygon points="${cx - L/2},${cy - b/2} ${cx - L/2},${cy + b/2} ${cx - L/2 - hVal},${cy}" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+          <!-- Tri End 2 -->
+          <polygon points="${cx + L/2},${cy - b/2} ${cx + L/2},${cy + b/2} ${cx + L/2 + hVal},${cy}" fill="#7dd3fc" stroke="#0284c7" stroke-width="2"/>
+
+          <!-- Fold Creases -->
+          <line x1="${cx - L/2}" y1="${cy - b/2}" x2="${cx + L/2}" y2="${cy - b/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - L/2}" y1="${cy + b/2}" x2="${cx + L/2}" y2="${cy + b/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - L/2}" y1="${cy - b/2}" x2="${cx - L/2}" y2="${cy + b/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx + L/2}" y1="${cy - b/2}" x2="${cx + L/2}" y2="${cy + b/2}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+        `;
+      }
+      else {
+        // Generic elegant net preview fallback
+        const s = 65;
+        svgContent = `
+          <rect x="${cx - s}" y="${cy - s}" width="${2*s}" height="${2*s}" fill="#e0f2fe" stroke="#0284c7" stroke-width="2"/>
+          <polygon points="${cx - s},${cy - s} ${cx + s},${cy - s} ${cx},${cy - 2*s}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <polygon points="${cx - s},${cy + s} ${cx + s},${cy + s} ${cx},${cy + 2*s}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <polygon points="${cx + s},${cy - s} ${cx + s},${cy + s} ${cx + 2*s},${cy}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <polygon points="${cx - s},${cy - s} ${cx - s},${cy + s} ${cx - 2*s},${cy}" fill="#bae6fd" stroke="#0284c7" stroke-width="2"/>
+          <line x1="${cx - s}" y1="${cy - s}" x2="${cx + s}" y2="${cy - s}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - s}" y1="${cy + s}" x2="${cx + s}" y2="${cy + s}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx - s}" y1="${cy - s}" x2="${cx - s}" y2="${cy + s}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+          <line x1="${cx + s}" y1="${cy - s}" x2="${cx + s}" y2="${cy + s}" stroke="#0369a1" stroke-width="2" stroke-dasharray="4 4"/>
+        `;
+      }
+
+      const fullSVG = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="100%" height="100%">
+          <defs>
+            <style>
+              text { font-family: 'Space Grotesk', system-ui, sans-serif; }
+              .cut-line { stroke: #0f172a; stroke-width: 2; fill: none; }
+              .fold-line { stroke: #0284c7; stroke-width: 1.8; stroke-dasharray: 4 4; fill: none; }
+            </style>
+          </defs>
+          <rect width="100%" height="100%" fill="#ffffff"/>
+          <text x="24" y="32" font-size="15" font-weight="800" fill="#0f172a">ShapeMorph 3D: ${cfg.name} Net Template</text>
+          <text x="24" y="50" font-size="10.5" fill="#64748b">Solid outline = Cut ✂ | Dashed line = Fold - - -</text>
+          <g>
+            ${svgContent}
+          </g>
+        </svg>
+      `;
+      return fullSVG;
+    }
+
+    function openExportModal() {
+      const container = document.getElementById('export-svg-preview');
+      container.innerHTML = generateVectorNetSVG();
+      document.getElementById('modal-export').classList.add('open');
+    }
+
+    function downloadSVGFile() {
+      const svgData = generateVectorNetSVG();
+      const blob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `shapemorph-${currentShapeKey}-net.svg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      audio.playChord();
+    }
+
+    function printWorksheet() {
+      const printSheet = document.getElementById('print-sheet');
+      const cfg = SHAPES_CONFIG[currentShapeKey];
+      const sa = cfg.calcSA(currentDims);
+      const vol = cfg.calcVol(currentDims);
+
+      printSheet.innerHTML = `
+        <div style="font-family: system-ui, -apple-system, sans-serif; padding: 20px; color: #000;">
+          <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 2px solid #000; padding-bottom: 12px; margin-bottom: 20px;">
+            <div>
+              <h1 style="font-size: 22px; margin:0;">IAMGREATER ShapeMorph 3D — Geometry Lab</h1>
+              <p style="font-size: 13px; color: #444; margin:4px 0 0 0;">Topic: 3D Nets, Plans, Elevations &amp; Volume • Student Worksheet</p>
+            </div>
+            <div style="text-align: right; font-size: 12px; line-height: 1.6;">
+              <div><strong>Name:</strong> ________________________</div>
+              <div><strong>Date:</strong> ________________________</div>
+            </div>
+          </div>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div>
+              <h2 style="font-size: 17px; margin: 0;">Active Solid: ${cfg.name}</h2>
+              <p style="font-size: 12px; color: #333; margin: 2px 0 0 0;">Formulae: ${cfg.saFormula} | ${cfg.volFormula}</p>
+            </div>
+            <div style="border: 1px solid #999; padding: 6px 12px; border-radius: 6px; font-size: 12px;">
+              <strong>Marks:</strong> _____ / 10
+            </div>
+          </div>
+
+          <!-- Printable Vector Net -->
+          <div style="width: 100%; height: 380px; display:flex; align-items:center; justify-content:center; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 20px;">
+            ${generateVectorNetSVG()}
+          </div>
+
+          <!-- Functional Skills Exam Questions -->
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div style="border: 1px solid #bbb; padding: 12px; border-radius: 6px;">
+              <h3 style="font-size: 14px; margin:0 0 6px 0;">Task 1: Surface Area Calculation</h3>
+              <p style="font-size: 12px; color: #333;">Calculate the total surface area of this solid. Show your working clearly:</p>
+              <div style="height: 80px; border-bottom: 1px dashed #aaa; margin-top: 10px;"></div>
+              <p style="font-size: 12px; text-align: right; margin-top: 6px;"><strong>Total Area:</strong> _________ cm²</p>
+            </div>
+
+            <div style="border: 1px solid #bbb; padding: 12px; border-radius: 6px;">
+              <h3 style="font-size: 14px; margin:0 0 6px 0;">Task 2: Volume Calculation</h3>
+              <p style="font-size: 12px; color: #333;">Calculate the volume of the closed 3D solid. Show your working clearly:</p>
+              <div style="height: 80px; border-bottom: 1px dashed #aaa; margin-top: 10px;"></div>
+              <p style="font-size: 12px; text-align: right; margin-top: 6px;"><strong>Volume:</strong> _________ cm³</p>
+            </div>
+          </div>
+        </div>
+      `;
+      window.print();
+    }
+
+    /* ==========================================================
+       9. SHAPE SWITCHING & USER CONTROLS WIRING
+       ========================================================== */
+    function loadShape(shapeKey) {
+      currentShapeKey = shapeKey;
+      const cfg = SHAPES_CONFIG[shapeKey];
+      if (!cfg) return;
+
+      // Initialize default dimensions for this shape
+      currentDims = {};
+      Object.keys(cfg.dims).forEach(k => {
+        currentDims[k] = cfg.dims[k].val;
+      });
+
+      // Update UI active chip
+      document.querySelectorAll('.shape-chip').forEach(chip => {
+        const isActive = chip.getAttribute('data-shape') === shapeKey;
+        chip.classList.toggle('active', isActive);
+        chip.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+
+      // Reset fold slider to flat
+      foldProgress = 0;
+      updateSliderUI(0);
+
+      // Build 3D mesh & updates
+      buildShapeMesh();
+      renderOrthographicSVGs();
+      updateMathsInspector();
+
+      // Play joyful harmonic chime
+      audio.playChord();
+    }
+
+    function updateSliderUI(pct) {
+      const slider = document.getElementById('fold-range');
+      const label = document.getElementById('fold-percent-label');
+      slider.value = pct;
+      slider.style.setProperty('--fold-pct', `${pct}%`);
+      label.textContent = `${Math.round(pct)}% FOLDED`;
+    }
+
+    function setupControls() {
+      // Shape Selection Chips
+      document.querySelectorAll('.shape-chip').forEach(chip => {
+        chip.addEventListener('click', () => {
+          const shape = chip.getAttribute('data-shape');
+          if (shape !== currentShapeKey) {
+            loadShape(shape);
+          }
+        });
+      });
+
+      // Fold Progress Range Slider
+      const foldSlider = document.getElementById('fold-range');
+      foldSlider.addEventListener('input', (e) => {
+        isPlaying = false;
+        document.getElementById('btn-play-fold').textContent = '▶';
+        const val = parseFloat(e.target.value);
+        foldProgress = val / 100;
+        updateSliderUI(val);
+        applyFold(foldProgress);
+        audio.playClick(600 + val * 4, 0.015);
+      });
+
+      // Snap Flat (0%) & Snap Solid (100%)
+      document.getElementById('btn-snap-flat').addEventListener('click', () => {
+        isPlaying = false;
+        document.getElementById('btn-play-fold').textContent = '▶';
+        foldProgress = 0;
+        updateSliderUI(0);
+        applyFold(0);
+        audio.playClick(450, 0.04);
+      });
+
+      document.getElementById('btn-snap-solid').addEventListener('click', () => {
+        isPlaying = false;
+        document.getElementById('btn-play-fold').textContent = '▶';
+        foldProgress = 1;
+        updateSliderUI(100);
+        applyFold(1);
+        audio.playChord();
+      });
+
+      // Auto-Fold Play / Pause Button
+      const btnPlay = document.getElementById('btn-play-fold');
+      btnPlay.addEventListener('click', () => {
+        isPlaying = !isPlaying;
+        btnPlay.textContent = isPlaying ? '⏸' : '▶';
+        audio.playClick(800, 0.03);
+      });
+
+      // Speed selection buttons
+      document.querySelectorAll('.speed-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          playSpeed = parseFloat(btn.getAttribute('data-speed'));
+          audio.playClick(750, 0.02);
+        });
+      });
+
+      // Secondary Checkboxes: Labels, X-Ray, Rays
+      document.getElementById('chk-labels').addEventListener('change', () => {
+        buildShapeMesh();
+        audio.playClick(700, 0.02);
+      });
+      document.getElementById('chk-xray').addEventListener('change', () => {
+        buildShapeMesh();
+        audio.playClick(700, 0.02);
+      });
+      document.getElementById('chk-rays').addEventListener('change', () => {
+        updateProjectionRays();
+        audio.playClick(700, 0.02);
+      });
+
+      // Drawer Open & Close Triggers
+      const drawerPlans = document.getElementById('drawer-plans');
+      const drawerMaths = document.getElementById('drawer-maths');
+      const triggerPlans = document.getElementById('trigger-plans');
+      const triggerMaths = document.getElementById('trigger-maths');
+
+      function closeAllDrawers() {
+        drawerPlans.classList.remove('open');
+        drawerMaths.classList.remove('open');
+        triggerPlans.classList.remove('active');
+        triggerMaths.classList.remove('active');
+      }
+
+      triggerPlans.addEventListener('click', () => {
+        const wasOpen = drawerPlans.classList.contains('open');
+        closeAllDrawers();
+        if (!wasOpen) {
+          drawerPlans.classList.add('open');
+          triggerPlans.classList.add('active');
+          renderOrthographicSVGs();
+          audio.playClick(720, 0.02);
+        }
+      });
+
+      triggerMaths.addEventListener('click', () => {
+        const wasOpen = drawerMaths.classList.contains('open');
+        closeAllDrawers();
+        if (!wasOpen) {
+          drawerMaths.classList.add('open');
+          triggerMaths.classList.add('active');
+          updateMathsInspector();
+          audio.playClick(720, 0.02);
+        }
+      });
+
+      document.querySelectorAll('.drawer-close').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-close');
+          const el = document.getElementById(target);
+          if (el) el.classList.remove('open');
+          triggerPlans.classList.remove('active');
+          triggerMaths.classList.remove('active');
+          audio.playClick(500, 0.02);
+        });
+      });
+
+      // Camera Presets Buttons
+      document.querySelectorAll('.cam-btn, .btn-snap-cam').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const mode = btn.getAttribute('data-cam');
+          snapCameraTo(mode);
+          audio.playClick(900, 0.03);
+        });
+      });
+
+      // Header Toolbars: Sound & Dyslexia
+      const btnSound = document.getElementById('btn-sound');
+      btnSound.addEventListener('click', () => {
+        audio.enabled = !audio.enabled;
+        btnSound.classList.toggle('active', audio.enabled);
+        btnSound.textContent = audio.enabled ? '🔊' : '🔇';
+      });
+
+      const btnDyslexia = document.getElementById('btn-dyslexia');
+      btnDyslexia.addEventListener('click', () => {
+        document.body.classList.toggle('dyslexia-font');
+        const active = document.body.classList.contains('dyslexia-font');
+        btnDyslexia.classList.toggle('active', active);
+        audio.playClick(active ? 850 : 650, 0.03);
+      });
+
+      // Modals: Export Net & Guide
+      document.getElementById('btn-export-open').addEventListener('click', () => {
+        openExportModal();
+        audio.playClick(780, 0.02);
+      });
+      document.getElementById('btn-guide-open').addEventListener('click', () => {
+        document.getElementById('modal-guide').classList.add('open');
+        audio.playClick(780, 0.02);
+      });
+      document.getElementById('btn-download-svg').addEventListener('click', downloadSVGFile);
+      document.getElementById('btn-print-sheet').addEventListener('click', printWorksheet);
+
+      document.getElementById('chk-export-tabs').addEventListener('change', () => {
+        document.getElementById('export-svg-preview').innerHTML = generateVectorNetSVG();
+      });
+      document.getElementById('chk-export-labels').addEventListener('change', () => {
+        document.getElementById('export-svg-preview').innerHTML = generateVectorNetSVG();
+      });
+
+      // Keyboard Accessibility
+      window.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT') return;
+        if (e.code === 'Space') {
+          e.preventDefault();
+          document.getElementById('btn-play-fold').click();
+        } else if (e.code === 'ArrowLeft') {
+          foldProgress = Math.max(0, foldProgress - 0.05);
+          updateSliderUI(foldProgress * 100);
+          applyFold(foldProgress);
+        } else if (e.code === 'ArrowRight') {
+          foldProgress = Math.min(1, foldProgress + 0.05);
+          updateSliderUI(foldProgress * 100);
+          applyFold(foldProgress);
+        }
+      });
+    }
+
+    /* Smooth Camera Animation to Orthographic / Perspective angles */
+    function snapCameraTo(mode) {
+      if (!camera || !controls) return;
+
+      document.querySelectorAll('#cam-presets-bar .cam-btn').forEach(b => {
+        b.classList.toggle('active', b.getAttribute('data-cam') === mode);
+      });
+
+      const targetPos = new THREE.Vector3();
+      const lookTarget = new THREE.Vector3(0, 2, 0);
+
+      if (mode === 'plan') {
+        targetPos.set(0, 24, 0.001); // Slightly offset from pure Z=0 to prevent gimbal lock
+      } else if (mode === 'front') {
+        targetPos.set(0, 2.5, 24);
+      } else if (mode === 'side') {
+        targetPos.set(24, 2.5, 0);
+      } else if (mode === 'iso' || mode === 'reset') {
+        targetPos.set(16, 14, 20);
+      }
+
+      // Smooth Tween animation
+      const startPos = camera.position.clone();
+      const startTime = performance.now();
+      const duration = 650;
+
+      function tweenStep(now) {
+        const elapsed = now - startTime;
+        const t = Math.min(1, elapsed / duration);
+        const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+
+        camera.position.lerpVectors(startPos, targetPos, ease);
+        controls.target.copy(lookTarget);
+        controls.update();
+
+        if (t < 1) {
+          requestAnimationFrame(tweenStep);
+        }
+      }
+      requestAnimationFrame(tweenStep);
+    }
+
+    /* ==========================================================
+       10. ANIMATION & RENDER LOOP
+       ========================================================== */
+    let lastTime = performance.now();
+    function animateLoop() {
+      requestAnimationFrame(animateLoop);
+
+      const now = performance.now();
+      const delta = (now - lastTime) / 1000;
+      lastTime = now;
+
+      // Auto-Fold Progress calculation
+      if (isPlaying) {
+        const step = 0.35 * playSpeed * delta * playDirection;
+        foldProgress += step;
+
+        if (foldProgress >= 1.0) {
+          foldProgress = 1.0;
+          playDirection = -1; // Bounce backwards
+          audio.playChord();
+        } else if (foldProgress <= 0.0) {
+          foldProgress = 0.0;
+          playDirection = 1; // Bounce forwards
+          audio.playClick(500, 0.03);
+        }
+
+        updateSliderUI(foldProgress * 100);
+        applyFold(foldProgress);
+      }
+
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Initialize application on DOM ready
+    window.addEventListener('DOMContentLoaded', () => {
+      init3D();
+      setupControls();
+    });
+  </script>
+</body>
+</html>

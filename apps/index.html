@@ -178,6 +178,7 @@
 
       <nav class="nav-links" id="navLinks">
         <a href="../index.html">Home</a>
+        <a href="#testing">In Testing <span class="nav-dot amber"></span></a>
         <a href="../quickdraw.html">QuickDraw <span class="nav-dot cyan"></span></a>
         <a href="index.html" class="active">Web Apps <span class="nav-dot emerald"></span></a>
         <a href="../privacy.html">Privacy</a>
@@ -216,6 +217,35 @@
     <div class="container">
       <div class="apps-grid">
 
+        <!-- Featured App: ShapeMorph 3D -->
+        <article class="app-card featured" style="border-color: rgba(56, 189, 248, 0.45); background: linear-gradient(180deg, rgba(14, 25, 45, 0.96) 0%, rgba(10, 15, 26, 0.98) 100%);">
+          <div>
+            <div class="app-icon-wrap" style="background: rgba(56, 189, 248, 0.12); border-color: rgba(56, 189, 248, 0.35); color: #38bdf8;">🧊</div>
+            <span class="app-badge pwa" style="background: rgba(56, 189, 248, 0.15); border-color: rgba(56, 189, 248, 0.4); color: #38bdf8;">✨ NEW • 3D Laboratory • Plans &amp; Elevations</span>
+            <h2 class="app-title">ShapeMorph 3D — Interactive Nets, Plans &amp; Elevations Lab</h2>
+            <p class="app-desc">
+              Advanced next-generation 3D geometry engine and orthographic laboratory. Continuous 0%–100% net folding, real-time 2D Plans &amp; Elevations (Top Plan, Front, Side views), dynamic dimensions, live Surface Area &amp; Volume formulas, in-scene projection rays, and printable vector nets with glue tabs.
+            </p>
+            
+            <div class="share-pill">
+              <span>Learner Share Link: <code>iamgreater.net/apps/shapemorph/</code></span>
+              <button class="btn-copy" onclick="copyLink('https://iamgreater.net/apps/shapemorph/')">Copy Link</button>
+            </div>
+
+            <ul class="app-features">
+              <li><span>✓</span> <strong>Real-time 2D/3D Morphing:</strong> Smooth folding slider from 0% flat net to 100% closed solid</li>
+              <li><span>✓</span> <strong>Plans &amp; Elevations:</strong> Dynamic 2D orthographic projections with 1cm grid and dimension lines</li>
+              <li><span>✓</span> <strong>In-Scene Projection Rays:</strong> 3D laser projection rays connecting vertices to orthographic screens</li>
+              <li><span>✓</span> <strong>Live Maths Inspector:</strong> Real-time dimension sliders, step-by-step SA &amp; Volume calculation, and Euler check</li>
+              <li><span>✓</span> <strong>Classroom Print &amp; SVG:</strong> Export precision vector nets with cut lines ✂, dashed creases, and glue tabs</li>
+              <li><span>✓</span> <strong>Dyslexia-Friendly:</strong> One-tap high-legibility typography toggle with warm contrast</li>
+            </ul>
+          </div>
+          <div class="app-actions">
+            <a href="shapemorph/" class="btn btn-cyber" style="flex: 1; text-align: center; background: rgba(56, 189, 248, 0.25); border-color: rgba(56, 189, 248, 0.6); color: #38bdf8;">🚀 Launch ShapeMorph 3D</a>
+          </div>
+        </article>
+
         <!-- App 1: NetFold 3D -->
         <article class="app-card featured">
           <div>
@@ -245,6 +275,34 @@
           </div>
         </article>
 
+        <!-- App 2: AmbientFlow Soundscape Generator -->
+        <article class="app-card featured" style="border-color: rgba(0, 242, 254, 0.35);">
+          <div>
+            <div class="app-icon-wrap" style="background: rgba(0, 242, 254, 0.1); border-color: rgba(0, 242, 254, 0.3); color: #00f2fe;">🌊</div>
+            <span class="app-badge pwa" style="background: rgba(0, 242, 254, 0.15); border-color: rgba(0, 242, 254, 0.4); color: #00f2fe;">🎧 Pure Web Audio API • 100% Offline</span>
+            <h2 class="app-title">AmbientFlow — Study Soundscapes & Lo-Fi Generator</h2>
+            <p class="app-desc">
+              Standalone procedural soundscape generator built for deep focus, coding, studying, and sleep. Pure Web Audio API synthesis—100% offline with zero external audio samples or network buffering.
+            </p>
+            
+            <div class="share-pill">
+              <span>Direct Link: <code>iamgreater.net/ambient/</code></span>
+              <button class="btn-copy" onclick="copyLink('https://iamgreater.net/ambient/')">Copy Link</button>
+            </div>
+
+            <ul class="app-features">
+              <li><span>✓</span> <strong>6 Synthesized Soundscapes:</strong> Rain on Window, Distant Thunder, Vinyl Crackle, Cafe Hum, Lo-Fi Chords, Brown Noise</li>
+              <li><span>✓</span> <strong>Procedural Audio:</strong> Pure mathematical real-time synthesis, zero audio file downloads or bandwidth</li>
+              <li><span>✓</span> <strong>Curated Presets:</strong> Deep Focus, Rainy Cafe, Midnight Coding, Sleep Sanctuary, plus custom mix saving</li>
+              <li><span>✓</span> <strong>Pomodoro & Sleep Timer:</strong> Built-in study countdown with gradual volume fade-out & Solfeggio end chime</li>
+              <li><span>✓</span> <strong>Accessibility:</strong> Dyslexia-friendly typography toggle, keyboard shortcuts, and glowing audio visualizer</li>
+            </ul>
+          </div>
+          <div class="app-actions">
+            <a href="../ambient/" class="btn btn-cyber" style="flex: 1; text-align: center; background: rgba(0, 242, 254, 0.2); border-color: rgba(0, 242, 254, 0.6); color: #00f2fe;">🚀 Launch AmbientFlow</a>
+          </div>
+        </article>
+
         <!-- App 2: Sovereign Vibe Terminal -->
         <article class="app-card">
           <div>
@@ -265,6 +323,167 @@
           </div>
         </article>
 
+      </div>
+    </div>
+  </section>
+
+  <!-- In Testing / Android Beta Lab Section -->
+  <section class="testing-section" id="testing" style="border-top: 1px solid rgba(245, 158, 11, 0.2); padding-top: 80px;">
+    <div class="container">
+      <div class="section-title-wrap" style="text-align: center; margin-bottom: 40px;">
+        <div class="testing-header-badge">
+          <span class="testing-pulse"></span>
+          <span>SOVEREIGN LABS • ACTIVE TESTING</span>
+        </div>
+        <h2 class="section-heading" style="font-size: 2.4rem; margin-bottom: 14px;">In Testing: Android Utilities</h2>
+        <p class="section-desc" style="max-width: 680px; margin: 0 auto; color: var(--text-secondary); line-height: 1.6;">
+          Native Android utilities currently in active device testing. Built 100% offline, zero tracking, zero internet permissions, and instant event-driven responsiveness. Available for direct APK sideload testing.
+        </p>
+      </div>
+
+      <div class="testing-grid">
+        <!-- App 1: EdgeVolume -->
+        <article class="testing-card">
+          <div>
+            <div class="testing-card-top">
+              <img src="../assets/edgevolume-icon.png" alt="EdgeVolume Icon" class="testing-app-icon" width="56" height="56">
+              <div>
+                <span class="testing-badge">🧪 In Testing • v1.0 Beta</span>
+                <h3 class="testing-card-title">EdgeVolume</h3>
+                <div class="testing-card-tagline">SoundGlide • Edge-Swipe Volume Control</div>
+              </div>
+            </div>
+            
+            <p class="testing-card-desc">
+              Slide your thumb vertically along the screen border to smoothly adjust media, ring, or call volume with subtle mechanical haptic feedback ticks. Pure event-driven architecture with zero idle battery drain.
+            </p>
+
+            <ul class="testing-features">
+              <li><span class="check">✓</span> <strong>Thumb-Drag Edge Gesture:</strong> Slide along right or left border to adjust volume</li>
+              <li><span class="check">✓</span> <strong>Crisp Haptic Feedback:</strong> Vibration tick per step + min/max boundary buzz</li>
+              <li><span class="check">✓</span> <strong>Floating Volume Pill:</strong> Dynamic Compose vertical indicator with auto-dismiss</li>
+              <li><span class="check">✓</span> <strong>Audio Stream Selector:</strong> Media, Ringtone, Notification, Alarm, or Call</li>
+              <li><span class="check">✓</span> <strong>Quick Controls:</strong> Single tap to mute/restore and Quick Settings tile toggle</li>
+              <li><span class="check">✓</span> <strong>100% Offline:</strong> Zero internet permission, zero tracking, 0% idle battery drain</li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="testing-meta-row">
+              <span class="testing-meta-tag">📦 APK: 19 MB</span>
+              <span class="testing-meta-tag">📱 Android 8.0–16 (API 26–36)</span>
+              <span class="testing-meta-tag">🛡️ Zero Telemetry</span>
+              <span class="testing-meta-tag">⚡ Jetpack Compose</span>
+            </div>
+
+            <div class="testing-actions">
+              <a href="../downloads/edgevolume-latest.apk" class="btn-testing-download" download>
+                <span>⬇</span> Download APK (19 MB)
+              </a>
+              <a href="mailto:support@iamgreater.net?subject=EdgeVolume%20Testing%20Feedback" class="btn-testing-feedback" title="Send beta feedback">
+                Feedback ✉
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- App 2: PieControls 2026 -->
+        <article class="testing-card">
+          <div>
+            <div class="testing-card-top">
+              <img src="../assets/piecontrols-icon.png" alt="PieControls Icon" class="testing-app-icon" width="56" height="56">
+              <div>
+                <span class="testing-badge">🧪 In Testing • v1.0 Beta</span>
+                <h3 class="testing-card-title">PieControls 2026</h3>
+                <div class="testing-card-tagline">Radial Thumb Launcher & Gesture System</div>
+              </div>
+            </div>
+            
+            <p class="testing-card-desc">
+              The modern Material 3 revival of the legendary Android custom ROM radial navigation fan. Swipe inward from any screen edge to reveal a sleek radial pie fan for instant single-handed navigation and system controls.
+            </p>
+
+            <ul class="testing-features">
+              <li><span class="check">✓</span> <strong>Ergonomic Radial Fan:</strong> Center-anchored to initial thumb touch-down on border</li>
+              <li><span class="check">✓</span> <strong>Trigonometric Math:</strong> Real-time <code>atan2</code> sector mapping with instant slice detection</li>
+              <li><span class="check">✓</span> <strong>Essential Shortcuts:</strong> Back, Home, Recents, Flashlight, QuickDraw, Screenshot, Lock</li>
+              <li><span class="check">✓</span> <strong>Multi-Edge Anchors:</strong> Configurable Left, Right, and Bottom border trigger zones</li>
+              <li><span class="check">✓</span> <strong>Canvas Spring Physics:</strong> Hardware-accelerated 120Hz/60Hz rendering & haptic clicks</li>
+              <li><span class="check">✓</span> <strong>100% Offline:</strong> Zero network permissions, event-driven with zero background drain</li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="testing-meta-row">
+              <span class="testing-meta-tag">📦 APK: 19 MB</span>
+              <span class="testing-meta-tag">📱 Android 8.0–16 (API 26–36)</span>
+              <span class="testing-meta-tag">📐 Trigonometric Sector Engine</span>
+              <span class="testing-meta-tag">🛡️ 100% Private</span>
+            </div>
+
+            <div class="testing-actions">
+              <a href="../downloads/piecontrols-latest.apk" class="btn-testing-download" download>
+                <span>⬇</span> Download APK (19 MB)
+              </a>
+              <a href="mailto:support@iamgreater.net?subject=PieControls%20Testing%20Feedback" class="btn-testing-feedback" title="Send beta feedback">
+                Feedback ✉
+              </a>
+            </div>
+          </div>
+        </article>
+
+        <!-- App 3: ReadRuler -->
+        <article class="testing-card">
+          <div>
+            <div class="testing-card-top">
+              <img src="../assets/readruler-icon.png" alt="ReadRuler Icon" class="testing-app-icon" width="56" height="56">
+              <div>
+                <span class="testing-badge">🧪 In Testing • v1.0 Beta</span>
+                <h3 class="testing-card-title">ReadRuler</h3>
+                <div class="testing-card-tagline">TintGlide • Dyslexia Guide & Pastel Tint</div>
+              </div>
+            </div>
+            
+            <p class="testing-card-desc">
+              Floating reading guide and visual stress filter for neurodivergent learners and readers with dyslexia or Meares-Irlen syndrome. Isolates active reading lines across any app while softening glare with calming pastel overlays.
+            </p>
+
+            <ul class="testing-features">
+              <li><span class="check">✓</span> <strong>100% Non-Blocking Pass-Through:</strong> Reads over Chrome, Kindle & PDFs without hindering touch</li>
+              <li><span class="check">✓</span> <strong>Tactile Line Tracker:</strong> Smooth vertical drag handle to isolate current lines and prevent skipping</li>
+              <li><span class="check">✓</span> <strong>6 Dyslexia-Friendly Tints:</strong> Rose, Mint, Cream, Sky Blue, Soft Amber, Dim Focus</li>
+              <li><span class="check">✓</span> <strong>3 Reading Modes:</strong> Reading Slot Mask, Highlighter Strip, and Full Screen Tint</li>
+              <li><span class="check">✓</span> <strong>Quick Settings Tile:</strong> Instant one-tap overlay activation from notification shade</li>
+              <li><span class="check">✓</span> <strong>100% Offline:</strong> Zero tracking, zero ads, zero internet permission requested</li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="testing-meta-row">
+              <span class="testing-meta-tag">📦 APK: 19 MB</span>
+              <span class="testing-meta-tag">📱 Android 8.0–16 (API 26–36)</span>
+              <span class="testing-meta-tag">👓 Dyslexia & ADHD Focus</span>
+              <span class="testing-meta-tag">🛡️ Pass-Through Canvas</span>
+            </div>
+
+            <div class="testing-actions">
+              <a href="../downloads/readruler-latest.apk" class="btn-testing-download" download>
+                <span>⬇</span> Download APK (19 MB)
+              </a>
+              <a href="mailto:support@iamgreater.net?subject=ReadRuler%20Testing%20Feedback" class="btn-testing-feedback" title="Send beta feedback">
+                Feedback ✉
+              </a>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <!-- Testing Sideload Notice -->
+      <div class="testing-banner-note">
+        <span class="note-icon">💡</span>
+        <p>
+          <strong>Beta Tester Installation Note:</strong> These are direct preview APK packages for real-device testing. When opening the downloaded APK on Android, tap <em>"Settings ➔ Allow from this source"</em> (or <em>Install unknown apps</em>). Because all IAMGREATER utilities omit network permissions completely, they cannot access the internet or transmit data off your device.
+        </p>
       </div>
     </div>
   </section>

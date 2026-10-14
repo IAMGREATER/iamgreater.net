@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108" width="192" height="192">
+  <rect width="108" height="108" rx="24" fill="#1E293B"/>
+  <!-- Outer reading card -->
+  <path d="M24,24h60a8,8 0 0,1 8,8v44a8,8 0 0,1 -8,8h-60a8,8 0 0,1 -8,-8v-44a8,8 0 0,1 8,-8z" fill="#334155"/>
+  <!-- Highlight reading slot with pastel tint -->
+  <path d="M20,44h68v20h-68z" fill="#38BDF8"/>
+  <!-- Text lines representation -->
+  <path d="M28,32h32v4h-32z M28,72h48v4h-48z" fill="#94A3B8"/>
+  <!-- Reading ruler ticks -->
+  <path d="M24,44h3v6h-3z M32,44h2v4h-2z M40,44h2v4h-2z M48,44h3v6h-3z M56,44h2v4h-2z M64,44h2v4h-2z M72,44h3v6h-3z M80,44h2v4h-2z M88,44h2v4h-2z" fill="#0284C7"/>
+</svg>

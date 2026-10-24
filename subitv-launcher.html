@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SubiTV Launcher | Ultra-Fast Android TV & Fire TV Home Screen</title>
+  <meta name="description" content="Official showcase, video walkthrough, and direct APK download for SubiTV Launcher by IAMGREATER. Zero bloat, instant D-pad navigation, tvOS ambient bloom, live system HUD, and projector calibration.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/png" href="assets/subitv-launcher-icon.png">
+  <style>
+    /* Specific SubiTV Launcher Showcase Styles */
+    .tv-hero {
+      padding: 130px 0 70px;
+      position: relative;
+    }
+    .tv-hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 50px;
+      align-items: center;
+    }
+    .tv-badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .tv-badge {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: rgba(56, 189, 248, 0.1);
+      color: var(--accent-cyan);
+    }
+    .tv-badge.green {
+      border-color: rgba(52, 211, 153, 0.3);
+      background: rgba(52, 211, 153, 0.1);
+      color: #34d399;
+    }
+    .tv-badge.amber {
+      border-color: rgba(245, 158, 11, 0.3);
+      background: rgba(245, 158, 11, 0.1);
+      color: #f59e0b;
+    }
+    .tv-badge.purple {
+      border-color: rgba(168, 85, 247, 0.3);
+      background: rgba(168, 85, 247, 0.1);
+      color: #c084fc;
+    }
+    .tv-title {
+      font-family: var(--font-heading);
+      font-size: 3.2rem;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      color: #ffffff;
+    }
+    .tv-sub {
+      font-size: 1.15rem;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+    .tv-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 35px;
+    }
+    .btn-tv-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #0284c7, #00f0ff);
+      color: #070b14;
+      font-family: var(--font-heading);
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      box-shadow: 0 10px 25px rgba(2, 132, 199, 0.35);
+      transition: all 0.3s ease;
+    }
+    .btn-tv-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 30px rgba(0, 240, 255, 0.5);
+    }
+    .btn-tv-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 26px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-family: var(--font-heading);
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+    .btn-tv-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .tv-video-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      background: #0d1527;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    }
+    .tv-video-card video {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 18px;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+    .feature-card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 30px;
+      transition: all 0.3s ease;
+    }
+    .feature-card:hover {
+      border-color: rgba(56, 189, 248, 0.4);
+      transform: translateY(-4px);
+    }
+    .feature-icon {
+      font-size: 2.2rem;
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+    .feature-title {
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 12px;
+    }
+    .feature-desc {
+      font-size: 0.95rem;
+      line-height: 1.65;
+      color: var(--text-secondary);
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+    .gallery-item {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #0a0e1a;
+      transition: all 0.3s ease;
+    }
+    .gallery-item:hover {
+      border-color: rgba(0, 240, 255, 0.5);
+      transform: scale(1.02);
+    }
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .gallery-caption {
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #94a3b8;
+      background: rgba(15, 23, 42, 0.85);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .guide-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 18px;
+      padding: 35px;
+      margin-top: 40px;
+    }
+    .guide-step {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+    .guide-step:last-child {
+      margin-bottom: 0;
+    }
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #0284c7;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-family: var(--font-heading);
+      flex-shrink: 0;
+    }
+    .step-content h4 {
+      font-size: 1.15rem;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .step-content p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+    .code-pill {
+      font-family: var(--font-mono);
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      color: #00f0ff;
+      font-size: 0.88rem;
+    }
+    @media (max-width: 900px) {
+      .tv-hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="matrix-bg">
+  <div class="site-wrapper">
+    <!-- Top Navigation -->
+    <header class="site-header">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-symbol">◆</span>
+        <span class="brand-text">IAMGREATER</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="index.html#showcase">Creations</a>
+        <a href="subitv-launcher.html" class="active" style="color: #00f0ff;">SubiTV Launcher <span class="nav-dot cyan"></span></a>
+        <a href="quickdraw.html">QuickDraw <span class="nav-dot cyan"></span></a>
+        <a href="choptorch.html">ChopTorch <span class="nav-dot amber"></span></a>
+        <a href="index.html#terminal">Terminal</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Hero Section -->
+      <section class="tv-hero">
+        <div class="container">
+          <div class="tv-hero-grid">
+            <div class="tv-hero-text">
+              <div class="tv-badge-row">
+                <span class="tv-badge">TV Edition 1.0.0</span>
+                <span class="tv-badge green">Jetpack Compose 60 FPS</span>
+                <span class="tv-badge amber">Zero Bloat • Zero Ads</span>
+                <span class="tv-badge purple">Projectivy Premium Features Unlocked</span>
+              </div>
+              <h1 class="tv-title">SubiTV Launcher</h1>
+              <p class="tv-sub">
+                The ultimate sovereign home screen for <strong>Android TV</strong> and <strong>Amazon Fire TV</strong>. Engineered natively in Kotlin and Jetpack Compose for fluid, instantaneous D-pad navigation. Replaces intrusive stock home screens with pure speed, tvOS ambient color blooming, a real-time System Health HUD, and projector optical calibration.
+              </p>
+              <div class="tv-actions">
+                <a href="downloads/subitv-launcher-latest.apk" class="btn-tv-primary" download>
+                  <span>Download APK (14 MB)</span> ⬇
+                </a>
+                <a href="#walkthrough" class="btn-tv-secondary">
+                  <span>Watch Walkthrough</span> 🎬
+                </a>
+                <a href="#setup-guide" class="btn-tv-secondary">
+                  <span>Fire TV Setup</span> ⚙️
+                </a>
+              </div>
+            </div>
+
+            <!-- TV Video Walkthrough Card -->
+            <div class="tv-video-card" id="walkthrough">
+              <video controls poster="assets/subitv-launcher-screenshot-main.png" preload="metadata">
+                <source src="assets/subitv-launcher-walkthrough.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Real Screenshots Gallery -->
+      <section class="section" id="screenshots">
+        <div class="container">
+          <div class="section-tag">
+            <span class="tag-dot cyan"></span>
+            <span>GALLERY</span>
+          </div>
+          <h2 class="section-heading">Built for the Big Screen</h2>
+          <p class="section-subheading">Every detail crafted specifically for 10-foot television and projector experiences.</p>
+
+          <div class="gallery-grid">
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-main.png" alt="SubiTV Launcher Home Screen">
+              <div class="gallery-caption">1. Pure Home Screen: Clean Leanback Rows, Digital Clock, & System Health HUD</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-focused.png" alt="Dynamic tvOS Ambient Blooming">
+              <div class="gallery-caption">2. Dynamic Ambient Bloom: Backlight glows with the focused app's vibrant palette</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-control-center.png" alt="Slide-Over Control Center">
+              <div class="gallery-caption">3. Slide-Over Control Center: Fast wallpaper switching (Cyberpunk, Nebula, Aurora)</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-settings.png" alt="Display & Projector Profiles">
+              <div class="gallery-caption">4. Optical Profiles: Cinema 24p, Ultra-Low Game Latency, & Projector High-Lumen</div>
+            </div>
+            <div class="gallery-item" style="grid-column: 1 / -1;">
+              <img src="assets/subitv-launcher-screenshot-keystone.png" alt="Projector Keystone Test Card">
+              <div class="gallery-caption">5. Built-in Projector Calibration: Action-safe margins, aspect circles, & corner keystone targets</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Features Grid -->
+      <section class="section" id="features">
+        <div class="container">
+          <div class="section-tag">
+            <span class="tag-dot green"></span>
+            <span>CAPABILITIES</span>
+          </div>
+          <h2 class="section-heading">Projectivy DNA. Superior Performance.</h2>
+          <p class="section-subheading">All premium features unlocked out of the box with zero subscription fees.</p>
+
+          <div class="features-grid">
+            <div class="feature-card">
+              <div class="feature-icon">🚀</div>
+              <h3 class="feature-title">Native Compose TV Engine</h3>
+              <p class="feature-desc">
+                Written from scratch in modern Kotlin with Jetpack Compose for TV. Zero legacy Android View inflation overhead. Guarantees locked 60–120 FPS D-pad focus transitions and instant startup on low-power TV SoCs.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🌈</div>
+              <h3 class="feature-title">tvOS Dynamic Color Bloom</h3>
+              <p class="feature-desc">
+                Our real-time palette engine extracts the vibrant dominant color of whichever app banner is selected, creating a soft, cinematic background glow that elevates your home theater atmosphere.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📊</div>
+              <h3 class="feature-title">Live System Health HUD</h3>
+              <p class="feature-desc">
+                Monitor your TV's vital signs right from the top bar: available RAM percentage, real-time SoC CPU temperatures in °C, and wireless signal strength (dBm) or wired Gigabit LAN status.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🎛️</div>
+              <h3 class="feature-title">Slide-Over Glass Control Center</h3>
+              <p class="feature-desc">
+                Press the Menu button on any TV remote to reveal the slide-out glass side panel. Switch wallpaper themes, toggle ambient bloom, or recalibrate picture modes without leaving your current feed.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">🔒</div>
+              <h3 class="feature-title">Parental PIN Vault</h3>
+              <p class="feature-desc">
+                Secure any individual app or streaming row behind a 4-digit PIN code. Keep sensitive apps and settings protected from children or house guests with custom D-pad friendly PIN dialogs.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">📽️</div>
+              <h3 class="feature-title">Projector Keystone Suite</h3>
+              <p class="feature-desc">
+                Includes dedicated projector alignment test patterns with 16:9 boundaries, center crosshairs, aspect ratio circles, and corner targets to dial in your projector focus and keystone geometry perfectly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Fire TV & Android TV Setup Guide -->
+      <section class="section" id="setup-guide">
+        <div class="container">
+          <div class="section-tag">
+            <span class="tag-dot amber"></span>
+            <span>INSTALLATION GUIDE</span>
+          </div>
+          <h2 class="section-heading">How to Install & Set as Default</h2>
+          <p class="section-subheading">Quick steps to get SubiTV Launcher running as your permanent home screen on Amazon Fire TV or Google TV.</p>
+
+          <div class="guide-box">
+            <div class="guide-step">
+              <div class="step-number">1</div>
+              <div class="step-content">
+                <h4>Download & Install the APK</h4>
+                <p>
+                  On your TV, install via the <strong>Downloader app</strong> by typing the short URL <span class="code-pill">iamgreater.net/downloads/subitv-launcher-latest.apk</span>, or push directly via ADB from your computer:
+                  <br><br>
+                  <span class="code-pill">adb install -r subitv-launcher-latest.apk</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <div class="step-number">2</div>
+              <div class="step-content">
+                <h4>Enable Accessibility Home Interceptor (Fire TV)</h4>
+                <p>
+                  To trap the Fire TV remote Home button and return directly to SubiTV Launcher:
+                  Go to <strong>Settings → Accessibility → SubiTV Launcher Home Interceptor</strong> and toggle it <strong>ON</strong>.
+                  Alternatively, enable it via ADB:
+                  <br><br>
+                  <span class="code-pill">adb shell settings put secure enabled_accessibility_services net.iamgreater.subitvlauncher/.services.SubiTvHomeInterceptorService</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="guide-step">
+              <div class="step-number">3</div>
+              <div class="step-content">
+                <h4>Customize Your Wallpapers & Display Profile</h4>
+                <p>
+                  Launch SubiTV Launcher. Press <strong>MENU</strong> on your remote to open the Control Center. Choose your preferred wallpaper theme (Cyberpunk Nebula, Deep Space, or Aurora), enable tvOS ambient bloom, and enjoy clean, ad-free streaming!
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+      <div class="container footer-content">
+        <div class="footer-left">
+          <span class="footer-brand">IAMGREATER</span>
+          <p class="footer-tagline">Engineered with precision. Sovereign software for sovereign minds.</p>
+        </div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="subitv-launcher.html">SubiTV Launcher</a>
+          <a href="quickdraw.html">QuickDraw</a>
+          <a href="choptorch.html">ChopTorch</a>
+          <a href="privacy.html">Privacy</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

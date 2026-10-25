@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SubiTV Launcher | Ultra-Fast Android TV & Fire TV Home Screen</title>
-  <meta name="description" content="Official showcase, video walkthrough, and direct APK download for SubiTV Launcher by IAMGREATER. Zero bloat, instant D-pad navigation, tvOS ambient bloom, live system HUD, and projector calibration.">
+  <title>SubiTV Launcher | Multi-User Profiles & Smart Recommendations for Android TV</title>
+  <meta name="description" content="Official showcase, video walkthrough, and direct APK download for SubiTV Launcher by IAMGREATER. Multi-user profiles, continuous episode tracking, personalized recommendations, tvOS ambient bloom, and zero bloat.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
@@ -51,6 +51,11 @@
       border-color: rgba(168, 85, 247, 0.3);
       background: rgba(168, 85, 247, 0.1);
       color: #c084fc;
+    }
+    .tv-badge.pink {
+      border-color: rgba(236, 72, 153, 0.3);
+      background: rgba(236, 72, 153, 0.1);
+      color: #f472b6;
     }
     .tv-title {
       font-family: var(--font-heading);
@@ -270,18 +275,18 @@
           <div class="tv-hero-grid">
             <div class="tv-hero-text">
               <div class="tv-badge-row">
-                <span class="tv-badge">TV Edition 1.0.0</span>
-                <span class="tv-badge green">Jetpack Compose 60 FPS</span>
-                <span class="tv-badge amber">Zero Bloat • Zero Ads</span>
-                <span class="tv-badge purple">Projectivy Premium Features Unlocked</span>
+                <span class="tv-badge">v1.1.0 Update</span>
+                <span class="tv-badge green">Multi-User Profiles</span>
+                <span class="tv-badge pink">Continue Watching & Episodes</span>
+                <span class="tv-badge amber">Personalized Recommendations</span>
               </div>
               <h1 class="tv-title">SubiTV Launcher</h1>
               <p class="tv-sub">
-                The ultimate sovereign home screen for <strong>Android TV</strong> and <strong>Amazon Fire TV</strong>. Engineered natively in Kotlin and Jetpack Compose for fluid, instantaneous D-pad navigation. Replaces intrusive stock home screens with pure speed, tvOS ambient color blooming, a real-time System Health HUD, and projector optical calibration.
+                The ultimate sovereign home screen for <strong>Android TV</strong> and <strong>Amazon Fire TV</strong>. Features complete <strong>multi-user profiles</strong> (Subi, Kids & Family, Cinema Pro, Guest), continuous <strong>Season & Episode progress tracking</strong> with neon glow bars, intelligent <strong>cross-service viewing recommendations</strong> based on installed streaming services, tvOS ambient color blooming, and a live System Health HUD.
               </p>
               <div class="tv-actions">
                 <a href="downloads/subitv-launcher-latest.apk" class="btn-tv-primary" download>
-                  <span>Download APK (14 MB)</span> ⬇
+                  <span>Download APK v1.1.0</span> ⬇
                 </a>
                 <a href="#walkthrough" class="btn-tv-secondary">
                   <span>Watch Walkthrough</span> 🎬
@@ -310,29 +315,37 @@
             <span class="tag-dot cyan"></span>
             <span>GALLERY</span>
           </div>
-          <h2 class="section-heading">Built for the Big Screen</h2>
-          <p class="section-subheading">Every detail crafted specifically for 10-foot television and projector experiences.</p>
+          <h2 class="section-heading">Engineered for Every Viewer in the House</h2>
+          <p class="section-subheading">Personalized profiles, continuous episode tracking, and AI curated recommendations.</p>
 
           <div class="gallery-grid">
             <div class="gallery-item">
-              <img src="assets/subitv-launcher-screenshot-main.png" alt="SubiTV Launcher Home Screen">
-              <div class="gallery-caption">1. Pure Home Screen: Clean Leanback Rows, Digital Clock, & System Health HUD</div>
+              <img src="assets/subitv-launcher-screenshot-main.png" alt="SubiTV Launcher Home Screen with Profiles and Continue Watching">
+              <div class="gallery-caption">1. Home Screen: User Profile Switcher, Continue Watching with Episode Progress, & Live System HUD</div>
             </div>
             <div class="gallery-item">
-              <img src="assets/subitv-launcher-screenshot-focused.png" alt="Dynamic tvOS Ambient Blooming">
-              <div class="gallery-caption">2. Dynamic Ambient Bloom: Backlight glows with the focused app's vibrant palette</div>
+              <img src="assets/subitv-launcher-screenshot-profiles.png" alt="Who is Watching Profile Switcher Modal">
+              <div class="gallery-caption">2. Multi-User Profile Switcher: Dedicated spaces for Subi, Kids & Family, Cinema Pro, and Guests</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-continue-watching.png" alt="Continue Watching Row with Episode Tracking">
+              <div class="gallery-caption">3. Continue Watching: Tracks Season, Episode Number, Episode Title, & remaining runtime with neon progress lines</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-recommendations.png" alt="Personalized Viewing Recommendations">
+              <div class="gallery-caption">4. Intelligent Recommendations: Matches profile taste with installed services (Subi TV, Netflix, Prime)</div>
+            </div>
+            <div class="gallery-item">
+              <img src="assets/subitv-launcher-screenshot-kids.png" alt="Dedicated Kids Profile Mode">
+              <div class="gallery-caption">5. Dedicated Kids Profile: Filtered animated & family content (The Wild Robot, Across the Spider-Verse, Bluey)</div>
             </div>
             <div class="gallery-item">
               <img src="assets/subitv-launcher-screenshot-control-center.png" alt="Slide-Over Control Center">
-              <div class="gallery-caption">3. Slide-Over Control Center: Fast wallpaper switching (Cyberpunk, Nebula, Aurora)</div>
-            </div>
-            <div class="gallery-item">
-              <img src="assets/subitv-launcher-screenshot-settings.png" alt="Display & Projector Profiles">
-              <div class="gallery-caption">4. Optical Profiles: Cinema 24p, Ultra-Low Game Latency, & Projector High-Lumen</div>
+              <div class="gallery-caption">6. Slide-Over Control Center: Fast wallpaper switching (Cyberpunk, Nebula, Aurora) & display profiles</div>
             </div>
             <div class="gallery-item" style="grid-column: 1 / -1;">
               <img src="assets/subitv-launcher-screenshot-keystone.png" alt="Projector Keystone Test Card">
-              <div class="gallery-caption">5. Built-in Projector Calibration: Action-safe margins, aspect circles, & corner keystone targets</div>
+              <div class="gallery-caption">7. Built-in Projector Calibration: Action-safe margins, aspect circles, & corner keystone targets</div>
             </div>
           </div>
         </div>
@@ -343,17 +356,41 @@
         <div class="container">
           <div class="section-tag">
             <span class="tag-dot green"></span>
-            <span>CAPABILITIES</span>
+            <span>NEW CAPABILITIES</span>
           </div>
-          <h2 class="section-heading">Projectivy DNA. Superior Performance.</h2>
-          <p class="section-subheading">All premium features unlocked out of the box with zero subscription fees.</p>
+          <h2 class="section-heading">Smart Viewing Intelligence. Zero Subscriptions.</h2>
+          <p class="section-subheading">A modern television launcher designed around how people actually stream.</p>
 
           <div class="features-grid">
             <div class="feature-card">
-              <div class="feature-icon">🚀</div>
-              <h3 class="feature-title">Native Compose TV Engine</h3>
+              <div class="feature-icon">👤</div>
+              <h3 class="feature-title">Multi-User Profiles</h3>
               <p class="feature-desc">
-                Written from scratch in modern Kotlin with Jetpack Compose for TV. Zero legacy Android View inflation overhead. Guarantees locked 60–120 FPS D-pad focus transitions and instant startup on low-power TV SoCs.
+                Separate watch histories, custom accent colors, and tailored recommendations for every viewer. Seamlessly toggle between adult, cinema, and protected kids profiles right from the top status bar.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">⏱️</div>
+              <h3 class="feature-title">Episode Progress Tracking</h3>
+              <p class="feature-desc">
+                Never wonder where you left off. Tracks exact season, episode number, episode title, and remaining minutes across Subi TV, Netflix, Prime Video, and YouTube with radiant neon progress bars.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">✨</div>
+              <h3 class="feature-title">Cross-Service Recommendations</h3>
+              <p class="feature-desc">
+                Intelligently suggests movies and shows based on what the active profile has been watching, prioritizing content on installed streaming apps with match scores and 4K HDR tags.
+              </p>
+            </div>
+
+            <div class="feature-card">
+              <div class="feature-icon">👶</div>
+              <h3 class="feature-title">Dedicated Kids Mode</h3>
+              <p class="feature-desc">
+                Switching to the Kids profile automatically filters the home feed into family-friendly animations and comedies, keeping adult content completely out of sight.
               </p>
             </div>
 
@@ -361,7 +398,7 @@
               <div class="feature-icon">🌈</div>
               <h3 class="feature-title">tvOS Dynamic Color Bloom</h3>
               <p class="feature-desc">
-                Our real-time palette engine extracts the vibrant dominant color of whichever app banner is selected, creating a soft, cinematic background glow that elevates your home theater atmosphere.
+                Our palette engine dynamically samples the dominant hue of the highlighted episode or app card, bathing your TV wall in an ambient cinematic glow.
               </p>
             </div>
 
@@ -369,31 +406,7 @@
               <div class="feature-icon">📊</div>
               <h3 class="feature-title">Live System Health HUD</h3>
               <p class="feature-desc">
-                Monitor your TV's vital signs right from the top bar: available RAM percentage, real-time SoC CPU temperatures in °C, and wireless signal strength (dBm) or wired Gigabit LAN status.
-              </p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon">🎛️</div>
-              <h3 class="feature-title">Slide-Over Glass Control Center</h3>
-              <p class="feature-desc">
-                Press the Menu button on any TV remote to reveal the slide-out glass side panel. Switch wallpaper themes, toggle ambient bloom, or recalibrate picture modes without leaving your current feed.
-              </p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon">🔒</div>
-              <h3 class="feature-title">Parental PIN Vault</h3>
-              <p class="feature-desc">
-                Secure any individual app or streaming row behind a 4-digit PIN code. Keep sensitive apps and settings protected from children or house guests with custom D-pad friendly PIN dialogs.
-              </p>
-            </div>
-
-            <div class="feature-card">
-              <div class="feature-icon">📽️</div>
-              <h3 class="feature-title">Projector Keystone Suite</h3>
-              <p class="feature-desc">
-                Includes dedicated projector alignment test patterns with 16:9 boundaries, center crosshairs, aspect ratio circles, and corner targets to dial in your projector focus and keystone geometry perfectly.
+                Monitor TV vitals in real time: available RAM percentage, internal SoC temperature in °C, and Wi-Fi RSSI signal strength (dBm) or Gigabit Ethernet status.
               </p>
             </div>
           </div>
@@ -408,7 +421,7 @@
             <span>INSTALLATION GUIDE</span>
           </div>
           <h2 class="section-heading">How to Install & Set as Default</h2>
-          <p class="section-subheading">Quick steps to get SubiTV Launcher running as your permanent home screen on Amazon Fire TV or Google TV.</p>
+          <p class="section-subheading">Quick steps to get SubiTV Launcher running on Amazon Fire TV or Google TV.</p>
 
           <div class="guide-box">
             <div class="guide-step">
@@ -416,7 +429,7 @@
               <div class="step-content">
                 <h4>Download & Install the APK</h4>
                 <p>
-                  On your TV, install via the <strong>Downloader app</strong> by typing the short URL <span class="code-pill">iamgreater.net/downloads/subitv-launcher-latest.apk</span>, or push directly via ADB from your computer:
+                  On your TV, install via the <strong>Downloader app</strong> by typing the short URL <span class="code-pill">iamgreater.net/downloads/subitv-launcher-latest.apk</span>, or push directly via ADB:
                   <br><br>
                   <span class="code-pill">adb install -r subitv-launcher-latest.apk</span>
                 </p>
@@ -440,9 +453,9 @@
             <div class="guide-step">
               <div class="step-number">3</div>
               <div class="step-content">
-                <h4>Customize Your Wallpapers & Display Profile</h4>
+                <h4>Select Profile & Stream Seamlessly</h4>
                 <p>
-                  Launch SubiTV Launcher. Press <strong>MENU</strong> on your remote to open the Control Center. Choose your preferred wallpaper theme (Cyberpunk Nebula, Deep Space, or Aurora), enable tvOS ambient bloom, and enjoy clean, ad-free streaming!
+                  Launch SubiTV Launcher. Select your user profile from the top bar to restore your Continue Watching episodes, explore personalized recommendations, and customize your 4K backdrop themes.
                 </p>
               </div>
             </div>

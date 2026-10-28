@@ -10,22 +10,30 @@ Showcase of vibe coding, autonomous AI agents, Linux power tools, and high-veloc
 
 We are actively recruiting testers for our sovereign, 100% offline Android utilities on Google Play. Google requires **12+ active opt-in testers for at least 14 days** before apps can be released publicly to production.
 
+### 👥 Step 0: Join the Tester Group (Required for Instant Play Store Access)
+Anyone with a Google Account can join with one click — no waiting for whitelist approval!
+👉 **[Join IAMGREATER Testers Google Group](https://groups.google.com/g/iamgreater-testers)** (Click **"Join group"**)
+
+---
+
 ### 1. ⚡ QuickDraw Launcher (`net.iamgreater.quickdraw`)
 Lightning-fast edge gesture launcher inspired by EasyStroke and custom ROM era sovereignty. Launch favorite apps, tools, and system shortcuts with a single thumb-glide. Zero permissions, zero tracking.
-* **Step 1 (Web Opt-In):** [Join QuickDraw Closed Beta on Google Play](https://play.google.com/apps/testing/net.iamgreater.quickdraw)
-* **Step 2 (Play Store):** [Download on Google Play Store](https://play.google.com/store/apps/details?id=net.iamgreater.quickdraw)
+* **Step 1 (Join Group):** [Join IAMGREATER Testers Google Group](https://groups.google.com/g/iamgreater-testers)
+* **Step 2 (Web Opt-In):** [Opt-in to QuickDraw Closed Beta on Google Play](https://play.google.com/apps/testing/net.iamgreater.quickdraw)
+* **Step 3 (Play Store):** [Download on Google Play Store](https://play.google.com/store/apps/details?id=net.iamgreater.quickdraw)
 * **Direct APK (No Wait):** [Download Latest APK](https://iamgreater.net/downloads/quickdraw-latest.apk)
 * **Showcase & Web Simulator:** [QuickDraw Showcase](https://iamgreater.net/quickdraw.html)
 
 ### 2. 🔦 ChopTorch: Double Shake Light (`net.iamgreater.choptorch`)
 Motorola's iconic double-chop & sideways shake flashlight motion for any Android device. Features pocket sensor protection, calibrated physical state machine, and screen-off listening. 100% ad-free with zero telemetry.
-* **Step 1 (Web Opt-In):** [Join ChopTorch Closed Beta on Google Play](https://play.google.com/apps/testing/net.iamgreater.choptorch)
-* **Step 2 (Play Store):** [Download on Google Play Store](https://play.google.com/store/apps/details?id=net.iamgreater.choptorch)
+* **Step 1 (Join Group):** [Join IAMGREATER Testers Google Group](https://groups.google.com/g/iamgreater-testers)
+* **Step 2 (Web Opt-In):** [Opt-in to ChopTorch Closed Beta on Google Play](https://play.google.com/apps/testing/net.iamgreater.choptorch)
+* **Step 3 (Play Store):** [Download on Google Play Store](https://play.google.com/store/apps/details?id=net.iamgreater.choptorch)
 * **Direct APK (No Wait):** [Download Latest APK](https://iamgreater.net/assets/ChopTorch.apk)
 * **Showcase & Web Simulator:** [ChopTorch Showcase](https://iamgreater.net/choptorch.html)
 
 > [!TIP]
-> **Tester Whitelist Note:** If Google Play shows *"App not available"*, your Google Account needs to be whitelisted for the closed test. Simply email your Play Store Gmail address to **`support@iamgreater.net`** (Subject: *Google Play Tester Whitelist*) and we will add you immediately!
+> **Why Join the Google Group First?** Google Play closed tests require accounts to be authorized before downloading. Joining the public [IAMGREATER Testers Group](https://groups.google.com/g/iamgreater-testers) automatically authorizes your Google Play account to view and install testing releases immediately. If you have any feedback or want to request an offline Pro license key, reach us at **`support@iamgreater.net`**.
 
 ---
 

@@ -194,7 +194,7 @@
       position: absolute;
       right: 0;
       top: 32%;
-      width: 24px;
+      width: 10px;
       height: 180px;
       background: linear-gradient(to left, rgba(56, 189, 248, 0.4), transparent);
       border-left: 2px solid #38bdf8;
@@ -204,7 +204,25 @@
       align-items: center;
       justify-content: center;
       z-index: 20;
+      transition: width 0.15s ease, height 0.15s ease, top 0.15s ease, background 0.2s ease, border 0.2s ease;
       animation: edgePulse 2s infinite ease-in-out;
+    }
+    .sim-edge-zone.edge-left {
+      left: 0;
+      right: auto;
+      background: linear-gradient(to right, rgba(56, 189, 248, 0.4), transparent);
+      border-right: 2px solid #38bdf8;
+      border-left: none;
+      border-radius: 0 12px 12px 0;
+    }
+    .sim-edge-zone.compact-label .sim-edge-label {
+      display: none;
+    }
+    .sim-edge-zone.stealth-mode {
+      background: transparent !important;
+      border-color: rgba(255, 255, 255, 0.15) !important;
+      box-shadow: none !important;
+      animation: none !important;
     }
     @keyframes edgePulse {
       0%, 100% { opacity: 0.7; transform: scaleX(1); }
@@ -219,6 +237,71 @@
       font-weight: 700;
       letter-spacing: 1px;
       pointer-events: none;
+    }
+
+    /* Live Trigger Zone Customizer */
+    .sim-customizer-card {
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    .btn-ctrl-toggle {
+      flex: 1;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-ctrl-toggle.active {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .btn-chip {
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      font-size: 0.72rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex: 1;
+      text-align: center;
+    }
+    .btn-chip:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .btn-chip.active {
+      background: rgba(56, 189, 248, 0.25);
+      border-color: #38bdf8;
+      color: #38bdf8;
+      font-weight: 600;
+    }
+    .btn-color-dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .btn-color-dot:hover {
+      transform: scale(1.15);
+    }
+    .btn-color-dot.active {
+      transform: scale(1.22);
+      border-color: #fff;
+      box-shadow: 0 0 10px currentColor;
     }
 
     /* Floating Rectangular Grid Card Overlay */
@@ -557,6 +640,7 @@
           <span class="qd-badge">Android Utility</span>
           <span class="qd-badge green">100% Offline & Private</span>
           <span class="qd-badge purple">Zero Battery Drain</span>
+          <span class="qd-badge cyan" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4);">v1.0.1 Updated</span>
         </div>
 
         <h1 class="qd-title">
@@ -564,7 +648,7 @@
         </h1>
 
         <p class="qd-sub">
-          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. Choose your launch style: use <strong>Pure Swipe Mode</strong> to continuously glide onto any app and release without lifting your finger, or <strong>Swipe to Activate</strong> the floating grid and select with a second tap. Featuring an ergonomic, resizeable 7×7 rectangular grid (scalable up to 9×9) and customizable gesture toggles.
+          <strong>QuickDraw Launcher</strong> turns the edge of your phone screen into a lightning-fast application trigger. Choose your launch style: use <strong>Pure Swipe Mode</strong> to continuously glide onto any app and release without lifting your finger, or <strong>Swipe to Activate</strong> the floating grid and select with a second tap. Featuring an ergonomic, resizeable 7×7 rectangular grid (scalable up to 9×9), <strong>fully changeable trigger zones (1px to 80px)</strong> with pass-through edge taps, and multi-orientation edge toggles.
         </p>
 
         <div class="hero-actions">
@@ -616,12 +700,12 @@
               <div class="sim-date">FRIDAY, OCTOBER 10</div>
             </div>
             
-            <div style="text-align: center; color: rgba(255,255,255,0.4); font-size: 0.8rem; font-family: var(--font-mono);">
+            <div style="text-align: center; color: rgba(255,255,255,0.4); font-size: 0.8rem; font-family: var(--font-mono);" id="simEdgePrompt">
               Swipe left from blue edge ➔
             </div>
 
             <!-- Edge Trigger Hotzone -->
-            <div class="sim-edge-zone" id="simEdgeZone">
+            <div class="sim-edge-zone compact-label" id="simEdgeZone">
               <span class="sim-edge-label">GLIDE</span>
             </div>
 
@@ -697,6 +781,88 @@
 
       <!-- Simulator Instructions & Context -->
       <div class="sim-controls">
+        <!-- Live Trigger Zone Customizer Card -->
+        <div class="spec-box sim-customizer-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h4 style="color: #38bdf8; margin: 0; display: flex; align-items: center; gap: 8px;">
+              <span>🎛️</span> Change Trigger Zone
+            </h4>
+            <span class="badge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.75rem; padding: 3px 8px; border-radius: 999px; border: 1px solid rgba(56, 189, 248, 0.3); font-family: var(--font-mono);">v1.0.1 Live Customizer</span>
+          </div>
+          <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 14px; line-height: 1.5;">
+            Customize the phone edge trigger live. See the trigger bar adapt its edge, thickness, thumb reach, and height on the phone model instantly:
+          </p>
+
+          <!-- Edge Side Switcher -->
+          <div style="margin-bottom: 14px;">
+            <label style="display: block; font-size: 0.78rem; font-family: var(--font-mono); color: #cbd5e1; margin-bottom: 6px;">
+              SCREEN EDGE SIDE
+            </label>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn-ctrl-toggle active" id="btnEdgeRight">Right Edge (Default)</button>
+              <button type="button" class="btn-ctrl-toggle" id="btnEdgeLeft">Left Edge</button>
+            </div>
+          </div>
+
+          <!-- Thickness / Width Control -->
+          <div style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label style="font-size: 0.78rem; font-family: var(--font-mono); color: #cbd5e1;">
+                TRIGGER THICKNESS
+              </label>
+              <span id="thicknessValue" style="font-family: var(--font-mono); color: #38bdf8; font-weight: bold; font-size: 0.85rem;">10 px</span>
+            </div>
+            <input type="range" id="simSliderThickness" min="1" max="40" value="10" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+            <div style="display: flex; gap: 4px; margin-top: 6px;">
+              <button type="button" class="btn-chip" data-thickness="1">1px (Stealth)</button>
+              <button type="button" class="btn-chip" data-thickness="4">4px</button>
+              <button type="button" class="btn-chip active" data-thickness="10">10px</button>
+              <button type="button" class="btn-chip" data-thickness="20">20px</button>
+              <button type="button" class="btn-chip" data-thickness="32">32px</button>
+            </div>
+            <div style="font-size: 0.75rem; color: #64748b; margin-top: 6px;">
+              ⚡ <em>Ultra-thin (1–10px) lets full-screen game taps pass straight through!</em>
+            </div>
+          </div>
+
+          <!-- Position Offset Control -->
+          <div style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label style="font-size: 0.78rem; font-family: var(--font-mono); color: #cbd5e1;">
+                VERTICAL OFFSET (THUMB REACH)
+              </label>
+              <span id="posValue" style="font-family: var(--font-mono); color: #38bdf8; font-weight: bold; font-size: 0.85rem;">32%</span>
+            </div>
+            <input type="range" id="simSliderPosition" min="12" max="68" value="32" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+          </div>
+
+          <!-- Length / Height Control -->
+          <div style="margin-bottom: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <label style="font-size: 0.78rem; font-family: var(--font-mono); color: #cbd5e1;">
+                TRIGGER LENGTH (HEIGHT)
+              </label>
+              <span id="lengthValue" style="font-family: var(--font-mono); color: #38bdf8; font-weight: bold; font-size: 0.85rem;">180 px</span>
+            </div>
+            <input type="range" id="simSliderLength" min="80" max="280" value="180" style="width: 100%; accent-color: #38bdf8; cursor: pointer;">
+          </div>
+
+          <!-- Color / Visual Mode -->
+          <div>
+            <label style="display: block; font-size: 0.78rem; font-family: var(--font-mono); color: #cbd5e1; margin-bottom: 6px;">
+              VISUAL INDICATOR THEME
+            </label>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <button type="button" class="btn-color-dot active" data-color="#38bdf8" style="background: #38bdf8;" title="Cyan Glow"></button>
+              <button type="button" class="btn-color-dot" data-color="#a855f7" style="background: #a855f7;" title="Neon Violet"></button>
+              <button type="button" class="btn-color-dot" data-color="#10b981" style="background: #10b981;" title="Emerald Teal"></button>
+              <button type="button" class="btn-color-dot" data-color="#f59e0b" style="background: #f59e0b;" title="Amber"></button>
+              <button type="button" class="btn-color-dot" data-color="transparent" style="background: rgba(255,255,255,0.15); border: 1px dashed rgba(255,255,255,0.4);" title="Stealth (Zero Indicator)"></button>
+              <span style="font-size: 0.75rem; color: #94a3b8; font-family: var(--font-mono); margin-left: 4px;">Choose Style</span>
+            </div>
+          </div>
+        </div>
+
         <div class="spec-box">
           <h4 style="color:#38bdf8;">🎯 Two Ways to Launch:</h4>
           <p style="margin-bottom: 12px;">
@@ -740,9 +906,9 @@
         <!-- Step 2 -->
         <article class="step-card">
           <div class="step-num">02</div>
-          <h3 class="step-title">Tune Your Trigger Zone</h3>
+          <h3 class="step-title">Changeable Trigger Zone (1px–80px)</h3>
           <p class="step-desc">
-            Position the edge trigger exactly where your thumb naturally rests. Choose the right edge, left edge, or bottom border. Fine-tune touch width, height, and vertical offset.
+            Position the edge trigger exactly where your thumb naturally rests. Choose right edge, left edge, top, or bottom. Dial thickness down to a razor-thin 1px–10px so full-screen game taps and gestures pass straight through to background apps.
           </p>
         </article>
 
@@ -817,7 +983,12 @@
         </div>
 
         <div class="spec-box">
-          <h4>📱 Target SDK 35 (Android 15)</h4>
+          <h4>🎛️ Changeable Trigger Zones (1px–80px)</h4>
+          <p>Fine-tune edge thickness from 1px to 80px, adjust position offset and trigger reach, and configure independent behaviors for vertical (portrait) and horizontal (landscape) orientations.</p>
+        </div>
+
+        <div class="spec-box">
+          <h4>📱 Target SDK 36 (Android 16 Ready)</h4>
           <p>Fully compliant with the latest Google Play 2026 requirements, predictive back gestures, edge-to-edge system displays, and high-refresh-rate displays (90Hz / 120Hz).</p>
         </div>
 
@@ -1048,6 +1219,130 @@
         }, 150);
       });
     });
+
+    // ============================================
+    // Live Trigger Zone Customizer Logic
+    // ============================================
+    const btnEdgeRight = document.getElementById('btnEdgeRight');
+    const btnEdgeLeft = document.getElementById('btnEdgeLeft');
+    const sliderThickness = document.getElementById('simSliderThickness');
+    const thicknessValText = document.getElementById('thicknessValue');
+    const thicknessChips = document.querySelectorAll('.btn-chip[data-thickness]');
+    const sliderPos = document.getElementById('simSliderPosition');
+    const posValText = document.getElementById('posValue');
+    const sliderLen = document.getElementById('simSliderLength');
+    const lenValText = document.getElementById('lengthValue');
+    const colorDots = document.querySelectorAll('.btn-color-dot');
+    const simEdgePrompt = document.getElementById('simEdgePrompt');
+
+    let currentSide = 'right';
+    let currentColor = '#38bdf8';
+
+    function applyEdgeStyle() {
+      if (currentColor === 'transparent') {
+        edgeZone.classList.add('stealth-mode');
+        return;
+      }
+      edgeZone.classList.remove('stealth-mode');
+      if (currentSide === 'left') {
+        edgeZone.classList.add('edge-left');
+        edgeZone.style.borderLeft = 'none';
+        edgeZone.style.borderRight = `2px solid ${currentColor}`;
+        edgeZone.style.background = `linear-gradient(to right, ${hexToRgba(currentColor, 0.4)}, transparent)`;
+        if (simEdgePrompt) simEdgePrompt.textContent = '➔ Swipe right from colored edge';
+      } else {
+        edgeZone.classList.remove('edge-left');
+        edgeZone.style.borderRight = 'none';
+        edgeZone.style.borderLeft = `2px solid ${currentColor}`;
+        edgeZone.style.background = `linear-gradient(to left, ${hexToRgba(currentColor, 0.4)}, transparent)`;
+        if (simEdgePrompt) simEdgePrompt.textContent = 'Swipe left from colored edge ➔';
+      }
+    }
+
+    function hexToRgba(hex, alpha) {
+      if (!hex.startsWith('#')) return `rgba(56, 189, 248, ${alpha})`;
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+
+    if (btnEdgeRight && btnEdgeLeft) {
+      btnEdgeRight.addEventListener('click', () => {
+        currentSide = 'right';
+        btnEdgeRight.classList.add('active');
+        btnEdgeLeft.classList.remove('active');
+        applyEdgeStyle();
+      });
+
+      btnEdgeLeft.addEventListener('click', () => {
+        currentSide = 'left';
+        btnEdgeLeft.classList.add('active');
+        btnEdgeRight.classList.remove('active');
+        applyEdgeStyle();
+      });
+    }
+
+    function setThickness(px) {
+      if (sliderThickness) sliderThickness.value = px;
+      if (thicknessValText) thicknessValText.textContent = `${px} px`;
+      if (edgeZone) {
+        edgeZone.style.width = `${px}px`;
+        if (px <= 12) {
+          edgeZone.classList.add('compact-label');
+        } else {
+          edgeZone.classList.remove('compact-label');
+        }
+      }
+      thicknessChips.forEach(chip => {
+        if (parseInt(chip.dataset.thickness, 10) === parseInt(px, 10)) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+    }
+
+    if (sliderThickness) {
+      sliderThickness.addEventListener('input', (e) => {
+        setThickness(e.target.value);
+      });
+    }
+
+    thicknessChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        setThickness(chip.dataset.thickness);
+      });
+    });
+
+    if (sliderPos) {
+      sliderPos.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (posValText) posValText.textContent = `${val}%`;
+        if (edgeZone) edgeZone.style.top = `${val}%`;
+      });
+    }
+
+    if (sliderLen) {
+      sliderLen.addEventListener('input', (e) => {
+        const val = e.target.value;
+        if (lenValText) lenValText.textContent = `${val} px`;
+        if (edgeZone) edgeZone.style.height = `${val}px`;
+      });
+    }
+
+    colorDots.forEach(dot => {
+      dot.addEventListener('click', () => {
+        colorDots.forEach(d => d.classList.remove('active'));
+        dot.classList.add('active');
+        currentColor = dot.dataset.color;
+        applyEdgeStyle();
+      });
+    });
+
+    // Initialize customizer default state
+    setThickness(10);
+    applyEdgeStyle();
 
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.getElementById('navLinks');
